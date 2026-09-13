@@ -132,7 +132,7 @@ class Agent:
                     warnings.append(f"LLM недоступна или вернула неверную структуру ({type(exc).__name__}): разбор по правилам.")
                     mode = "rules_fallback"
         session.query = query
-        if not issue and not query.kind:
+        if not issue and not query.kind and not query.seed_title:
             issue = "Что подбираем: фильм, сериал или курс?"
         elif not issue and not (query.genre or query.tone or query.seed_title or query.level) and session.clarifications < 2:
             issue = "Какой жанр или настроение вам ближе? Для курса можно назвать тему или уровень."
@@ -148,6 +148,9 @@ class Agent:
                 seed = self.provider.find_title(query.seed_title)
                 if seed is None:
                     return {"issue": f"В демонстрационном каталоге нет «{query.seed_title}». Укажите название из каталога или напишите «сброс».", "trace": state["trace"]+["metadata_lookup"]}
+                if not query.kind:
+                    query = query.model_copy(update={"kind": seed.kind})
+                    session.query = query
             ids = self.provider.retrieve(session.user_id, query, limit=100)
             candidates = self.provider.lookup(ids)
             history_ids = self.provider.history(session.user_id)
@@ -165,7 +168,7 @@ class Agent:
         if re_more(state["request"].message):
             blocked |= session.shown
         candidates = list({i.id: i for i in candidates if matches(i, query) and i.id not in blocked}.values())
-        return {"candidates": candidates, "history": history, "seed": seed, "trace": state["trace"]+["retrieval", "metadata_lookup", "hard_filters"]}
+        return {"query": query, "candidates": candidates, "history": history, "seed": seed, "trace": state["trace"]+["retrieval", "metadata_lookup", "hard_filters"]}
 
     def _response(self, state, status, message, recommendations=None):
         return ChatResponse(session_id=state["session_id"], state=status, message=message, query=state["query"], recommendations=recommendations or [], trace=state["trace"]+[status], warnings=state["warnings"], mode=state["mode"], latency_ms=0, llm_calls=0, llm_calls_total=state["session"].calls, llm_tokens=state["tokens"], clarification_count=state["session"].clarifications)

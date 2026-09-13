@@ -11,7 +11,15 @@ def normalize(text: str) -> str:
 
 
 def rule_parse(message: str, previous: Query) -> tuple[Query, str | None]:
+    original = previous
     text = normalize(message)
+    # Название может содержать жанр или слово «курс»: это не фильтры запроса.
+    quoted = re.search(r'[«"](.+?)[»"]', message)
+    if quoted:
+        text = normalize(message[:quoted.start()] + message[quoted.end():])
+    navigation = bool(re.search(r"найди|найти|покажи в каталоге|ищу в каталоге", text))
+    if navigation and quoted:
+        previous = Query()
     patch = {}
     kind_patterns = {"series": r"сериал", "film": r"фильм|кино", "course": r"курс|обучени|python|питон"}
     found_kinds = [kind for kind, pattern in kind_patterns.items() if re.search(pattern, text)]
@@ -20,22 +28,28 @@ def rule_parse(message: str, previous: Query) -> tuple[Query, str | None]:
     if found_kinds:
         patch["kind"] = found_kinds[0]
         if previous.kind and previous.kind != patch["kind"]:
-            previous = Query()  # Explicit domain switch starts a new set of domain-specific constraints.
+            previous = Query()  # При смене формата старые ограничения больше не действуют.
     genres = {"детектив": r"детектив|расследован", "комедия": r"комеди|с юмором|смешн", "драма": r"драм", "фантастика": r"фантаст|космос", "приключения": r"приключен", "машинное обучение": r"машинн.{0,5}обуч|\bml\b", "python": r"python|питон"}
     excluded = list(previous.excluded_genres)
     for genre, pattern in genres.items():
-        match = re.search(pattern, text)
-        if match:
+        positive, negative = False, False
+        for match in re.finditer(pattern, text):
             before = text[max(0, match.start()-12):match.start()]
-            if re.search(r"(?:без|не|кроме)\s*$", before):
-                if genre not in excluded:
-                    excluded.append(genre)
-                if previous.genre == genre:
-                    patch["genre"] = None
-            else:
-                patch["genre"] = genre
-                if genre in excluded:
-                    excluded.remove(genre)
+            after = text[match.end():match.end()+22]
+            negated = bool(re.search(r"(?:без|не|кроме|исключая)\s*$", before) or re.match(r"\w*\s+не\s+предлага", after))
+            negative |= negated
+            positive |= not negated
+        if positive and negative:
+            return original, "Жанр одновременно выбран и исключён. Уточните желаемый жанр."
+        if negative:
+            if genre not in excluded:
+                excluded.append(genre)
+            if previous.genre == genre:
+                patch["genre"] = None
+        elif positive:
+            patch["genre"] = genre
+            if genre in excluded:
+                excluded.remove(genre)
     # "С юмором" refines the tone of a detective story, rather than changing its genre.
     if re.search(r"с юмором|смешн", text) and (previous.genre == "детектив" or "детектив" in text):
         patch["genre"] = "детектив"
@@ -43,7 +57,7 @@ def rule_parse(message: str, previous: Query) -> tuple[Query, str | None]:
     patch["excluded_genres"] = excluded
     if re.search(r"не\s+(?:(?:слишком|очень|такой)\s+)?легк", text):
         return previous, "Уточните желаемый тон: мрачный или нейтральный?"
-    if re.search(r"не\s+(?:(?:слишком|очень|такой)\s+)?мрачн|без\s+мрач|легк|уютн|устал|тяжел.{0,12}(день|собрани)|расслаб", text):
+    if re.search(r"не\s+(?:(?:слишком|очень|такой|хочу)\s+)?мрачн|без\s+мрач|легк|уютн|устал|тяжел.{0,12}(день|собрани)|расслаб", text):
         patch["tone"] = "лёгкий"
         patch["intent"] = "mood"
     elif "мрачн" in text:
@@ -70,19 +84,20 @@ def rule_parse(message: str, previous: Query) -> tuple[Query, str | None]:
         patch["max_seasons"] = None
     if re.search(r"без ограничени.{0,12}(врем|длитель)|любой длитель", text):
         patch["max_minutes"] = None
-    if re.search(r"нович|с нуля|начинающ|начальн", text):
-        patch["level"] = "начальный"
-    elif re.search(r"продвинут|опытн", text):
+    if re.search(r"не нович|продвинут|опытн", text):
         patch["level"] = "продвинутый"
-    if re.search(r"без воды|практик", text):
+    elif re.search(r"нович|с нуля|начинающ|начальн", text):
+        patch["level"] = "начальный"
+    if re.search(r"без практи|не нужна практика|(?<!не )только теори", text):
+        patch["practical"] = False
+    elif re.search(r"без воды|практик|практич|задани|не только теори", text):
         patch["practical"] = True
     seed = re.search(r"(?:похож\w* на|вроде)\s*[«\"]?(.+?)[»\"]?(?:[.!?]|$)", message, re.I)
     if seed:
         patch["intent"] = "similar"
         patch["seed_title"] = seed[1].strip(' «»"')
-    if re.search(r"найди|покажи в каталоге", text) and not seed:
+    if navigation and not seed:
         patch["intent"] = "navigation"
-        quoted = re.search(r'[«"](.+?)[»"]', message)
         if quoted:
             patch["seed_title"] = quoted[1]
     merged = previous.model_dump() | patch
