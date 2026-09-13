@@ -35,7 +35,7 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/Smail110/recagent"
+Repository = "https://github.com/Smail110/recsflow-agent"
 
 [tool.setuptools]
 include-package-data = false
