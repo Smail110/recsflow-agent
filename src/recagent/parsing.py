@@ -1,5 +1,6 @@
 import json
 import re
+import threading
 
 import httpx
 
@@ -110,8 +111,14 @@ def rule_parse(message: str, previous: Query) -> tuple[Query, str | None]:
 class OllamaClient:
     def __init__(self, model="qwen3:8b", base_url="http://127.0.0.1:11434", timeout=45.0):
         self.model, self.base_url, self.timeout = model, base_url.rstrip("/"), timeout
+        self._local = threading.local()
+
+    @property
+    def last_usage(self):
+        return getattr(self._local, "usage", {})
 
     def structured(self, schema: type[StrictModel], system: str, payload: dict) -> tuple[StrictModel, int]:
+        self._local.usage = {}
         with httpx.Client(timeout=self.timeout, trust_env=False) as client:
             response = client.post(self.base_url + "/api/chat", json={
                 "model": self.model, "stream": False, "think": False,
@@ -124,6 +131,9 @@ class OllamaClient:
             })
             response.raise_for_status()
             data = response.json()
+            self._local.usage = {"input_tokens": int(data.get("prompt_eval_count", 0)), "output_tokens": int(data.get("eval_count", 0)),
+                                 "inference_seconds": (data.get("prompt_eval_duration", 0) + data.get("eval_duration", 0)) / 1e9,
+                                 "total_seconds": data.get("total_duration", 0) / 1e9}
             result = schema.model_validate_json(data["message"]["content"])
             return result, int(data.get("prompt_eval_count", 0)) + int(data.get("eval_count", 0))
 

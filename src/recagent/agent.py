@@ -49,6 +49,7 @@ class State(TypedDict, total=False):
     degradation: str
     platform_ids: list[str]
     timings_ms: dict[str, float]
+    llm_usage: dict[str, float]
 
 
 class Agent:
@@ -140,7 +141,7 @@ class Agent:
             return {"query": session.query, "issue": "Что подбираем: фильм, сериал или курс?", "trace": ["parse", "reset"]}
         query, issue = rule_parse(request.message, previous)
         domain_changed = bool(previous.kind and query.kind and previous.kind != query.kind)
-        warnings, tokens, mode = [], 0, self.mode
+        warnings, tokens, mode, usage = [], 0, self.mode, {}
         if self.mode == "ollama" and not issue:
             if session.calls >= self.max_calls or session.tokens >= self.max_tokens:
                 warnings.append("Бюджет LLM исчерпан: включён разбор по правилам.")
@@ -161,6 +162,8 @@ class Agent:
                 except Exception as exc:
                     warnings.append(f"LLM недоступна или вернула неверную структуру ({type(exc).__name__}): разбор по правилам.")
                     mode = "rules_fallback"
+                usage = getattr(self.llm, "last_usage", {})
+                tokens = max(tokens, int(usage.get("input_tokens", 0) + usage.get("output_tokens", 0)))
         session.query = query
         if not issue and not query.kind and not query.seed_title:
             issue = "Что подбираем: фильм, сериал или курс?"
@@ -170,7 +173,7 @@ class Agent:
             issue = "Уровень и практика относятся к курсам. Уточните формат или напишите «сброс»."
         slot = "kind" if issue and "Что подбираем" in issue else None
         return {"query": query, "issue": issue, "warnings": warnings, "tokens": tokens, "mode": mode, "trace": ["parse"],
-                "clarification_slot": slot, "degradation": "NO_LLM" if mode == "rules_fallback" else "FULL"}
+                "clarification_slot": slot, "degradation": "NO_LLM" if mode == "rules_fallback" else "FULL", "llm_usage": usage}
 
     def _retrieve(self, state):
         query, session = state["query"], state["session"]
@@ -214,7 +217,7 @@ class Agent:
     def _response(self, state, status, message, recommendations=None):
         return ChatResponse(session_id=state["session_id"], state=status, message=message, query=state["query"], recommendations=recommendations or [], trace=state["trace"]+[status], warnings=state["warnings"], mode=state["mode"], latency_ms=0, llm_calls=0, llm_calls_total=state["session"].calls, llm_tokens=state["tokens"], clarification_count=state["session"].clarifications,
                             clarification_slot=state.get("clarification_slot"), question_gain=state.get("question_gain"),
-                            degradation=state.get("degradation", "FULL"), platform_ids=state.get("platform_ids", []))
+                            degradation=state.get("degradation", "FULL"), platform_ids=state.get("platform_ids", []), llm_usage=state.get("llm_usage", {}))
 
     def _clarify(self, state):
         if state["session"].clarifications >= self.max_questions:

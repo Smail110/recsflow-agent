@@ -94,6 +94,7 @@ class ChatResponse(StrictModel):
     platform_ids: list[str] = Field(default_factory=list)
     timings_ms: dict[str, float] = Field(default_factory=dict)
     llm_tokens_total: int = 0
+    llm_usage: dict[str, float] = Field(default_factory=dict)
 
 
 class FeedbackRequest(StrictModel):

@@ -80,9 +80,15 @@ def evaluate(split="dev", size=200, mode="rules", llm_user=False, llm_judge=Fals
                          "acceptable_after_answers": len(acceptable), "judge": judgement.model_dump() if judgement else None,
                          "evaluator_calls": evaluator_calls, "evaluator_tokens": evaluator_tokens,
                          "simulator_completed": simulator_completed, "judge_completed": judge_completed, "errors": errors})
-            print(f"{policy}: {len(rows)}/{len(scenarios)}", flush=True)
+            if len(rows) % 20 == 0 or len(rows) == len(scenarios) or llm_user or llm_judge:
+                print(f"{policy}: {len(rows)}/{len(scenarios)}", flush=True)
         runs[policy] = {"success_rate": sum(row["success"] for row in rows) / len(rows),
-                        "mean_questions": sum(row["questions"] for row in rows) / len(rows), "records": rows}
+                        "mean_questions": sum(row["questions"] for row in rows) / len(rows),
+                        "simulator_completed": sum(row["simulator_completed"] for row in rows),
+                        "judge_completed": sum(row["judge_completed"] for row in rows),
+                        "evaluator_calls": sum(row["evaluator_calls"] for row in rows),
+                        "evaluator_tokens": sum(row["evaluator_tokens"] for row in rows),
+                        "errors": sum(len(row["errors"]) for row in rows), "records": rows}
     return {"source": source_revision(), "split": split, "requested_size": size, "scenarios": len(scenarios),
             "scenario_hash": fingerprint([s.model_dump(mode="json") for s in scenarios]),
             "configuration": {"mode": mode, "llm_user": llm_user, "llm_judge": llm_judge, "question_cost": 0.25},
@@ -99,10 +105,15 @@ def main():
     parser.add_argument("--llm-user", action="store_true")
     parser.add_argument("--llm-judge", action="store_true")
     parser.add_argument("--output", type=Path, default=Path("report/questions-local.json"))
+    parser.add_argument("--summary-output", type=Path)
     args = parser.parse_args()
     result = evaluate(args.split, args.size, args.mode, args.llm_user, args.llm_judge)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    if args.summary_output:
+        compact = {**result, "runs": {name: {key: value for key, value in run.items() if key != "records"} for name, run in result["runs"].items()}}
+        args.summary_output.parent.mkdir(parents=True, exist_ok=True)
+        args.summary_output.write_text(json.dumps(compact, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({name: {key: value for key, value in run.items() if key != "records"} for name, run in result["runs"].items()}, ensure_ascii=False))
 
 

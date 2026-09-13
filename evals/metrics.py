@@ -22,6 +22,7 @@ def summarize(records: Sequence[dict]) -> dict:
         raise ValueError("cannot summarize an empty evaluation")
     latencies = [latency for record in records for latency in record["latencies_ms"]]
     claims = sum(record["evidence_count"] for record in records)
+    text_claims = sum(record.get("text_claims", 0) for record in records)
     return {
         "scenarios": len(records),
         "success_rate": fmean(record["success"] for record in records),
@@ -35,6 +36,8 @@ def summarize(records: Sequence[dict]) -> dict:
         "llm_calls": sum(record["llm_calls"] for record in records),
         "llm_tokens": sum(record["llm_tokens"] for record in records),
         "evidence_count": claims,
+        "text_claims": text_claims,
+        "unsupported_text_claim_rate": sum(record.get("invalid_text_claims", 0) for record in records) / text_claims if text_claims else None,
         "invalid_evidence_rate": sum(record["invalid_evidence"] for record in records) / claims if claims else None,
     }
 

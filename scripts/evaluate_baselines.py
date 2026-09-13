@@ -18,6 +18,7 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
+from evals.explanations import audit_text
 from evals.metrics import paired_success_interval, summarize
 from evals.oracle import judge, satisfies_spoken
 from evals.scenarios import ANSWER_SIZE, SPLIT_SEEDS, Scenario, generate_scenarios
@@ -64,6 +65,8 @@ def run_case(scenario: Scenario, configuration: str, catalog: Sequence[Item], *,
         "evidence_count": 0,
         "invalid_evidence": 0,
         "hard_constraint_violations": 0,
+        "text_claims": 0,
+        "invalid_text_claims": 0,
         "turns": [],
     }
     failures = []
@@ -87,6 +90,9 @@ def run_case(scenario: Scenario, configuration: str, catalog: Sequence[Item], *,
             history = provider.lookup(provider.history(scenario.user_id))
             seed_item = provider.find_title(response.query.seed_title) if response.query.seed_title else None
             for recommendation in response.recommendations:
+                audit = audit_text(recommendation.explanation, by_id[recommendation.item.id], history, catalog)
+                record["text_claims"] += audit["claims"]
+                record["invalid_text_claims"] += len(audit["invalid"])
                 for evidence in recommendation.evidence:
                     record["evidence_count"] += 1
                     record["invalid_evidence"] += not validate_evidence(evidence, by_id[recommendation.item.id], response.query, history, seed_item)
@@ -126,6 +132,8 @@ def run_case(scenario: Scenario, configuration: str, catalog: Sequence[Item], *,
         failures.append("incomplete_slate")
     if record["invalid_evidence"]:
         failures.append("invalid_evidence")
+    if record["invalid_text_claims"]:
+        failures.append("unsupported_text_claim")
     record.update({
         "state": state,
         "shown_ids": ids,
