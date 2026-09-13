@@ -1,5 +1,7 @@
 """Create an auditable intent dataset. Demo mode is synthetic and is not a training claim."""
-import argparse, json, random
+import argparse
+import json
+import random
 from pathlib import Path
 
 TEMPLATES = {
@@ -16,7 +18,7 @@ def build(seed=42, examples_per_label=40):
     kinds = ["сериал", "фильм", "курс"]
     rows = []
     for label, templates in TEMPLATES.items():
-        for index in range(examples_per_label):
+        for _ in range(examples_per_label):
             template = rng.choice(templates)
             rows.append({"text": template.format(kind=rng.choice(kinds), genre=rng.choice(genres)), "label": label, "synthetic": True, "seed": seed})
     rng.shuffle(rows)

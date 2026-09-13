@@ -2,9 +2,11 @@ import argparse
 import json
 import time
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
+
 import httpx
+
 from .evaluate import percentile
 
 
@@ -25,7 +27,7 @@ def run(url, count, workers):
         results = list(executor.map(request_one, range(count)))
     elapsed = time.perf_counter()-started
     latencies = [r["latency_ms"] for r in results]
-    return {"timestamp_utc": datetime.now(timezone.utc).isoformat(), "target": url, "requests": count, "concurrency": workers, "elapsed_seconds": elapsed, "requests_per_second": count/elapsed, "successes": sum(r["ok"] for r in results), "errors": sum(not r["ok"] for r in results), "p50_ms": percentile(latencies, .5), "p95_ms": percentile(latencies, .95), "max_ms": max(latencies), "agent_llm_calls": sum(r.get("llm_calls", 0) for r in results), "agent_tokens": sum(r.get("llm_tokens", 0) for r in results), "monetary_cost": None, "results": results}
+    return {"timestamp_utc": datetime.now(UTC).isoformat(), "target": url, "requests": count, "concurrency": workers, "elapsed_seconds": elapsed, "requests_per_second": count/elapsed, "successes": sum(r["ok"] for r in results), "errors": sum(not r["ok"] for r in results), "p50_ms": percentile(latencies, .5), "p95_ms": percentile(latencies, .95), "max_ms": max(latencies), "agent_llm_calls": sum(r.get("llm_calls", 0) for r in results), "agent_tokens": sum(r.get("llm_tokens", 0) for r in results), "monetary_cost": None, "results": results}
 
 
 if __name__ == "__main__":

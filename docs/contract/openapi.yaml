@@ -1,0 +1,476 @@
+openapi: 3.1.0
+info:
+  title: Recommendation Platform Contract (RecAgent <-> Recsflow)
+  version: 1.0.0
+  description: |
+    Контракт, который диалоговый агент RecAgent ожидает от платформы рекомендаций
+    (Recsflow или совместимой).
+
+    СТАТУС: это ПРЕДЛОЖЕНИЕ контракта, а не реконструкция существующего API.
+    Доступ к реальной платформе на момент разработки не предоставлялся; заказчик
+    реализует интеграцию самостоятельно. Референсная реализация — mock-платформа
+    в `src/recagent/providers/mock_platform.py`; contract-тесты в `tests/contract/`
+    прогоняются без изменений и против mock, и против реальной платформы.
+
+    ## Семантика, которую важно не потерять при внедрении
+
+    1. `null` в атрибутах объекта означает ОТСУТСТВИЕ ДАННЫХ, а не совпадение
+       с ограничением пользователя. Агент не выдаёт объект, у которого нужный
+       атрибут неизвестен, если пользователь задал по нему жёсткое ограничение.
+    2. `score` нормирован в [0, 1] и сравним ТОЛЬКО внутри одного ответа.
+       Между запросами и между пользователями сравнивать нельзя.
+    3. `item_id` стабилен между вызовами. Нестабильные ID ломают кэш метаданных,
+       evidence в объяснениях и исключение уже показанного.
+    4. Фильтры в запросе — best effort. Агент повторно проверяет жёсткие
+       ограничения после `batchGet`, поэтому платформе разрешено возвращать
+       сверх пула, но не разрешено молча подменять отсутствующие атрибуты
+       значениями по умолчанию.
+    5. История событий типизирована. Плоский список "потреблённого" не позволяет
+       отличить просмотр от дизлайка; агент исключает из выдачи только то, что
+       явно помечено как знакомое или отвергнутое.
+
+    ## Ошибки
+
+    Все ошибки возвращаются как RFC 7807 `application/problem+json`.
+    Агент трактует коды так:
+      4xx кроме 429 -> не повторять, деградация NO_EXPLAIN или UNAVAILABLE
+      429         -> уважать Retry-After, повтор с backoff
+      5xx, таймаут -> повтор с backoff, затем circuit breaker, деградация
+
+servers:
+  - url: http://localhost:8090
+    description: Референсная mock-платформа (локальная разработка)
+  - url: https://recsflow.example.internal
+    description: Реальная платформа (заполняется при внедрении)
+
+tags:
+  - name: recommendations
+    description: Подбор кандидатов
+  - name: items
+    description: Метаданные каталога
+  - name: users
+    description: История событий пользователя
+  - name: platform
+    description: Состояние сервиса
+
+paths:
+  /v1/recommendations:
+    post:
+      tags: [recommendations]
+      operationId: getRecommendations
+      summary: Кандидаты для пользователя
+      description: |
+        Основной низкоуровневый вызов платформы: на вход — идентификатор
+        пользователя, на выход — упорядоченный список идентификаторов объектов.
+        Необязательные фильтры позволяют сократить объём передаваемых данных
+        и повысить recall полезного пула.
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+            examples:
+              minimal:
+                summary: Минимальный вызов (как описано в задаче)
+                value:
+                  user_id: "u-100500"
+                  limit: 100
+              filtered:
+                summary: С фильтрами каталога
+                value:
+                  user_id: "u-100500"
+                  limit: 100
+                  filters:
+                    kinds: [series]
+                    genres_include: ["детектив"]
+                    tone: "лёгкий"
+                    max_seasons: 1
+      responses:
+        '200':
+          description: Список кандидатов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationResponse'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+
+  /v1/items/{item_id}:
+    get:
+      tags: [items]
+      operationId: getItem
+      summary: Метаданные одного объекта
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - name: item_id
+          in: path
+          required: true
+          schema: { type: string, maxLength: 64 }
+      responses:
+        '200':
+          description: Объект
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Item' }
+        '404': { $ref: '#/components/responses/ItemNotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+
+  /v1/items:batchGet:
+    post:
+      tags: [items]
+      operationId: batchGetItems
+      summary: Метаданные пачкой
+      description: |
+        Критично для латентности: один вызов вместо N последовательных GET.
+        Порядок элементов в ответе НЕ гарантируется; отсутствующие ID
+        возвращаются в `missing_item_ids`, а не как ошибки.
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [item_ids]
+              additionalProperties: false
+              properties:
+                item_ids:
+                  type: array
+                  minItems: 1
+                  maxItems: 500
+                  items: { type: string, maxLength: 64 }
+      responses:
+        '200':
+          description: Найденные объекты и список ненайденных
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, missing_item_ids]
+                additionalProperties: false
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/Item' }
+                  missing_item_ids:
+                    type: array
+                    items: { type: string }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+
+  /v1/users/{user_id}/history:
+    get:
+      tags: [users]
+      operationId: getUserHistory
+      summary: Типизированная история событий пользователя
+      description: |
+        Агент использует историю двояко: `viewed` и `disliked` исключаются
+        из выдачи, `liked` и `viewed` усиливают мягкое ранжирование по жанру.
+        Если платформа отдаёт только факт потребления, укажите
+        `event_types` явно — агент не будет додумывать семантику.
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - name: user_id
+          in: path
+          required: true
+          schema: { type: string, maxLength: 64 }
+        - name: event_types
+          in: query
+          required: false
+          description: Фильтр по типам событий
+          schema:
+            type: array
+            items: { $ref: '#/components/schemas/EventType' }
+          style: form
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 1000, default: 200 }
+        - name: cursor
+          in: query
+          required: false
+          schema: { type: string, maxLength: 256 }
+      responses:
+        '200':
+          description: События пользователя
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/HistoryResponse' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+
+  /health:
+    get:
+      tags: [platform]
+      operationId: liveness
+      summary: Liveness
+      responses:
+        '200':
+          description: Сервис жив
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+
+  /ready:
+    get:
+      tags: [platform]
+      operationId: readiness
+      summary: Readiness
+      description: Готовность обслуживать трафик (модель загружена, каталог доступен).
+      responses:
+        '200':
+          description: Готов
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+        '503':
+          description: Не готов
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+
+components:
+  parameters:
+    RequestId:
+      name: X-Request-ID
+      in: header
+      required: false
+      description: |
+        Сквозной идентификатор запроса. Агент генерирует его на входе и
+        проносит через лог, трейс и ответ клиенту. Платформа должна
+        возвращать его в ответе и включать в свои логи.
+      schema: { type: string, maxLength: 128 }
+
+  responses:
+    BadRequest:
+      description: Невалидное тело запроса
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    ItemNotFound:
+      description: Объект не найден
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    UserNotFound:
+      description: Пользователь не найден
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Unprocessable:
+      description: Формально валидный, но невыполнимый запрос (например, пустой пул после фильтров)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    RateLimited:
+      description: Превышена квота
+      headers:
+        Retry-After:
+          description: Через сколько секунд повторить
+          schema: { type: integer, minimum: 1 }
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Unavailable:
+      description: Платформа временно недоступна. Агент переключается в NO_EXPLAIN или UNAVAILABLE.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+
+  schemas:
+    Problem:
+      type: object
+      description: RFC 7807
+      required: [type, title, status]
+      additionalProperties: true
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+
+    Health:
+      type: object
+      required: [status]
+      additionalProperties: false
+      properties:
+        status: { type: string, enum: [ok, degraded, unavailable] }
+        version: { type: string }
+        checks:
+          type: object
+          additionalProperties:
+            type: object
+            required: [status]
+            properties:
+              status: { type: string, enum: [ok, degraded, unavailable] }
+              latency_ms: { type: number, minimum: 0 }
+              detail: { type: string }
+
+    EventType:
+      type: string
+      description: |
+        Тип события. Минимально необходимый набор — четыре значения.
+        Платформа может отдавать больше; агент игнорирует неизвестные,
+        но они НЕ должны интерпретироваться как потребление.
+      enum: [viewed, liked, disliked, rated]
+
+    ItemKind:
+      type: string
+      description: Формат объекта
+      enum: [series, film, course]
+
+    Filters:
+      type: object
+      description: |
+        Необязательные ограничения каталога. Все поля — best effort:
+        агент перепроверяет их после получения метаданных.
+      additionalProperties: false
+      properties:
+        kinds:
+          type: array
+          items: { $ref: '#/components/schemas/ItemKind' }
+          maxItems: 3
+        genres_include:
+          type: array
+          items: { type: string, maxLength: 64 }
+          maxItems: 10
+        genres_exclude:
+          type: array
+          items: { type: string, maxLength: 64 }
+          maxItems: 10
+        tone:
+          type: string
+          description: Настроение. null/отсутствие = без ограничения.
+          enum: ["лёгкий", "мрачный", "нейтральный"]
+        max_seasons: { type: integer, minimum: 1, maximum: 100 }
+        max_minutes: { type: integer, minimum: 1, maximum: 100000 }
+        level:
+          type: string
+          description: Для курсов
+          enum: ["начальный", "средний", "продвинутый"]
+        practical: { type: boolean }
+
+    RecommendationRequest:
+      type: object
+      required: [user_id, limit]
+      additionalProperties: false
+      properties:
+        user_id:
+          type: string
+          maxLength: 64
+          description: Идентификатор пользователя от слоя авторизации платформы
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          description: Размер возвращаемого пула кандидатов, не финальной выдачи
+        filters: { $ref: '#/components/schemas/Filters' }
+
+    ScoredItem:
+      type: object
+      required: [item_id, score]
+      additionalProperties: false
+      properties:
+        item_id: { type: string, maxLength: 64 }
+        score:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Нормированный score платформы, сравним только внутри ответа
+        rank: { type: integer, minimum: 1 }
+
+    RecommendationResponse:
+      type: object
+      required: [items, model_version, generated_at]
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/ScoredItem' }
+        model_version:
+          type: string
+          maxLength: 128
+          description: Версия модели/индекса платформы — нужна для воспроизводимости и отладки
+        generated_at: { type: string, format: date-time }
+        pool_size_before_limit:
+          type: integer
+          minimum: 0
+          description: Размер пула до усечения limit. Позволяет агенту измерить recall фильтров.
+        filters_applied: { $ref: '#/components/schemas/Filters' }
+
+    Item:
+      type: object
+      description: |
+        Метаданные объекта. Обязательны id, title, kind. Все прочие атрибуты
+        могут быть null — это означает отсутствие данных, и агент трактует их
+        как несоответствие любому жёсткому ограничению по этому полю.
+      required: [id, title, kind]
+      additionalProperties: false
+      properties:
+        id: { type: string, maxLength: 64 }
+        title: { type: string, minLength: 1, maxLength: 300 }
+        kind: { $ref: '#/components/schemas/ItemKind' }
+        genre: { type: [string, 'null'], maxLength: 64 }
+        tone: { type: [string, 'null'], enum: ["лёгкий", "мрачный", "нейтральный", null] }
+        seasons: { type: [integer, 'null'], minimum: 1, maximum: 100 }
+        episodes: { type: [integer, 'null'], minimum: 1, maximum: 10000 }
+        minutes:
+          type: [integer, 'null']
+          minimum: 1
+          maximum: 100000
+          description: |
+            Семантика длительности ОБЯЗАНА быть согласована: одна серия, весь фильм
+            или весь курс. Агент транслирует ограничение пользователя в соответствии
+            с этой семантикой и указывает её в объяснении.
+        level: { type: [string, 'null'], enum: ["начальный", "средний", "продвинутый", null] }
+        practical: { type: [boolean, 'null'] }
+        year: { type: [integer, 'null'], minimum: 1888, maximum: 2100 }
+        quality:
+          type: [number, 'null']
+          minimum: 0
+          maximum: 1
+          description: Нормированная оценка качества контента (рейтинг/CTR/экспертная)
+        description: { type: [string, 'null'], maxLength: 2000 }
+        synthetic:
+          type: boolean
+          default: false
+          description: true для сгенерированных объектов; в проде всегда false
+        attributes:
+          type: object
+          description: Расширение каталога без изменения контракта
+          additionalProperties: true
+
+    HistoryEvent:
+      type: object
+      required: [item_id, event_type]
+      additionalProperties: false
+      properties:
+        item_id: { type: string, maxLength: 64 }
+        event_type: { $ref: '#/components/schemas/EventType' }
+        occurred_at: { type: [string, 'null'], format: date-time }
+        value:
+          type: [number, 'null']
+          description: Для rated — значение оценки
+
+    HistoryResponse:
+      type: object
+      required: [events]
+      additionalProperties: false
+      properties:
+        events:
+          type: array
+          items: { $ref: '#/components/schemas/HistoryEvent' }
+        next_cursor:
+          type: [string, 'null']
+          maxLength: 256
+          description: null, если событий больше нет

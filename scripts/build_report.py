@@ -1,8 +1,8 @@
 """Build a standalone HTML report directly from recorded experiment files."""
 import html
 import json
-from pathlib import Path
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 
 def load(name):

@@ -4,7 +4,9 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from typing import TypedDict
+
 from langgraph.graph import END, START, StateGraph
+
 from .grounding import explain
 from .models import ChatRequest, ChatResponse, Query
 from .parsing import OllamaClient, normalize, rule_parse

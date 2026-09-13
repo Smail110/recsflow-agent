@@ -1,6 +1,6 @@
 """Package source and recorded results; never include environment, Git or personal input HTML."""
 from pathlib import Path
-from zipfile import ZipFile, ZIP_DEFLATED
+from zipfile import ZIP_DEFLATED, ZipFile
 
 
 def main():

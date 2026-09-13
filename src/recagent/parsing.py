@@ -1,6 +1,8 @@
 import json
 import re
+
 import httpx
+
 from .models import Query, StrictModel
 
 

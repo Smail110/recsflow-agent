@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "recagent"
+version = "0.2.0"
+description = "Диалоговый рекомендательный агент поверх платформы рекомендаций (RecAgent)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+keywords = ["recommender", "dialogue", "llm", "agent", "recsflow"]
+
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn>=0.30,<1",
+  "streamlit>=1.40,<2",
+  "langgraph>=1.0,<2",
+  "httpx>=0.27,<1",
+  "pydantic>=2.10,<3",
+  "pydantic-settings>=2.6,<3",
+  "structlog>=24.4,<27",
+  "tenacity>=9,<10",
+  "PyYAML>=6,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+  "pytest-asyncio>=0.24,<2",
+  "respx>=0.21,<1",
+  "hypothesis>=6.100,<7",
+  "ruff>=0.6,<1",
+  "openapi-spec-validator>=0.7,<1",
+]
+
+[project.urls]
+Repository = "https://github.com/Smail110/recagent"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+recagent = ["py.typed"]
+
+[tool.ruff]
+line-length = 140
+target-version = "py311"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RET", "ARG", "RUF"]
+ignore = [
+  # RUF001/RUF002/RUF003 flag Cyrillic homoglyphs. This is a Russian-language
+  # product: Russian literals in prompts, catalog data and explanations are the
+  # whole point, not a typo. Keeping them on yields 105 false positives and hides
+  # real findings.
+  "RUF001", "RUF002", "RUF003",
+  "E501",   # line length handled by formatter; long Russian strings are common
+  "ARG002", # unused method args are part of protocol signatures
+  "B008",   # FastAPI Depends() in defaults
+  "SIM108", # ternary is not always clearer in dense domain code
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "ARG001"]
+"scripts/*" = ["ARG001"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-ra --strict-markers"
+markers = [
+  "contract: contract tests against the Recsflow OpenAPI spec",
+  "slow: tests that call a local LLM and take seconds",
+]
+
+[tool.coverage.run]
+source = ["src/recagent"]
+branch = true

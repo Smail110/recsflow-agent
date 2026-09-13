@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+src/recagent/__init__.py
+src/recagent/agent.py
+src/recagent/api.py
+src/recagent/catalog.py
+src/recagent/grounding.py
+src/recagent/models.py
+src/recagent/parsing.py
+src/recagent/providers.py
+src/recagent.egg-info/PKG-INFO
+src/recagent.egg-info/SOURCES.txt
+src/recagent.egg-info/dependency_links.txt
+src/recagent.egg-info/requires.txt
+src/recagent.egg-info/top_level.txt
+tests/test_agent.py
+tests/test_ui.py

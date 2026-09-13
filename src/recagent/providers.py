@@ -1,6 +1,7 @@
 """The protocol is OUR integration contract, not an alleged Recsflow API."""
-from typing import Protocol
 from difflib import SequenceMatcher
+from typing import Protocol
+
 from .catalog import generate_catalog
 from .models import Item, Query
 
@@ -27,9 +28,8 @@ def matches(item: Item, query: Query) -> bool:
         return False
     if query.level and item.level != query.level:
         return False
-    if query.practical is not None and item.practical != query.practical:
-        return False
-    return True
+    # null in item.practical means "unknown" and must NOT satisfy a hard constraint.
+    return query.practical is None or item.practical == query.practical
 
 
 class DemoProvider:

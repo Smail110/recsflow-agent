@@ -3,7 +3,8 @@
 This script is intentionally separate from the demo runtime. Use real, de-identified,
 consented labelled conversations for a meaningful model; synthetic data only checks the pipeline.
 """
-import argparse, json, os
+import argparse
+import json
 from pathlib import Path
 
 
@@ -24,8 +25,8 @@ def main():
         return
     try:
         from datasets import ClassLabel, Dataset
-        from transformers import AutoModelForSequenceClassification, AutoTokenizer, DataCollatorWithPadding, Trainer, TrainingArguments
         from peft import LoraConfig, TaskType, get_peft_model
+        from transformers import AutoModelForSequenceClassification, AutoTokenizer, DataCollatorWithPadding, Trainer, TrainingArguments
     except ImportError as exc:
         raise SystemExit("Установите requirements-hf.txt для обучения Hugging Face") from exc
     label_to_id = {label: index for index, label in enumerate(labels)}
@@ -38,10 +39,14 @@ def main():
     model = AutoModelForSequenceClassification.from_pretrained(args.model, num_labels=len(labels), id2label={v:k for k,v in label_to_id.items()}, label2id=label_to_id)
     model = get_peft_model(model, LoraConfig(task_type=TaskType.SEQ_CLS, r=8, lora_alpha=16, lora_dropout=.1, target_modules=["query", "value"], modules_to_save=["classifier"]))
     model.print_trainable_parameters()
-    output = Path(args.output); output.mkdir(parents=True, exist_ok=True)
+    output = Path(args.output)
+    output.mkdir(parents=True, exist_ok=True)
     training = TrainingArguments(output_dir=str(output), num_train_epochs=args.epochs, learning_rate=2e-4, per_device_train_batch_size=8, per_device_eval_batch_size=16, eval_strategy="epoch", save_strategy="epoch", load_best_model_at_end=True, metric_for_best_model="eval_loss", report_to="none", seed=42)
     trainer = Trainer(model=model, args=training, train_dataset=tokenized["train"], eval_dataset=tokenized["test"], tokenizer=tokenizer, data_collator=DataCollatorWithPadding(tokenizer))
-    trainer.train(); metrics = trainer.evaluate(); trainer.save_model(str(output)); tokenizer.save_pretrained(str(output))
+    trainer.train()
+    metrics = trainer.evaluate()
+    trainer.save_model(str(output))
+    tokenizer.save_pretrained(str(output))
     (output / "labels.json").write_text(json.dumps(label_to_id, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"status":"trained", "rows":len(rows), "labels":labels, "metrics":metrics, "output":str(output)}, ensure_ascii=False, indent=2))
 

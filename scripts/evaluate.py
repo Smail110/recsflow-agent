@@ -3,14 +3,15 @@ import argparse
 import json
 import platform
 import statistics
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
+
 from pydantic import Field
+
 from recagent.agent import Agent
 from recagent.grounding import validate_evidence
 from recagent.models import ChatRequest, StrictModel
 from recagent.parsing import OllamaClient
-
 
 CASES = [
     {"id": "cozy-detective", "turns": ["Хочу детективный сериал, не мрачный и не длиннее одного сезона"], "expected": {"kind": "series", "genre": "детектив", "tone": "лёгкий", "seasons_lte": 1}},
@@ -108,7 +109,7 @@ def evaluate(mode="rules", limit=None, llm_evaluation=False, model="qwen3:8b"):
         print(f"{case['id']}: {'PASS' if success else 'FAIL'}; {final.mode}; {final.latency_ms:.0f} ms", flush=True)
     judged = [r["llm_judge"] for r in records if r["llm_judge"] is not None]
     return {
-        "timestamp_utc": datetime.now(timezone.utc).isoformat(), "environment": {"platform": platform.platform(), "python": platform.python_version()},
+        "timestamp_utc": datetime.now(UTC).isoformat(), "environment": {"platform": platform.platform(), "python": platform.python_version()},
         "dataset": "84 synthetic items, seed=42", "mode_requested": mode, "model": model if mode == "ollama" or llm_evaluation else None,
         "llm_evaluation_requested": llm_evaluation,
         "metrics": {"scenarios": len(records), "success_rate": statistics.mean(r["success"] for r in records), "mean_clarifications": statistics.mean(r["clarifications"] for r in records), "claim_count": total_claims, "unsupported_claim_rate": invalid_claims/total_claims if total_claims else None, "latency_p50_ms": percentile(latencies, .5), "latency_p95_ms": percentile(latencies, .95), "agent_llm_calls": sum(r["agent_llm_calls"] for r in records), "agent_tokens": sum(r["agent_tokens"] for r in records), "fallback_turns": sum(r["fallback_turns"] for r in records), "llm_judge_completed": len(judged), "llm_judge_success_rate": statistics.mean(r["success"] for r in judged) if judged else None, "evaluator_tokens": sum(r["evaluator_tokens"] for r in records), "monetary_cost": None},

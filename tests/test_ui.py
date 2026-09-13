@@ -1,5 +1,6 @@
-from streamlit.testing.v1 import AppTest
 from pathlib import Path
+
+from streamlit.testing.v1 import AppTest
 
 
 def test_demo_chat_and_new_session():

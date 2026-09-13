@@ -1,7 +1,9 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
+
 import pytest
 from fastapi.testclient import TestClient
+
 from recagent.agent import Agent
 from recagent.api import create_app
 from recagent.catalog import generate_catalog
