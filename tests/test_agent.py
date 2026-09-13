@@ -147,7 +147,7 @@ def test_api_validation_sessions_feedback_and_health():
     data = client.post("/v1/chat", json={"message": "Лёгкий сериал", "user_id": "alice"}).json()
     assert client.post("/v1/chat", json={"message": "ещё", "session_id": data["session_id"], "user_id": "bob"}).status_code == 404
     assert client.post("/v1/feedback", json={"session_id": data["session_id"], "item_id": data["recommendations"][0]["item"]["id"], "reaction": "like"}).status_code == 200
-    assert client.post("/v1/chat", json={"message": "Привет", "session_id": "missing"}).status_code == 404
+    assert client.post("/v1/chat", json={"message": "Привет", "session_id": "missing", "user_id": "alice"}).status_code == 404
 
 
 def test_session_limit_expiry_and_parallel_isolation():

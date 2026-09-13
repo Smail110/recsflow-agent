@@ -54,7 +54,11 @@ class Recommendation(StrictModel):
 class ChatRequest(StrictModel):
     message: str = Field(min_length=1, max_length=2000)
     session_id: str | None = Field(default=None, max_length=80)
-    user_id: str = Field(default="demo", min_length=1, max_length=80)
+    # No default on purpose. In production the user id comes from auth middleware,
+    # not from the request body; a default would let an unauthenticated client
+    # silently inherit the demo profile's history and personalization. Omitting the
+    # field is a 422, which is the honest answer.
+    user_id: str = Field(min_length=1, max_length=80)
 
     @field_validator("message")
     @classmethod
