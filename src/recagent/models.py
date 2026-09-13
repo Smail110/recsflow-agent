@@ -86,10 +86,15 @@ class ChatResponse(StrictModel):
     llm_calls_total: int
     llm_tokens: int
     clarification_count: int
+    clarification_slot: str | None = None
+    question_gain: float | None = None
+    degradation: str = "FULL"
+    platform_ids: list[str] = Field(default_factory=list)
+    timings_ms: dict[str, float] = Field(default_factory=dict)
+    llm_tokens_total: int = 0
 
 
 class FeedbackRequest(StrictModel):
     session_id: str
     item_id: str
     reaction: Literal["like", "dislike", "seen"]
-

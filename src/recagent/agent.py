@@ -11,6 +11,7 @@ from .grounding import explain
 from .models import ChatRequest, ChatResponse, Query
 from .parsing import OllamaClient, normalize, rule_parse
 from .providers import DemoProvider, RecommendationProvider, matches
+from .questions import choose_question
 
 
 @dataclass
@@ -24,6 +25,9 @@ class Session:
     last_ids: list[str] = field(default_factory=list)
     touched: float = field(default_factory=time.monotonic)
     lock: threading.Lock = field(default_factory=threading.Lock)
+    pending_slot: str | None = None
+    skipped_slots: set[str] = field(default_factory=set)
+    tokens: int = 0
 
 
 class State(TypedDict, total=False):
@@ -40,27 +44,46 @@ class State(TypedDict, total=False):
     history: list
     seed: object
     response: ChatResponse
+    clarification_slot: str | None
+    question_gain: float
+    degradation: str
+    platform_ids: list[str]
+    timings_ms: dict[str, float]
 
 
 class Agent:
-    def __init__(self, provider: RecommendationProvider | None = None, mode: str | None = None, llm=None, max_calls=8, max_sessions=500, ttl=3600):
+    def __init__(self, provider: RecommendationProvider | None = None, mode: str | None = None, llm=None, max_calls=8, max_sessions=500, ttl=3600,
+                 question_policy="legacy", max_questions=3, question_cost=0.25, max_tokens=100_000):
         self.provider = provider if provider is not None else DemoProvider()
         self.mode = mode or os.getenv("RECAGENT_MODE", "rules")
         if self.mode not in ("rules", "ollama"):
             raise ValueError("RECAGENT_MODE must be rules or ollama")
         self.llm = llm if llm is not None else OllamaClient(os.getenv("OLLAMA_MODEL", "qwen3:8b"), os.getenv("OLLAMA_URL", "http://127.0.0.1:11434"))
         self.max_calls, self.max_sessions, self.ttl = max_calls, max_sessions, ttl
+        if question_policy not in ("legacy", "none", "fixed", "adaptive"):
+            raise ValueError("Неизвестная политика уточнений")
+        self.question_policy = question_policy
+        self.max_questions, self.question_cost, self.max_tokens = max_questions, question_cost, max_tokens
         self.sessions = {}
         self.store_lock = threading.Lock()
         graph = StateGraph(State)
         for name, node in [("parse", self._parse), ("retrieve", self._retrieve), ("clarify", self._clarify), ("rank_explain", self._recommend)]:
-            graph.add_node(name, node)
+            graph.add_node(name, self._timed(name, node))
         graph.add_edge(START, "parse")
         graph.add_conditional_edges("parse", lambda s: "clarify" if s.get("issue") else "retrieve")
         graph.add_conditional_edges("retrieve", lambda s: "clarify" if s.get("issue") else "rank_explain")
         graph.add_edge("clarify", END)
         graph.add_edge("rank_explain", END)
         self.graph = graph.compile()
+
+    @staticmethod
+    def _timed(name, node):
+        def measured(state):
+            started = time.perf_counter()
+            result = node(state)
+            result["timings_ms"] = state.get("timings_ms", {}) | {name: round((time.perf_counter() - started) * 1000, 3)}
+            return result
+        return measured
 
     def _get_session(self, request):
         with self.store_lock:
@@ -94,6 +117,9 @@ class Agent:
             response.latency_ms = round((time.perf_counter()-start)*1000, 2)
             response.llm_calls = session.calls-calls_before
             response.llm_calls_total = session.calls
+            session.tokens += response.llm_tokens
+            response.llm_tokens_total = session.tokens
+            response.timings_ms = state.get("timings_ms", {})
             session.touched = time.monotonic()
             return response
 
@@ -101,18 +127,22 @@ class Agent:
         request, session = state["request"], state["session"]
         text = normalize(request.message)
         previous = session.query
+        if session.pending_slot and any(phrase in text for phrase in ("без разницы", "не знаю", "не важно", "любой")):
+            session.skipped_slots.add(session.pending_slot)
+        session.pending_slot = None
         if text in ("сброс", "заново", "начать заново"):
             session.query = Query()
             session.clarifications = 0
             session.shown.clear()
             session.last_ids.clear()
+            session.skipped_slots.clear()
             # Budget and feedback survive reset: resetting preferences must not bypass the call cap.
             return {"query": session.query, "issue": "Что подбираем: фильм, сериал или курс?", "trace": ["parse", "reset"]}
         query, issue = rule_parse(request.message, previous)
         domain_changed = bool(previous.kind and query.kind and previous.kind != query.kind)
         warnings, tokens, mode = [], 0, self.mode
         if self.mode == "ollama" and not issue:
-            if session.calls >= self.max_calls:
+            if session.calls >= self.max_calls or session.tokens >= self.max_tokens:
                 warnings.append("Бюджет LLM исчерпан: включён разбор по правилам.")
                 mode = "rules_fallback"
             else:
@@ -134,11 +164,13 @@ class Agent:
         session.query = query
         if not issue and not query.kind and not query.seed_title:
             issue = "Что подбираем: фильм, сериал или курс?"
-        elif not issue and not (query.genre or query.tone or query.seed_title or query.level) and session.clarifications < 2:
+        elif self.question_policy == "legacy" and not issue and not (query.genre or query.tone or query.seed_title or query.level) and session.clarifications < 2:
             issue = "Какой жанр или настроение вам ближе? Для курса можно назвать тему или уровень."
         if query.kind != "course" and (query.level or query.practical is not None):
             issue = "Уровень и практика относятся к курсам. Уточните формат или напишите «сброс»."
-        return {"query": query, "issue": issue, "warnings": warnings, "tokens": tokens, "mode": mode, "trace": ["parse"]}
+        slot = "kind" if issue and "Что подбираем" in issue else None
+        return {"query": query, "issue": issue, "warnings": warnings, "tokens": tokens, "mode": mode, "trace": ["parse"],
+                "clarification_slot": slot, "degradation": "NO_LLM" if mode == "rules_fallback" else "FULL"}
 
     def _retrieve(self, state):
         query, session = state["query"], state["session"]
@@ -168,13 +200,24 @@ class Agent:
         if re_more(state["request"].message):
             blocked |= session.shown
         candidates = list({i.id: i for i in candidates if matches(i, query) and i.id not in blocked}.values())
-        return {"query": query, "candidates": candidates, "history": history, "seed": seed, "trace": state["trace"]+["retrieval", "metadata_lookup", "hard_filters"]}
+        result = {"query": query, "candidates": candidates, "history": history, "seed": seed,
+                  "trace": state["trace"]+["retrieval", "metadata_lookup", "hard_filters"]}
+        if self.question_policy in ("fixed", "adaptive") and query.intent != "navigation" and session.clarifications < self.max_questions:
+            question = choose_question(query, candidates, policy=self.question_policy, skipped=session.skipped_slots, cost=self.question_cost)
+            if question:
+                result.update(issue=question.message, clarification_slot=question.slot, question_gain=question.gain)
+        return result
 
     def _response(self, state, status, message, recommendations=None):
-        return ChatResponse(session_id=state["session_id"], state=status, message=message, query=state["query"], recommendations=recommendations or [], trace=state["trace"]+[status], warnings=state["warnings"], mode=state["mode"], latency_ms=0, llm_calls=0, llm_calls_total=state["session"].calls, llm_tokens=state["tokens"], clarification_count=state["session"].clarifications)
+        return ChatResponse(session_id=state["session_id"], state=status, message=message, query=state["query"], recommendations=recommendations or [], trace=state["trace"]+[status], warnings=state["warnings"], mode=state["mode"], latency_ms=0, llm_calls=0, llm_calls_total=state["session"].calls, llm_tokens=state["tokens"], clarification_count=state["session"].clarifications,
+                            clarification_slot=state.get("clarification_slot"), question_gain=state.get("question_gain"),
+                            degradation=state.get("degradation", "FULL"), platform_ids=state.get("platform_ids", []))
 
     def _clarify(self, state):
+        if state["session"].clarifications >= self.max_questions:
+            return {"response": self._response(state, "no_results", "Достигнут лимит уточнений. Сформулируйте запрос целиком или начните заново.")}
         state["session"].clarifications += 1
+        state["session"].pending_slot = state.get("clarification_slot")
         return {"response": self._response(state, "clarify", state["issue"])}
 
     def _recommend(self, state):
