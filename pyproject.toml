@@ -73,6 +73,10 @@ ignore = [
 testpaths = ["tests"]
 asyncio_mode = "auto"
 addopts = "-ra --strict-markers"
+# "." нужен, чтобы тесты могли импортировать пакет evals: он намеренно лежит вне
+# src/ (оракул не должен импортировать код агента), поэтому он не входит в
+# установленный дистрибутив recagent и в sys.path попадает только отсюда.
+pythonpath = ["."]
 markers = [
   "contract: contract tests against the Recsflow OpenAPI spec",
   "slow: tests that call a local LLM and take seconds",
