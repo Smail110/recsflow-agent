@@ -169,3 +169,34 @@ def test_get_logger_before_configuration_does_not_crash():
     logger = get_logger("cold-start")
     logger.info("boot")
     assert len(_our_handlers()) == 1
+
+def test_token_counters_are_not_redacted(log_buffer: io.StringIO):
+    """Regression: a blanket "token" redaction rule destroyed cost metrics.
+
+    `llm_tokens` is a usage COUNTER and the basis of cost accounting; it must
+    survive logging. Only credential-shaped token keys may be redacted.
+    """
+    log = get_logger("unit")
+    with request_context(request_id="r"):
+        log.info("usage", llm_tokens=13986, agent_tokens=4440, total_tokens=18426, prompt_tokens=100, completion_tokens=50)
+    record = _records(log_buffer)[-1]
+    assert record["llm_tokens"] == 13986
+    assert record["agent_tokens"] == 4440
+    assert record["total_tokens"] == 18426
+    assert record["prompt_tokens"] == 100
+    assert record["completion_tokens"] == 50
+
+
+@pytest.mark.parametrize("field_name", ["access_token", "refresh_token", "id_token", "bearer_token", "auth_token"])
+def test_credential_shaped_token_keys_still_redacted(log_buffer: io.StringIO, field_name: str):
+    log = get_logger("unit")
+    with request_context(request_id="r"):
+        log.info("leaky", **{field_name: "eyJhbGciOi"})
+    assert _records(log_buffer)[-1][field_name] == "[REDACTED]"
+
+
+def test_max_tokens_setting_is_not_a_secret(log_buffer: io.StringIO):
+    log = get_logger("unit")
+    with request_context(request_id="r"):
+        log.info("cfg", max_tokens=700)
+    assert _records(log_buffer)[-1]["max_tokens"] == 700

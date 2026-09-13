@@ -27,7 +27,30 @@ _SESSION_ID: ContextVar[str | None] = ContextVar("session_id", default=None)
 _USER_ID: ContextVar[str | None] = ContextVar("user_id", default=None)
 
 # Key substrings whose values must never reach logs or traces.
-_REDACT_SUBSTRINGS = ("api_key", "apikey", "token", "secret", "password", "authorization")
+_REDACT_SUBSTRINGS = ("api_key", "apikey", "secret", "password", "authorization", "bearer", "credential")
+
+# "token" needs care: `llm_tokens` and `total_tokens` are usage COUNTERS and are the
+# basis of cost accounting, while `access_token` is a credential. Redacting by the
+# bare substring destroyed our cost metrics, so token-like keys are redacted only
+# when they are not on this explicit counter allowlist.
+_TOKEN_SUBSTRING = "token"
+_TOKEN_COUNTER_ALLOWLIST = frozenset(
+    {
+        "tokens",
+        "token_count",
+        "token_total",
+        "llm_tokens",
+        "agent_tokens",
+        "evaluator_tokens",
+        "prompt_tokens",
+        "completion_tokens",
+        "total_tokens",
+        "input_tokens",
+        "output_tokens",
+        "max_tokens",
+        "num_predict",
+    }
+)
 
 _CONFIGURED = False
 
@@ -79,10 +102,23 @@ def _add_context(_logger: Any, _method: str, event_dict: dict[str, Any]) -> dict
     return event_dict
 
 
+def _is_secret_key(key: str) -> bool:
+    """True when a log field must be redacted.
+
+    Rules:
+      1. Any key containing a known credential substring is a secret.
+      2. A key containing "token" is a secret UNLESS it is a usage counter on the
+         allowlist, because cost accounting depends on those numbers.
+    """
+    lowered = key.lower()
+    if any(part in lowered for part in _REDACT_SUBSTRINGS):
+        return True
+    return _TOKEN_SUBSTRING in lowered and lowered not in _TOKEN_COUNTER_ALLOWLIST
+
+
 def _redact_secrets(_logger: Any, _method: str, event_dict: dict[str, Any]) -> dict[str, Any]:
     for key in list(event_dict):
-        lowered = key.lower()
-        if any(part in lowered for part in _REDACT_SUBSTRINGS):
+        if _is_secret_key(key):
             event_dict[key] = "[REDACTED]"
     return event_dict
 
