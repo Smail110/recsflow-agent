@@ -22,6 +22,7 @@ dependencies = [
   "structlog>=24.4,<27",
   "tenacity>=9,<10",
   "PyYAML>=6,<7",
+  "jsonschema>=4,<5",
 ]
 
 [project.optional-dependencies]

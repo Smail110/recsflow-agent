@@ -24,7 +24,7 @@ def matches(item: Item, query: Query) -> bool:
         return False
     if query.max_seasons is not None and (item.seasons is None or item.seasons > query.max_seasons):
         return False
-    if query.max_minutes is not None and item.minutes > query.max_minutes:
+    if query.max_minutes is not None and (item.minutes is None or item.minutes > query.max_minutes):
         return False
     if query.level and item.level != query.level:
         return False

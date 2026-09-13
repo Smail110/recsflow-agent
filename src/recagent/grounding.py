@@ -22,7 +22,7 @@ def validate_evidence(evidence: Evidence, item: Item, query: Query, history: lis
     return True
 
 
-def explain(item: Item, query: Query, history: list[Item], score: float, seed: Item | None = None) -> Recommendation:
+def explain(item: Item, query: Query, history: list[Item], score: float, seed: Item | None = None, *, tone="neutral", length="normal") -> Recommendation:
     claims = []
     def add(field, sentence, relation="catalog", source=None):
         value = getattr(item, field)
@@ -52,5 +52,7 @@ def explain(item: Item, query: Query, history: list[Item], score: float, seed: I
         add("genre", "Этот жанр есть в вашей истории.", "history", prior.id)
     if seed and seed.genre == item.genre:
         add("genre", f"Тот же жанр, что у «{seed.title}».", "seed", seed.id)
-    return Recommendation(item=item, score=round(score, 4), explanation=" ".join(c[0] for c in claims), evidence=[c[1] for c in claims])
-
+    if length == "short":
+        claims = claims[:3]
+    prefix = "Вот что о нём известно: " if tone == "friendly" and claims else ""
+    return Recommendation(item=item, score=round(score, 4), explanation=prefix + " ".join(c[0] for c in claims), evidence=[c[1] for c in claims])

@@ -23,6 +23,7 @@ data/raw/
 
 # Rebuild dialogue datasets with python -m evals.scenarios.
 evals/data/*.jsonl
+artifacts-*.log
 
 # Local-only evaluation runs
 report/*-local.json

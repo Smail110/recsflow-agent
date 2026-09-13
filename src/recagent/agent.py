@@ -175,6 +175,7 @@ class Agent:
     def _retrieve(self, state):
         query, session = state["query"], state["session"]
         seed = None
+        ids, blocked_history = [], set()
         try:
             if query.seed_title:
                 seed = self.provider.find_title(query.seed_title)
@@ -185,13 +186,15 @@ class Agent:
                     session.query = query
             ids = self.provider.retrieve(session.user_id, query, limit=100)
             candidates = self.provider.lookup(ids)
-            history_ids = self.provider.history(session.user_id)
+            snapshot = getattr(self.provider, "history_snapshot", None)
+            history_ids, blocked_history = snapshot(session.user_id) if snapshot else (self.provider.history(session.user_id), set())
             history_ids += [i for i, reaction in session.reactions.items() if reaction in ("like", "seen")]
             history = self.provider.lookup(list(set(history_ids)))
         except Exception as exc:
             # Never silently replace a real provider's catalog with made-up demo items.
-            return {"candidates": [], "history": [], "seed": None, "warnings": state["warnings"]+[f"Источник рекомендаций недоступен ({type(exc).__name__}). Повторите запрос позже."], "trace": state["trace"]+["retrieval_failed"]}
-        blocked = {i.id for i in history} | {i for i, reaction in session.reactions.items() if reaction == "dislike"}
+            return {"candidates": [], "history": [], "seed": None, "warnings": state["warnings"]+[f"Источник рекомендаций недоступен ({type(exc).__name__}). Повторите запрос позже."], "trace": state["trace"]+["retrieval_failed"],
+                    "degradation": "NO_EXPLAIN" if ids else "UNAVAILABLE", "platform_ids": ids[:5]}
+        blocked = {i.id for i in history} | blocked_history | {i for i, reaction in session.reactions.items() if reaction == "dislike"}
         if seed and query.intent == "similar":
             blocked.add(seed.id)
         if query.intent == "navigation" and seed:
@@ -229,7 +232,8 @@ class Agent:
             similarity += .1 if seed and seed.tone == item.tone else 0
             return item.quality + affinity + similarity
         ranked = sorted(state["candidates"], key=lambda i: (-score(i), i.id))[:5]
-        recommendations = [explain(i, state["query"], history, score(i), seed) for i in ranked]
+        recommendations = [explain(i, state["query"], history, score(i), seed,
+                                   tone=state["request"].explanation_tone, length=state["request"].explanation_length) for i in ranked]
         session.last_ids = [i.id for i in ranked]
         session.shown.update(session.last_ids)
         state["trace"] += ["rerank", "grounding_check"]

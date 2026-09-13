@@ -54,6 +54,24 @@ tags:
     description: Состояние сервиса
 
 paths:
+  /v1/items/search:
+    get:
+      tags: [items]
+      operationId: searchItems
+      summary: Разрешить название в объекты каталога
+      parameters:
+        - name: title
+          in: query
+          required: true
+          schema: {type: string, minLength: 1, maxLength: 300}
+      responses:
+        '200':
+          description: Совпадения; несколько объектов означают неоднозначное название
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/SearchResponse'}
+        '422': {$ref: '#/components/responses/Unprocessable'}
+        '503': {$ref: '#/components/responses/Unavailable'}
   /v1/recommendations:
     post:
       tags: [recommendations]
@@ -328,6 +346,38 @@ components:
       type: string
       description: Формат объекта
       enum: [series, film, course]
+
+    SearchResponse:
+      type: object
+      required: [items]
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/Item'}
+
+    BatchRequest:
+      type: object
+      required: [item_ids]
+      additionalProperties: false
+      properties:
+        item_ids:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items: {type: string, maxLength: 64}
+
+    BatchResponse:
+      type: object
+      required: [items, missing_item_ids]
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/Item'}
+        missing_item_ids:
+          type: array
+          items: {type: string}
 
     Filters:
       type: object

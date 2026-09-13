@@ -15,11 +15,13 @@ Design notes:
 """
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from starlette.concurrency import run_in_threadpool
 
 from ..agent import Agent
 from ..config.settings import Settings, get_settings
@@ -55,12 +57,24 @@ def create_app(
     config = settings or get_settings()
     configure_logging(config)
 
-    service = agent if agent is not None else Agent(mode=config.parse_mode)
+    if agent is None:
+        from ..factory import build_agent
+        service = build_agent(config)
+    else:
+        service = agent
     version = config.observability.service_version
+
+    @asynccontextmanager
+    async def lifespan(_app):
+        yield
+        closer = getattr(service.provider, "close", None)
+        if closer:
+            await run_in_threadpool(closer)
 
     app = FastAPI(
         title="RecAgent — conversational recommendations",
         version=version,
+        lifespan=lifespan,
         description=(
             "Диалоговый слой поверх платформы рекомендаций. Контракт RecAgent, а не API Recsflow. "
             "Демо-каталог синтетический. See docs/contract/openapi.yaml for the platform contract."
@@ -98,7 +112,11 @@ def create_app(
 
     @app.post("/v1/chat", response_model=ChatResponse)
     async def chat(request: ChatRequest, http_request: Request) -> Any:
-        response = service.chat(request)
+        response = await run_in_threadpool(service.chat, request)
+        if response.degradation == "UNAVAILABLE":
+            return JSONResponse({"type": "about:blank", "title": "Источник рекомендаций недоступен", "status": 503,
+                                 "detail": response.message, "degradation": "UNAVAILABLE"},
+                                status_code=503, media_type="application/problem+json", headers={"Retry-After": "3"})
         logger.info(
             "chat_turn",
             state=response.state,
@@ -121,7 +139,7 @@ def create_app(
 
     @app.post("/v1/feedback")
     async def feedback(request: FeedbackRequest) -> dict[str, str]:
-        service.feedback(request.session_id, request.item_id, request.reaction)
+        await run_in_threadpool(service.feedback, request.session_id, request.item_id, request.reaction)
         logger.info("feedback", reaction=request.reaction)
         return {"status": "saved"}
 

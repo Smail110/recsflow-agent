@@ -62,7 +62,7 @@ def test_current_replays_each_utterance_once_and_never_passes_theta(dataset, mon
     monkeypatch.setattr(runner, "Agent", RecordingAgent)
     result = runner.run_case(scenario, "current", catalog)
     assert [request["message"] for request in requests] == [turn.utterance for turn in scenario.turns]
-    assert all(set(request) == {"message", "user_id", "session_id"} for request in requests)
+    assert all(set(request) == {"message", "user_id", "session_id", "explanation_tone", "explanation_length"} for request in requests)
     assert requests[0]["session_id"] is None
     assert requests[1]["session_id"] == "isolated"
     assert not result["success"]

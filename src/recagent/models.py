@@ -24,11 +24,11 @@ class Item(StrictModel):
     id: str
     title: str
     kind: Literal["series", "film", "course"]
-    genre: str
-    tone: str
+    genre: str | None = None
+    tone: str | None = None
     seasons: int | None = None
     episodes: int | None = None
-    minutes: int
+    minutes: int | None = None
     level: str | None = None
     practical: bool | None = None
     year: int | None = Field(default=None, ge=1888, le=2100)
@@ -63,6 +63,8 @@ class ChatRequest(StrictModel):
     # silently inherit the demo profile's history and personalization. Omitting the
     # field is a 422, which is the honest answer.
     user_id: str = Field(min_length=1, max_length=80)
+    explanation_tone: Literal["neutral", "friendly"] = "neutral"
+    explanation_length: Literal["short", "normal"] = "normal"
 
     @field_validator("message")
     @classmethod

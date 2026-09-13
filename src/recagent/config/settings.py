@@ -135,6 +135,9 @@ def _env_overrides() -> dict[str, Any]:
         "SESSION_TTL_S": ("session", "ttl_s"),
     }
     out: dict[str, Any] = {}
+    for variable, field in (("OLLAMA_URL", "url"), ("OLLAMA_MODEL", "model")):
+        if os.getenv(variable):
+            out.setdefault("llm", {})[field] = os.environ[variable]
     for env_name, path in env_map.items():
         raw = os.getenv(f"RECAGENT_{env_name}")
         if raw is None:

@@ -2,7 +2,7 @@ import os
 
 import streamlit as st
 
-from recagent.agent import Agent
+from recagent.factory import build_agent
 from recagent.models import ChatRequest
 
 st.set_page_config(page_title="RecAgent · Подбор в диалоге", page_icon="✳", layout="wide", initial_sidebar_state="expanded")
@@ -21,7 +21,10 @@ h1{letter-spacing:-.055em;font-weight:750!important;}
 
 
 def new_session():
-    st.session_state.agent = Agent(mode=st.session_state.get("mode", "rules"))
+    previous = st.session_state.get("agent")
+    if previous and hasattr(previous.provider, "close"):
+        previous.provider.close()
+    st.session_state.agent = build_agent(mode=st.session_state.get("mode", "rules"))
     st.session_state.sid = None
     st.session_state.messages = []
 
@@ -56,15 +59,11 @@ with st.sidebar:
     st.markdown("1. Опишите, что хочется.\n2. Добавьте ограничения.\n3. Оцените подборку или попросите ещё.")
     # Число объектов берётся из каталога: каталог перегенерируется, и зашитая
     # цифра однажды станет неправдой (раньше здесь было «84» при 3000 объектах).
-    st.markdown(
-        f'<div class="note">Демонстрационный стенд<br><b>{len(st.session_state.agent.provider.items)} вымышленных объекта</b><br>Фильмы, сериалы и курсы. История демо-профиля тоже синтетическая.</div>',
-        unsafe_allow_html=True,
-    )
-    with st.expander("Посмотреть каталог"):
-        st.dataframe(
-            [{"Название": i.title, "Жанр": i.genre, "Формат": i.kind} for i in st.session_state.agent.provider.items.values()],
-            hide_index=True,
-        )
+    items = getattr(st.session_state.agent.provider, "items", {})
+    st.caption(f"Синтетический каталог: {len(items)} объектов" if items else "Источник: HTTP-платформа рекомендаций")
+    if items:
+        with st.expander("Посмотреть каталог"):
+            st.dataframe([{"Название": i.title, "Жанр": i.genre, "Формат": i.kind} for i in items.values()], hide_index=True)
 
 st.markdown('<div class="eyebrow">RECAGENT / ПРОТОТИП 01</div>', unsafe_allow_html=True)
 st.title("Найдём то, что вам близко.")

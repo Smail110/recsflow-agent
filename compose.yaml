@@ -1,21 +1,39 @@
 name: recsflow-agent
 
 services:
+  platform:
+    build: .
+    command: ["python", "-m", "uvicorn", "recagent.mock_platform:app", "--host", "0.0.0.0", "--port", "8090"]
+    ports: ["127.0.0.1:8090:8090"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
   demo:
     build: .
     ports: ["127.0.0.1:8501:8501"]
     environment:
+      RECAGENT_PROVIDER: recsflow
+      RECAGENT_PROVIDER_URL: http://platform:8090
       RECAGENT_MODE: ${RECAGENT_MODE:-rules}
       OLLAMA_URL: http://host.docker.internal:11434
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:8b}
     extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on:
+      platform:
+        condition: service_healthy
   api:
     build: .
     command: ["python", "-m", "uvicorn", "recagent.api:app", "--host", "0.0.0.0", "--port", "8000"]
     ports: ["127.0.0.1:8000:8000"]
     environment:
+      RECAGENT_PROVIDER: recsflow
+      RECAGENT_PROVIDER_URL: http://platform:8090
       RECAGENT_MODE: ${RECAGENT_MODE:-rules}
       OLLAMA_URL: http://host.docker.internal:11434
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:8b}
     extra_hosts: ["host.docker.internal:host-gateway"]
-
+    depends_on:
+      platform:
+        condition: service_healthy
