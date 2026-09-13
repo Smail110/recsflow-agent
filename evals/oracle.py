@@ -57,6 +57,7 @@ __all__ = [
     "MAX_ACCEPTABLE_SHARE",
     "MAX_ACCEPTABLE_SHARE_OF_FEASIBLE",
     "MIN_FEASIBLE_FOR_ACCEPTABLE",
+    "UNREACHABLE_THRESHOLD",
     "ExpectedOutcome",
     "OracleCriteria",
     "SpokenConstraints",
@@ -94,6 +95,15 @@ MAX_ACCEPTABLE_SHARE_OF_FEASIBLE: Final[float] = 0.40
 #: и разница между «прибор работает» и «прибор угадал» исчезает.
 MIN_FEASIBLE_FOR_ACCEPTABLE: Final[int] = 8
 
+#: Значение порога, означающее «недостижим»: множество выполнимых объектов пусто,
+#: и принять нечего. Не ``math.inf``, а конечное число — принципиально: ``inf`` не
+#: представим в JSON (pydantic сериализует его как ``null``), а набор сценариев
+#: хранится в git и читается обратно, поэтому порог обязан пережить раундтрип.
+#: 2.0 безопасно: ``utility`` ограничена сверху единицей (веса слагаемых дают
+#: в сумме 1.0, каждое слагаемое не больше 1), значит ни один объект не достигнет
+#: такого порога никогда.
+UNREACHABLE_THRESHOLD: Final[float] = 2.0
+
 
 class ExpectedOutcome(StrEnum):
     """Что оракул ждёт от диалога. Значения совпадают с ``state`` ответа агента.
@@ -122,9 +132,26 @@ class SpokenConstraints(StrictModel):
     genre: str | None = None
     excluded_genres: list[str] = Field(default_factory=list, max_length=10)
     tone: str | None = None
+    #: Отрицание тона: «не мрачное», «без мрачности». Отдельное поле, а не
+    #: ``tone="лёгкий"``: «не мрачное» допускает и нейтральное, поэтому записать
+    #: его как предпочтение лёгкого означало бы приписать пользователю то, чего он
+    #: не говорил. Агент при этом сводит «не мрачное» к ``лёгкий`` и теряет
+    #: нейтральные объекты — это честная потеря recall, которую оракул обязан
+    #: показать, а не спрятать.
+    excluded_tones: list[str] = Field(default_factory=list, max_length=5)
     max_seasons: int | None = Field(default=None, ge=1, le=100)
     max_minutes: int | None = Field(default=None, ge=1, le=10000)
     level: str | None = None
+    #: Названный пользователем объект каталога: «найди в каталоге «X»».
+    #: Отдельное поле, а не жанр/тон: в навигационном запросе пользователь не
+    #: описывает предпочтения, он указывает конкретный объект, и приемлемым
+    #: ответом является именно он.
+    named_title: str | None = Field(default=None, max_length=200)
+    #: Опорный объект для «похожего на X». Сам опорный объект приемлемым ответом
+    #: НЕ является: рекомендовать то, что пользователь только что назвал, бесполезно.
+    #: Название, а не id: пользователь произносит название, и оракул должен
+    #: проверять сказанное, а не внутреннюю нумерацию агента.
+    seed_title: str | None = Field(default=None, max_length=200)
     practical: bool | None = None
 
     @field_validator("genre", "tone", "level", "kind")
@@ -163,6 +190,8 @@ def satisfies_spoken(item: Item, spoken: SpokenConstraints) -> tuple[bool, tuple
         reasons.append("excluded_genre")
     if spoken.tone is not None and item.tone != spoken.tone:
         reasons.append("tone")
+    if item.tone in spoken.excluded_tones:
+        reasons.append("excluded_tone")
     if spoken.max_seasons is not None:
         if item.seasons is not None and item.seasons > spoken.max_seasons:
             reasons.append("max_seasons")
@@ -174,6 +203,10 @@ def satisfies_spoken(item: Item, spoken: SpokenConstraints) -> tuple[bool, tuple
         reasons.append("level")
     if spoken.practical is not None and item.practical != spoken.practical:
         reasons.append("practical")
+    if spoken.named_title is not None and item.title != spoken.named_title:
+        reasons.append("named_title")
+    if spoken.seed_title is not None and item.title == spoken.seed_title:
+        reasons.append("is_the_seed_itself")
 
     return not reasons, tuple(reasons)
 
@@ -192,7 +225,7 @@ def utility_threshold(items: Sequence[Item], theta: Theta, quantile: float = ACC
     «всеядного» — проходимым всем каталогом.
     """
     if not items:
-        return math.inf
+        return UNREACHABLE_THRESHOLD
     values = sorted(utility(item, theta) for item in items)
     if len(values) == 1:
         return values[0]
@@ -274,9 +307,18 @@ def build_criteria(
         raise ValueError("пустой каталог: критерий не построить")
 
     feasible = feasible_set(catalog, spoken)
-    ranked = sorted(feasible, key=lambda item: (-utility(item, theta), item.id))
     threshold = utility_threshold(feasible, theta, quantile)
     acceptable = frozenset(item.id for item in feasible if utility(item, theta) >= threshold)
+    # Потолок берётся ТОЛЬКО из приемлемого множества, а не из топ-N по utility.
+    # Это не косметика: при квантили с ties (объекты с одинаковой полезностью на
+    # границе порога) ``ceiling_ids`` мог включать объект ниже порога, и негативный
+    # контроль «потолок обязан приниматься» проваливался на исправном оракуле.
+    # Отсортированный список приемлемых даёт тот же смысл — лучшие ответы, — но
+    # согласованный с критерием приёма по построению.
+    ranked = sorted(
+        (item for item in feasible if item.id in acceptable),
+        key=lambda item: (-utility(item, theta), item.id),
+    )
 
     if expected is None:
         expected = ExpectedOutcome.RECOMMEND if feasible else ExpectedOutcome.NO_RESULTS
@@ -409,10 +451,22 @@ def is_degenerate(criteria: OracleCriteria) -> tuple[bool, tuple[str, ...]]:
       * ``acceptable_covers_catalog`` — успех достижим любым ответом.
 
     Сценарий с ``expected=NO_RESULTS`` не проверяется: у него приемлемое множество
-    пусто по определению, и это честная пустота, а не вырождение.
+    пусто по определению, и это честная пустость, а не вырождение.
+
+    Навигационный запрос (``named_title``) проверяется отдельно и мягче: у него
+    РОВНО ОДИН выполнимый объект — сам названный, — и это специфика типа, а не
+    вырождение. Применить к нему общие пороги (``MIN_FEASIBLE_FOR_ACCEPTABLE``,
+    ``MAX_ACCEPTABLE_SHARE_OF_FEASIBLE``) означало бы отбраковать 100% таких
+    сценариев: тип перестал бы попадать в набор молча, и поиск по названию
+    остался бы не измеренным. Что здесь действительно важно — что названный объект
+    вообще найден и он один; пустое приемлемое множество означало бы, что
+    сценарий непроходим.
     """
     if criteria.expected is not ExpectedOutcome.RECOMMEND:
         return False, ()
+
+    if criteria.spoken.named_title is not None:
+        return (False, ()) if criteria.acceptable_ids else (True, ("navigation_title_not_found",))
 
     problems: list[str] = []
     if not criteria.acceptable_ids:

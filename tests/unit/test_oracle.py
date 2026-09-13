@@ -347,8 +347,16 @@ def test_threshold_is_a_quantile_of_the_feasible_subset(catalog, theta):
 
 
 def test_threshold_of_empty_set_is_unreachable(theta):
-    """Пустое множество даёт +inf: принять нечего, и это не «порог 0»."""
-    assert utility_threshold([], theta) == math.inf
+    """Пустое множество даёт недостижимый порог: принять нечего, и это не «порог 0».
+
+    Значение обязано быть КОНЕЧНЫМ, а не ``math.inf``: порог записывается в JSONL
+    набора сценариев, а ``inf`` в JSON непредставим (pydantic сериализует его как
+    ``null``, и чтение набора падает). Регрессия здесь ломает не математику, а
+    саму возможность хранить набор в git.
+    """
+    threshold = utility_threshold([], theta)
+    assert math.isfinite(threshold)
+    assert threshold > 1.0, "порог обязан быть выше максимальной полезности (utility <= 1.0)"
     assert acceptable_set([], theta, SpokenConstraints()) == frozenset()
 
 

@@ -21,6 +21,9 @@ artifacts/
 # Downloaded source datasets (links, not files - see docs/DATA-PLAN.md)
 data/raw/
 
+# Rebuild dialogue datasets with python -m evals.scenarios.
+evals/data/*.jsonl
+
 # Local-only evaluation runs
 report/*-local.json
 
