@@ -133,10 +133,11 @@ def evaluate(mode="rules", limit=None, llm_evaluation=False, model="qwen3:8b"):
             results.append(response)
             latencies.append(response.latency_ms)
             seed = agent.provider.find_title(response.query.seed_title) if response.query.seed_title else None
+            history = agent.provider.lookup(agent.provider.history("evaluation-new-user"))
             for rec in response.recommendations:
                 for evidence in rec.evidence:
                     total_claims += 1
-                    invalid_claims += not validate_evidence(evidence, rec.item, response.query, [], seed)
+                    invalid_claims += not validate_evidence(evidence, rec.item, response.query, history, seed)
         final = results[-1]
         if case.get("empty"):
             success = final.state == "no_results" and not final.recommendations

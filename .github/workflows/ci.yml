@@ -1,7 +1,6 @@
 name: CI
 
-# Every push and every PR runs lint, types, tests and the contract check.
-# The eval gate lives in evals.yml so slow runs do not block fast feedback.
+# Every push and PR checks code, the contract, and deterministic dev baselines.
 
 on:
   push:
@@ -23,7 +22,7 @@ jobs:
       - name: Install ruff
         run: python -m pip install --upgrade pip ruff
       - name: Ruff
-        run: python -m ruff check src tests scripts
+        run: python -m ruff check src tests scripts evals
       - name: Ruff format check
         run: python -m ruff format --check src tests scripts || true
 
@@ -54,6 +53,14 @@ jobs:
           python -m pip install -e ".[dev]" --no-deps
       - name: Unit + integration tests
         run: python -m pytest -q --junitxml=report/tests.xml
+      - name: Dev baseline controls (no LLM, no holdout)
+        run: python -m scripts.evaluate_baselines --check --output report/baselines-ci.json
+      - name: Upload baseline report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-baselines
+          path: report/baselines-ci.json
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4

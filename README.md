@@ -27,9 +27,11 @@ cd 'C:\Users\roev_\Documents\ChatGPT\МТС'
 python -m venv .venv
 # Windows:
 .venv\Scripts\python -m pip install -r requirements-lock.txt
+.venv\Scripts\python -m pip install -e . --no-deps
 .venv\Scripts\python -m streamlit run app.py
 # Linux / macOS:
 .venv/bin/python -m pip install -r requirements-lock.txt
+.venv/bin/python -m pip install -e . --no-deps
 .venv/bin/python -m streamlit run app.py
 ```
 
@@ -173,6 +175,16 @@ python -m scripts.build_report
 - `report/load-test.json` — реальный локальный HTTP-прогон;
 - `notebooks/demo.ipynb` — воспроизводимый пример диалога;
 - `docs/demo-script.md` — сценарий показа на 2–5 минут (видеозапись не записана).
+
+## Новый baseline на 200 сценариях
+
+```bash
+python -m scripts.evaluate_baselines --check
+```
+
+Запуск сравнивает текущего агента со случайной выдачей, популярностью, списком демо-платформы без запроса и оракульным потолком. Отчёт `report/baselines-local.json` содержит причины провалов, разрез по типам запросов, парные интервалы и хеши данных. Подробности и ограничения: [методика baseline](docs/BASELINE-EVALUATION.md).
+
+Это фиксированные диалоги без истории пользователя; адаптивный симулятор пока не подключён. Сохранённые ранее `report/evaluation*.json` относятся к предыдущим версиям и не заменяют результаты текущего baseline.
 
 ## Границы прототипа
 
