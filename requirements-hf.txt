@@ -1,0 +1,9 @@
+# Optional Hugging Face training stack (kept separate from the lightweight demo).
+transformers>=4.48,<5
+datasets>=3.2,<5
+peft>=0.14,<1
+accelerate>=1.2,<2
+evaluate>=0.4,<1
+sentence-transformers>=3.3,<6
+torch>=2.5,<3
+

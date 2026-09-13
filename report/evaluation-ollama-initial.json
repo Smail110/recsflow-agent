@@ -1,0 +1,496 @@
+{
+  "timestamp_utc": "2026-09-11T16:17:53.146637+00:00",
+  "environment": {
+    "platform": "Windows-10-10.0.26100-SP0",
+    "python": "3.11.9"
+  },
+  "dataset": "84 synthetic items, seed=42",
+  "mode_requested": "ollama",
+  "model": "qwen3:8b",
+  "llm_evaluation_requested": true,
+  "metrics": {
+    "scenarios": 3,
+    "success_rate": 0.6666666666666666,
+    "mean_clarifications": 0.3333333333333333,
+    "claim_count": 45,
+    "unsupported_claim_rate": 0.0,
+    "latency_p50_ms": 1018.84,
+    "latency_p95_ms": 1047.29,
+    "agent_llm_calls": 5,
+    "agent_tokens": 4440,
+    "fallback_turns": 0,
+    "llm_judge_completed": 3,
+    "llm_judge_success_rate": 1,
+    "evaluator_tokens": 4450,
+    "monetary_cost": null
+  },
+  "limitations": [
+    "Fixed synthetic scenarios, not a representative real-user benchmark.",
+    "Rules mode is not an LLM; template grounding is not a free-form generation hallucination benchmark.",
+    "LLM simulator and judge may share a model and have correlated bias; paraphrases can change preferences.",
+    "Local monetary cost is unknown: GPU time, electricity and amortization were not measured."
+  ],
+  "records": [
+    {
+      "id": "cozy-detective",
+      "success": false,
+      "messages": [
+        "Хочу детективный сериал, не слишком мрачный и не длиннее одного сезона"
+      ],
+      "hidden_preferences": {
+        "kind": "series",
+        "genre": "детектив",
+        "tone": "лёгкий",
+        "seasons_lte": 1
+      },
+      "response": {
+        "session_id": "c65f8fb6-81ba-4ddb-8238-e75748f26d95",
+        "state": "no_results",
+        "message": "Подходящих вариантов не найдено. Можно изменить жанр или снять ограничение: «без ограничений по длительности». Ограничения сохранены.",
+        "query": {
+          "intent": "discovery",
+          "kind": "series",
+          "genre": "детектив",
+          "tone": "мрачный",
+          "max_seasons": 1,
+          "max_minutes": null,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "no_results"
+        ],
+        "warnings": [],
+        "mode": "ollama",
+        "latency_ms": 1041.96,
+        "llm_calls": 1,
+        "llm_calls_total": 1,
+        "llm_tokens": 897,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 1,
+      "agent_tokens": 897,
+      "fallback_turns": 0,
+      "llm_judge": {
+        "success": true,
+        "grounded": false,
+        "rationale": "Выдача не соответствует скрытым предпочтениям пользователя, так как в запросе указано, что сериал должен быть «не мрачный», но в параметрах запроса указано «tone: мрачный». Это противоречие делает выдачу несоответствующей скрытым предпочтениям."
+      },
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 880
+    },
+    {
+      "id": "follow-up-duration",
+      "success": true,
+      "messages": [
+        "Хочу лёгкий детективный сериал на один сезон",
+        "Не дольше 30 минут"
+      ],
+      "hidden_preferences": {
+        "kind": "series",
+        "genre": "детектив",
+        "tone": "лёгкий",
+        "seasons_lte": 1,
+        "minutes_lte": 30
+      },
+      "response": {
+        "session_id": "0e388655-472e-4ffb-9354-4b56cf18cec4",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 1. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "mood",
+          "kind": "series",
+          "genre": "детектив",
+          "tone": "лёгкий",
+          "max_seasons": 1,
+          "max_minutes": 30,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-001",
+              "title": "Тайна старого маяка",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 10,
+              "minutes": 25,
+              "level": null,
+              "practical": null,
+              "quality": 0.561,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.561,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 10. Серия: 25 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-001",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "seasons",
+                "value": 1,
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "episodes",
+                "value": 10,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "minutes",
+                "value": 25,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "ollama",
+        "latency_ms": 949.09,
+        "llm_calls": 1,
+        "llm_calls_total": 2,
+        "llm_tokens": 893,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 2,
+      "agent_tokens": 1783,
+      "fallback_turns": 0,
+      "llm_judge": {
+        "success": true,
+        "grounded": true,
+        "rationale": "Все факты объяснений поддерживаются атрибутами объектов. Сериал 'Тайна старого маяка' соответствует всем требованиям: жанр — детектив, тон — лёгкий, сезонов — 1, продолжительность серии — 25 минут. Все параметры совпадают с ожидаемыми в hidden_preferences."
+      },
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 1238
+    },
+    {
+      "id": "clarify-format",
+      "success": true,
+      "messages": [
+        "Посоветуй что-нибудь",
+        "Лёгкий детективный сериал"
+      ],
+      "hidden_preferences": {
+        "kind": "series",
+        "genre": "детектив",
+        "tone": "лёгкий"
+      },
+      "response": {
+        "session_id": "f1c80143-8cf0-4cc8-8102-fd59d2f48aa2",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 4. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "mood",
+          "kind": "series",
+          "genre": "детектив",
+          "tone": "лёгкий",
+          "max_seasons": null,
+          "max_minutes": null,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-007",
+              "title": "Секреты набережной",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.809,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.809,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-007",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-005",
+              "title": "Клуб тихих расследований",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.731,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.731,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-005",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-003",
+              "title": "Дело о пропавшем чае",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.594,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.594,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-003",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-001",
+              "title": "Тайна старого маяка",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 10,
+              "minutes": 25,
+              "level": null,
+              "practical": null,
+              "quality": 0.561,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.561,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 10. Серия: 25 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-001",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "episodes",
+                "value": 10,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "minutes",
+                "value": 25,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "ollama",
+        "latency_ms": 950.54,
+        "llm_calls": 1,
+        "llm_calls_total": 2,
+        "llm_tokens": 883,
+        "clarification_count": 1
+      },
+      "clarifications": 1,
+      "agent_llm_calls": 2,
+      "agent_tokens": 1760,
+      "fallback_turns": 0,
+      "llm_judge": {
+        "success": true,
+        "grounded": true,
+        "rationale": "Выдача соответствует скрытым предпочтениям, так как рекомендации содержат сериалы жанра детектив с лёгким тоном. Все факты объяснений поддерживаются атрибутами объектов, например, жанр, тон, количество сезонов и эпизодов. Нет необходимости уточнять запрос, так как все требования удовлетворены."
+      },
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 2332
+    }
+  ]
+}

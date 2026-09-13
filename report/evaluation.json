@@ -1,0 +1,2700 @@
+{
+  "timestamp_utc": "2026-09-11T16:39:15.394656+00:00",
+  "environment": {
+    "platform": "Windows-10-10.0.26100-SP0",
+    "python": "3.11.9"
+  },
+  "dataset": "84 synthetic items, seed=42",
+  "mode_requested": "rules",
+  "model": null,
+  "llm_evaluation_requested": false,
+  "metrics": {
+    "scenarios": 12,
+    "success_rate": 1,
+    "mean_clarifications": 0.16666666666666666,
+    "claim_count": 210,
+    "unsupported_claim_rate": 0.0,
+    "latency_p50_ms": 1.08,
+    "latency_p95_ms": 5.76,
+    "agent_llm_calls": 0,
+    "agent_tokens": 0,
+    "fallback_turns": 0,
+    "llm_judge_completed": 0,
+    "llm_judge_success_rate": null,
+    "evaluator_tokens": 0,
+    "monetary_cost": null
+  },
+  "limitations": [
+    "Fixed synthetic scenarios, not a representative real-user benchmark.",
+    "Rules mode is not an LLM; template grounding is not a free-form generation hallucination benchmark.",
+    "LLM simulator and judge may share a model and have correlated bias; paraphrases can change preferences.",
+    "Local monetary cost is unknown: GPU time, electricity and amortization were not measured."
+  ],
+  "records": [
+    {
+      "id": "cozy-detective",
+      "success": true,
+      "messages": [
+        "Хочу детективный сериал, не мрачный и не длиннее одного сезона"
+      ],
+      "hidden_preferences": {
+        "kind": "series",
+        "genre": "детектив",
+        "tone": "лёгкий",
+        "seasons_lte": 1
+      },
+      "response": {
+        "session_id": "3722a634-b6c0-4ab9-881e-67ed5c2a95f2",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 4. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "mood",
+          "kind": "series",
+          "genre": "детектив",
+          "tone": "лёгкий",
+          "max_seasons": 1,
+          "max_minutes": null,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-007",
+              "title": "Секреты набережной",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.809,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.809,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-007",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "seasons",
+                "value": 1,
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-005",
+              "title": "Клуб тихих расследований",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.731,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.731,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-005",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "seasons",
+                "value": 1,
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-003",
+              "title": "Дело о пропавшем чае",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.594,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.594,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-003",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "seasons",
+                "value": 1,
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-001",
+              "title": "Тайна старого маяка",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 10,
+              "minutes": 25,
+              "level": null,
+              "practical": null,
+              "quality": 0.561,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.561,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 10. Серия: 25 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-001",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "seasons",
+                "value": 1,
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "episodes",
+                "value": 10,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "minutes",
+                "value": 25,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 5.76,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "follow-up-duration",
+      "success": true,
+      "messages": [
+        "Хочу лёгкий детективный сериал, один сезон",
+        "Не дольше 30 минут"
+      ],
+      "hidden_preferences": {
+        "kind": "series",
+        "genre": "детектив",
+        "tone": "лёгкий",
+        "seasons_lte": 1,
+        "minutes_lte": 30
+      },
+      "response": {
+        "session_id": "6bf13bee-2843-4599-9605-c4ea9d797e85",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 1. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "mood",
+          "kind": "series",
+          "genre": "детектив",
+          "tone": "лёгкий",
+          "max_seasons": 1,
+          "max_minutes": 30,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-001",
+              "title": "Тайна старого маяка",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 10,
+              "minutes": 25,
+              "level": null,
+              "practical": null,
+              "quality": 0.561,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.561,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 10. Серия: 25 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-001",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "seasons",
+                "value": 1,
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "episodes",
+                "value": 10,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "minutes",
+                "value": 25,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 1.08,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "clarify-format",
+      "success": true,
+      "messages": [
+        "Посоветуй что-нибудь",
+        "Лёгкий детективный сериал"
+      ],
+      "hidden_preferences": {
+        "kind": "series",
+        "genre": "детектив",
+        "tone": "лёгкий"
+      },
+      "response": {
+        "session_id": "10cb8fdc-2f64-49ad-a046-3c894081962d",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 4. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "mood",
+          "kind": "series",
+          "genre": "детектив",
+          "tone": "лёгкий",
+          "max_seasons": null,
+          "max_minutes": null,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-007",
+              "title": "Секреты набережной",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.809,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.809,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-007",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-005",
+              "title": "Клуб тихих расследований",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.731,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.731,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-005",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-003",
+              "title": "Дело о пропавшем чае",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.594,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.594,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-003",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-001",
+              "title": "Тайна старого маяка",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 10,
+              "minutes": 25,
+              "level": null,
+              "practical": null,
+              "quality": 0.561,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.561,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 10. Серия: 25 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-001",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "episodes",
+                "value": 10,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-001",
+                "field": "minutes",
+                "value": 25,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 1.07,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 1
+      },
+      "clarifications": 1,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "course",
+      "success": true,
+      "messages": [
+        "Курс по машинному обучению для новичка, без воды"
+      ],
+      "hidden_preferences": {
+        "kind": "course",
+        "genre": "машинное обучение",
+        "level": "начальный",
+        "practical": true
+      },
+      "response": {
+        "session_id": "28fff757-d0e5-41e7-b973-5153eda2f468",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 5. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "discovery",
+          "kind": "course",
+          "genre": "машинное обучение",
+          "tone": null,
+          "max_seasons": null,
+          "max_minutes": null,
+          "level": "начальный",
+          "practical": true,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-068",
+              "title": "Машинное обучение: лаборатория 8",
+              "kind": "course",
+              "genre": "машинное обучение",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 90,
+              "level": "начальный",
+              "practical": true,
+              "quality": 0.928,
+              "description": "Вымышленный учебный курс. Длительность — суммарное время занятий.",
+              "synthetic": true
+            },
+            "score": 0.928,
+            "explanation": "Жанр: машинное обучение. Тон: нейтральный. Курс целиком: 90 мин. Уровень: начальный. Есть практические задания.",
+            "evidence": [
+              {
+                "item_id": "demo-068",
+                "field": "genre",
+                "value": "машинное обучение",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-068",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-068",
+                "field": "minutes",
+                "value": 90,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-068",
+                "field": "level",
+                "value": "начальный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-068",
+                "field": "practical",
+                "value": true,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-061",
+              "title": "Машинное обучение: лаборатория 1",
+              "kind": "course",
+              "genre": "машинное обучение",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 120,
+              "level": "начальный",
+              "practical": true,
+              "quality": 0.912,
+              "description": "Вымышленный учебный курс. Длительность — суммарное время занятий.",
+              "synthetic": true
+            },
+            "score": 0.912,
+            "explanation": "Жанр: машинное обучение. Тон: нейтральный. Курс целиком: 120 мин. Уровень: начальный. Есть практические задания.",
+            "evidence": [
+              {
+                "item_id": "demo-061",
+                "field": "genre",
+                "value": "машинное обучение",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-061",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-061",
+                "field": "minutes",
+                "value": 120,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-061",
+                "field": "level",
+                "value": "начальный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-061",
+                "field": "practical",
+                "value": true,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-064",
+              "title": "Машинное обучение: лаборатория 4",
+              "kind": "course",
+              "genre": "машинное обучение",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 60,
+              "level": "начальный",
+              "practical": true,
+              "quality": 0.808,
+              "description": "Вымышленный учебный курс. Длительность — суммарное время занятий.",
+              "synthetic": true
+            },
+            "score": 0.808,
+            "explanation": "Жанр: машинное обучение. Тон: нейтральный. Курс целиком: 60 мин. Уровень: начальный. Есть практические задания.",
+            "evidence": [
+              {
+                "item_id": "demo-064",
+                "field": "genre",
+                "value": "машинное обучение",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-064",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-064",
+                "field": "minutes",
+                "value": 60,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-064",
+                "field": "level",
+                "value": "начальный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-064",
+                "field": "practical",
+                "value": true,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-067",
+              "title": "Машинное обучение: лаборатория 7",
+              "kind": "course",
+              "genre": "машинное обучение",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 120,
+              "level": "начальный",
+              "practical": true,
+              "quality": 0.653,
+              "description": "Вымышленный учебный курс. Длительность — суммарное время занятий.",
+              "synthetic": true
+            },
+            "score": 0.653,
+            "explanation": "Жанр: машинное обучение. Тон: нейтральный. Курс целиком: 120 мин. Уровень: начальный. Есть практические задания.",
+            "evidence": [
+              {
+                "item_id": "demo-067",
+                "field": "genre",
+                "value": "машинное обучение",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-067",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-067",
+                "field": "minutes",
+                "value": 120,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-067",
+                "field": "level",
+                "value": "начальный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-067",
+                "field": "practical",
+                "value": true,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-062",
+              "title": "Машинное обучение: лаборатория 2",
+              "kind": "course",
+              "genre": "машинное обучение",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 90,
+              "level": "начальный",
+              "practical": true,
+              "quality": 0.616,
+              "description": "Вымышленный учебный курс. Длительность — суммарное время занятий.",
+              "synthetic": true
+            },
+            "score": 0.616,
+            "explanation": "Жанр: машинное обучение. Тон: нейтральный. Курс целиком: 90 мин. Уровень: начальный. Есть практические задания.",
+            "evidence": [
+              {
+                "item_id": "demo-062",
+                "field": "genre",
+                "value": "машинное обучение",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-062",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-062",
+                "field": "minutes",
+                "value": 90,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-062",
+                "field": "level",
+                "value": "начальный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-062",
+                "field": "practical",
+                "value": true,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 1.31,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "sci-fi",
+      "success": true,
+      "messages": [
+        "Фильм, фантастика, не дольше 90 минут"
+      ],
+      "hidden_preferences": {
+        "kind": "film",
+        "genre": "фантастика",
+        "minutes_lte": 90
+      },
+      "response": {
+        "session_id": "c180b9cb-ca18-4d68-a2dc-be1b314ce4fe",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 4. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "discovery",
+          "kind": "film",
+          "genre": "фантастика",
+          "tone": null,
+          "max_seasons": null,
+          "max_minutes": 90,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-040",
+              "title": "Время на двоих · фильм",
+              "kind": "film",
+              "genre": "фантастика",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 90,
+              "level": null,
+              "practical": null,
+              "quality": 0.93,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: фантастика; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.93,
+            "explanation": "Жанр: фантастика. Тон: лёгкий. Фильм: 90 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-040",
+                "field": "genre",
+                "value": "фантастика",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-040",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-040",
+                "field": "minutes",
+                "value": 90,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-048",
+              "title": "Вторая Земля · фильм",
+              "kind": "film",
+              "genre": "фантастика",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 80,
+              "level": null,
+              "practical": null,
+              "quality": 0.82,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: фантастика; тон: нейтральный.",
+              "synthetic": true
+            },
+            "score": 0.82,
+            "explanation": "Жанр: фантастика. Тон: нейтральный. Фильм: 80 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-048",
+                "field": "genre",
+                "value": "фантастика",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-048",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-048",
+                "field": "minutes",
+                "value": 80,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-046",
+              "title": "Сигнал с Венеры · фильм",
+              "kind": "film",
+              "genre": "фантастика",
+              "tone": "мрачный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 80,
+              "level": null,
+              "practical": null,
+              "quality": 0.769,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: фантастика; тон: мрачный.",
+              "synthetic": true
+            },
+            "score": 0.769,
+            "explanation": "Жанр: фантастика. Тон: мрачный. Фильм: 80 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-046",
+                "field": "genre",
+                "value": "фантастика",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-046",
+                "field": "tone",
+                "value": "мрачный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-046",
+                "field": "minutes",
+                "value": 80,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-042",
+              "title": "Архив будущего · фильм",
+              "kind": "film",
+              "genre": "фантастика",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 80,
+              "level": null,
+              "practical": null,
+              "quality": 0.656,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: фантастика; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.656,
+            "explanation": "Жанр: фантастика. Тон: лёгкий. Фильм: 80 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-042",
+                "field": "genre",
+                "value": "фантастика",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-042",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-042",
+                "field": "minutes",
+                "value": 80,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 1.08,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "no-result",
+      "success": true,
+      "messages": [
+        "Лёгкий детективный сериал не дольше 1 минуты"
+      ],
+      "hidden_preferences": {},
+      "response": {
+        "session_id": "51d959bb-c5d9-46aa-90a3-97407496f482",
+        "state": "no_results",
+        "message": "Подходящих вариантов не найдено. Можно изменить жанр или снять ограничение: «без ограничений по длительности». Ограничения сохранены.",
+        "query": {
+          "intent": "mood",
+          "kind": "series",
+          "genre": "детектив",
+          "tone": "лёгкий",
+          "max_seasons": null,
+          "max_minutes": 1,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "no_results"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 0.99,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "release-limit",
+      "success": true,
+      "messages": [
+        "Лёгкий фильм не дольше 1 минуты",
+        "Без ограничений по длительности"
+      ],
+      "hidden_preferences": {
+        "kind": "film",
+        "tone": "лёгкий"
+      },
+      "response": {
+        "session_id": "d8b66bb3-0a5b-4e36-8bad-3eca1242c16c",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 5. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "mood",
+          "kind": "film",
+          "genre": null,
+          "tone": "лёгкий",
+          "max_seasons": null,
+          "max_minutes": null,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-032",
+              "title": "Дальний берег · фильм",
+              "kind": "film",
+              "genre": "драма",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 90,
+              "level": null,
+              "practical": null,
+              "quality": 0.975,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: драма; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.975,
+            "explanation": "Жанр: драма. Тон: лёгкий. Фильм: 90 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-032",
+                "field": "genre",
+                "value": "драма",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-032",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-032",
+                "field": "minutes",
+                "value": 90,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-018",
+              "title": "Почти отпуск · фильм",
+              "kind": "film",
+              "genre": "комедия",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 80,
+              "level": null,
+              "practical": null,
+              "quality": 0.968,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: комедия; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.968,
+            "explanation": "Жанр: комедия. Тон: лёгкий. Фильм: 80 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-018",
+                "field": "genre",
+                "value": "комедия",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-018",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-018",
+                "field": "minutes",
+                "value": 80,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-028",
+              "title": "Другая сторона реки · фильм",
+              "kind": "film",
+              "genre": "драма",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 110,
+              "level": null,
+              "practical": null,
+              "quality": 0.953,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: драма; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.953,
+            "explanation": "Жанр: драма. Тон: лёгкий. Фильм: 110 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-028",
+                "field": "genre",
+                "value": "драма",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-028",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-028",
+                "field": "minutes",
+                "value": 110,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-004",
+              "title": "Дело о пропавшем чае · фильм",
+              "kind": "film",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 110,
+              "level": null,
+              "practical": null,
+              "quality": 0.934,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.934,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Фильм: 110 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-004",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-004",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-004",
+                "field": "minutes",
+                "value": 110,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-040",
+              "title": "Время на двоих · фильм",
+              "kind": "film",
+              "genre": "фантастика",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 90,
+              "level": null,
+              "practical": null,
+              "quality": 0.93,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: фантастика; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.93,
+            "explanation": "Жанр: фантастика. Тон: лёгкий. Фильм: 90 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-040",
+                "field": "genre",
+                "value": "фантастика",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-040",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-040",
+                "field": "minutes",
+                "value": 90,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 1.0,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "switch-domain",
+      "success": true,
+      "messages": [
+        "Лёгкий детективный сериал один сезон",
+        "Курс python для новичка с практикой"
+      ],
+      "hidden_preferences": {
+        "kind": "course",
+        "genre": "python",
+        "level": "начальный",
+        "practical": true
+      },
+      "response": {
+        "session_id": "7fd02d85-0c07-45c1-ad2c-fe75761e701f",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 5. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "discovery",
+          "kind": "course",
+          "genre": "python",
+          "tone": null,
+          "max_seasons": null,
+          "max_minutes": null,
+          "level": "начальный",
+          "practical": true,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-076",
+              "title": "Python: лаборатория 4",
+              "kind": "course",
+              "genre": "python",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 180,
+              "level": "начальный",
+              "practical": true,
+              "quality": 0.978,
+              "description": "Вымышленный учебный курс. Длительность — суммарное время занятий.",
+              "synthetic": true
+            },
+            "score": 0.978,
+            "explanation": "Жанр: python. Тон: нейтральный. Курс целиком: 180 мин. Уровень: начальный. Есть практические задания.",
+            "evidence": [
+              {
+                "item_id": "demo-076",
+                "field": "genre",
+                "value": "python",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-076",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-076",
+                "field": "minutes",
+                "value": 180,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-076",
+                "field": "level",
+                "value": "начальный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-076",
+                "field": "practical",
+                "value": true,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-074",
+              "title": "Python: лаборатория 2",
+              "kind": "course",
+              "genre": "python",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 180,
+              "level": "начальный",
+              "practical": true,
+              "quality": 0.965,
+              "description": "Вымышленный учебный курс. Длительность — суммарное время занятий.",
+              "synthetic": true
+            },
+            "score": 0.965,
+            "explanation": "Жанр: python. Тон: нейтральный. Курс целиком: 180 мин. Уровень: начальный. Есть практические задания.",
+            "evidence": [
+              {
+                "item_id": "demo-074",
+                "field": "genre",
+                "value": "python",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-074",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-074",
+                "field": "minutes",
+                "value": 180,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-074",
+                "field": "level",
+                "value": "начальный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-074",
+                "field": "practical",
+                "value": true,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-080",
+              "title": "Python: лаборатория 8",
+              "kind": "course",
+              "genre": "python",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 60,
+              "level": "начальный",
+              "practical": true,
+              "quality": 0.803,
+              "description": "Вымышленный учебный курс. Длительность — суммарное время занятий.",
+              "synthetic": true
+            },
+            "score": 0.803,
+            "explanation": "Жанр: python. Тон: нейтральный. Курс целиком: 60 мин. Уровень: начальный. Есть практические задания.",
+            "evidence": [
+              {
+                "item_id": "demo-080",
+                "field": "genre",
+                "value": "python",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-080",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-080",
+                "field": "minutes",
+                "value": 60,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-080",
+                "field": "level",
+                "value": "начальный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-080",
+                "field": "practical",
+                "value": true,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-077",
+              "title": "Python: лаборатория 5",
+              "kind": "course",
+              "genre": "python",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 120,
+              "level": "начальный",
+              "practical": true,
+              "quality": 0.738,
+              "description": "Вымышленный учебный курс. Длительность — суммарное время занятий.",
+              "synthetic": true
+            },
+            "score": 0.738,
+            "explanation": "Жанр: python. Тон: нейтральный. Курс целиком: 120 мин. Уровень: начальный. Есть практические задания.",
+            "evidence": [
+              {
+                "item_id": "demo-077",
+                "field": "genre",
+                "value": "python",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-077",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-077",
+                "field": "minutes",
+                "value": 120,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-077",
+                "field": "level",
+                "value": "начальный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-077",
+                "field": "practical",
+                "value": true,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-073",
+              "title": "Python: лаборатория 1",
+              "kind": "course",
+              "genre": "python",
+              "tone": "нейтральный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 90,
+              "level": "начальный",
+              "practical": true,
+              "quality": 0.664,
+              "description": "Вымышленный учебный курс. Длительность — суммарное время занятий.",
+              "synthetic": true
+            },
+            "score": 0.664,
+            "explanation": "Жанр: python. Тон: нейтральный. Курс целиком: 90 мин. Уровень: начальный. Есть практические задания.",
+            "evidence": [
+              {
+                "item_id": "demo-073",
+                "field": "genre",
+                "value": "python",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-073",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-073",
+                "field": "minutes",
+                "value": 90,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-073",
+                "field": "level",
+                "value": "начальный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-073",
+                "field": "practical",
+                "value": true,
+                "relation": "request",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 1.05,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "dark-drama",
+      "success": true,
+      "messages": [
+        "Мрачный драматический фильм"
+      ],
+      "hidden_preferences": {
+        "kind": "film",
+        "genre": "драма",
+        "tone": "мрачный"
+      },
+      "response": {
+        "session_id": "76f650ab-ba6c-4eef-ad14-5fcd6908a79c",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 1. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "discovery",
+          "kind": "film",
+          "genre": "драма",
+          "tone": "мрачный",
+          "max_seasons": null,
+          "max_minutes": null,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-034",
+              "title": "Точка встречи · фильм",
+              "kind": "film",
+              "genre": "драма",
+              "tone": "мрачный",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 110,
+              "level": null,
+              "practical": null,
+              "quality": 0.689,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: драма; тон: мрачный.",
+              "synthetic": true
+            },
+            "score": 0.689,
+            "explanation": "Жанр: драма. Тон: мрачный. Фильм: 110 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-034",
+                "field": "genre",
+                "value": "драма",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-034",
+                "field": "tone",
+                "value": "мрачный",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-034",
+                "field": "minutes",
+                "value": 110,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 1.12,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "exclusion",
+      "success": true,
+      "messages": [
+        "Лёгкий фильм без драмы"
+      ],
+      "hidden_preferences": {
+        "kind": "film",
+        "tone": "лёгкий",
+        "genre_ne": "драма"
+      },
+      "response": {
+        "session_id": "e205fee5-23a2-4c32-88a0-2d2c0e347517",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 5. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "mood",
+          "kind": "film",
+          "genre": null,
+          "tone": "лёгкий",
+          "max_seasons": null,
+          "max_minutes": null,
+          "level": null,
+          "practical": null,
+          "seed_title": null,
+          "excluded_genres": [
+            "драма"
+          ]
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-018",
+              "title": "Почти отпуск · фильм",
+              "kind": "film",
+              "genre": "комедия",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 80,
+              "level": null,
+              "practical": null,
+              "quality": 0.968,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: комедия; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.968,
+            "explanation": "Жанр: комедия. Тон: лёгкий. Фильм: 80 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-018",
+                "field": "genre",
+                "value": "комедия",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-018",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-018",
+                "field": "minutes",
+                "value": 80,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-004",
+              "title": "Дело о пропавшем чае · фильм",
+              "kind": "film",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 110,
+              "level": null,
+              "practical": null,
+              "quality": 0.934,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.934,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Фильм: 110 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-004",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-004",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-004",
+                "field": "minutes",
+                "value": 110,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-040",
+              "title": "Время на двоих · фильм",
+              "kind": "film",
+              "genre": "фантастика",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 90,
+              "level": null,
+              "practical": null,
+              "quality": 0.93,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: фантастика; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.93,
+            "explanation": "Жанр: фантастика. Тон: лёгкий. Фильм: 90 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-040",
+                "field": "genre",
+                "value": "фантастика",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-040",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-040",
+                "field": "minutes",
+                "value": 90,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-054",
+              "title": "Остров фонарей · фильм",
+              "kind": "film",
+              "genre": "приключения",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 110,
+              "level": null,
+              "practical": null,
+              "quality": 0.93,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: приключения; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.93,
+            "explanation": "Жанр: приключения. Тон: лёгкий. Фильм: 110 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-054",
+                "field": "genre",
+                "value": "приключения",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-054",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-054",
+                "field": "minutes",
+                "value": 110,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-038",
+              "title": "Орбита тишины · фильм",
+              "kind": "film",
+              "genre": "фантастика",
+              "tone": "лёгкий",
+              "seasons": null,
+              "episodes": null,
+              "minutes": 110,
+              "level": null,
+              "practical": null,
+              "quality": 0.927,
+              "description": "Вымышленный фильм для проверки рекомендаций. Жанр: фантастика; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 0.927,
+            "explanation": "Жанр: фантастика. Тон: лёгкий. Фильм: 110 мин.",
+            "evidence": [
+              {
+                "item_id": "demo-038",
+                "field": "genre",
+                "value": "фантастика",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-038",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "request",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-038",
+                "field": "minutes",
+                "value": 110,
+                "relation": "catalog",
+                "source_item_id": null
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 1.03,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "similar",
+      "success": true,
+      "messages": [
+        "Сериал похожий на «Тайна старого маяка»"
+      ],
+      "hidden_preferences": {
+        "kind": "series",
+        "genre": "детектив",
+        "title_ne": "Тайна старого маяка"
+      },
+      "response": {
+        "session_id": "1e6cf333-9934-4508-bf9b-f7a550c35db7",
+        "state": "recommend",
+        "message": "Подобрал вариантов: 5. Объяснения проверены по данным каталога.",
+        "query": {
+          "intent": "similar",
+          "kind": "series",
+          "genre": null,
+          "tone": null,
+          "max_seasons": null,
+          "max_minutes": null,
+          "level": null,
+          "practical": null,
+          "seed_title": "Тайна старого маяка",
+          "excluded_genres": []
+        },
+        "recommendations": [
+          {
+            "item": {
+              "id": "demo-007",
+              "title": "Секреты набережной",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.809,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 1.409,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин. Тот же жанр, что у «Тайна старого маяка».",
+            "evidence": [
+              {
+                "item_id": "demo-007",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-007",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "seed",
+                "source_item_id": "demo-001"
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-011",
+              "title": "Последний конверт",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "нейтральный",
+              "seasons": 3,
+              "episodes": 8,
+              "minutes": 25,
+              "level": null,
+              "practical": null,
+              "quality": 0.876,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: нейтральный.",
+              "synthetic": true
+            },
+            "score": 1.376,
+            "explanation": "Жанр: детектив. Тон: нейтральный. Сезонов: 3. Серий всего: 8. Серия: 25 мин. Тот же жанр, что у «Тайна старого маяка».",
+            "evidence": [
+              {
+                "item_id": "demo-011",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-011",
+                "field": "tone",
+                "value": "нейтральный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-011",
+                "field": "seasons",
+                "value": 3,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-011",
+                "field": "episodes",
+                "value": 8,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-011",
+                "field": "minutes",
+                "value": 25,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-011",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "seed",
+                "source_item_id": "demo-001"
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-005",
+              "title": "Клуб тихих расследований",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.731,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 1.331,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин. Тот же жанр, что у «Тайна старого маяка».",
+            "evidence": [
+              {
+                "item_id": "demo-005",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-005",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "seed",
+                "source_item_id": "demo-001"
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-009",
+              "title": "Улики в саду",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "мрачный",
+              "seasons": 3,
+              "episodes": 10,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.784,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: мрачный.",
+              "synthetic": true
+            },
+            "score": 1.284,
+            "explanation": "Жанр: детектив. Тон: мрачный. Сезонов: 3. Серий всего: 10. Серия: 40 мин. Тот же жанр, что у «Тайна старого маяка».",
+            "evidence": [
+              {
+                "item_id": "demo-009",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-009",
+                "field": "tone",
+                "value": "мрачный",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-009",
+                "field": "seasons",
+                "value": 3,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-009",
+                "field": "episodes",
+                "value": 10,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-009",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-009",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "seed",
+                "source_item_id": "demo-001"
+              }
+            ]
+          },
+          {
+            "item": {
+              "id": "demo-003",
+              "title": "Дело о пропавшем чае",
+              "kind": "series",
+              "genre": "детектив",
+              "tone": "лёгкий",
+              "seasons": 1,
+              "episodes": 6,
+              "minutes": 40,
+              "level": null,
+              "practical": null,
+              "quality": 0.594,
+              "description": "Вымышленный сериал для проверки рекомендаций. Жанр: детектив; тон: лёгкий.",
+              "synthetic": true
+            },
+            "score": 1.194,
+            "explanation": "Жанр: детектив. Тон: лёгкий. Сезонов: 1. Серий всего: 6. Серия: 40 мин. Тот же жанр, что у «Тайна старого маяка».",
+            "evidence": [
+              {
+                "item_id": "demo-003",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "tone",
+                "value": "лёгкий",
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "seasons",
+                "value": 1,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "episodes",
+                "value": 6,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "minutes",
+                "value": 40,
+                "relation": "catalog",
+                "source_item_id": null
+              },
+              {
+                "item_id": "demo-003",
+                "field": "genre",
+                "value": "детектив",
+                "relation": "seed",
+                "source_item_id": "demo-001"
+              }
+            ]
+          }
+        ],
+        "trace": [
+          "parse",
+          "retrieval",
+          "metadata_lookup",
+          "hard_filters",
+          "rerank",
+          "grounding_check",
+          "recommend"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 1.98,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 0
+      },
+      "clarifications": 0,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    },
+    {
+      "id": "unknown-seed",
+      "success": true,
+      "messages": [
+        "Сериал похожий на «Неизвестный сериал»"
+      ],
+      "hidden_preferences": {},
+      "response": {
+        "session_id": "44e2b297-a825-4dfb-a577-3e1db36bdc00",
+        "state": "clarify",
+        "message": "В демонстрационном каталоге нет «Неизвестный сериал». Укажите название из каталога или напишите «сброс».",
+        "query": {
+          "intent": "similar",
+          "kind": "series",
+          "genre": null,
+          "tone": null,
+          "max_seasons": null,
+          "max_minutes": null,
+          "level": null,
+          "practical": null,
+          "seed_title": "Неизвестный сериал",
+          "excluded_genres": []
+        },
+        "recommendations": [],
+        "trace": [
+          "parse",
+          "metadata_lookup",
+          "clarify"
+        ],
+        "warnings": [],
+        "mode": "rules",
+        "latency_ms": 3.23,
+        "llm_calls": 0,
+        "llm_calls_total": 0,
+        "llm_tokens": 0,
+        "clarification_count": 1
+      },
+      "clarifications": 1,
+      "agent_llm_calls": 0,
+      "agent_tokens": 0,
+      "fallback_turns": 0,
+      "llm_judge": null,
+      "simulation_error": null,
+      "judge_error": null,
+      "evaluator_tokens": 0
+    }
+  ]
+}
