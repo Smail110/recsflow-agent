@@ -1,0 +1,1591 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-09-13T22:03:52.441294+00:00",
+  "source": {
+    "commit": "d9aec929610aae585ffde3cbc6e8c8f9931886b7",
+    "dirty": true,
+    "python_sources_sha256": "91f59a1b69aa4964bf62ae41d48fd3db4a1695b59de8656b9f01ecceb278b00b"
+  },
+  "environment": {
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26100-SP0"
+  },
+  "configuration": {
+    "mode": "rules",
+    "split": "dev",
+    "size": 200,
+    "slate_size": 5,
+    "history": "cold_start"
+  },
+  "dataset": {
+    "split": "dev",
+    "seed": 42,
+    "size": 200,
+    "attempted": 206,
+    "rejected_total": 6,
+    "rejected_by_kind": {
+      "discovery_multi": 2,
+      "incremental": 4
+    },
+    "rejected_by_reason": {
+      "feasible_too_small:6": 1,
+      "empty_acceptable_set": 5,
+      "feasible_too_small:0": 5
+    },
+    "profile_range": [
+      0,
+      250
+    ],
+    "catalog_size": 3000,
+    "adversarial": 18,
+    "by_kind": {
+      "incremental": 17,
+      "release_constraint": 9,
+      "discovery_genre": 17,
+      "discovery_multi": 20,
+      "navigation_title": 13,
+      "domain_switch": 13,
+      "course_practical": 14,
+      "more_variants": 13,
+      "mood_evening": 12,
+      "similar_seed": 12,
+      "tone_negation": 10,
+      "course_level": 12,
+      "discovery_vague": 18,
+      "exclusion_genre": 12,
+      "contradiction": 4,
+      "no_result": 4
+    },
+    "acceptable_share_median": 0.014666666666666666,
+    "feasible_median": 174.0,
+    "multi_turn": 70,
+    "catalog_seed": 42,
+    "catalog_sha256": "491ec666eb443d0881f38c92c5ba04a46b6d65bf9313c71bba32c4b93c7c6660",
+    "scenarios_sha256": "05b94dc65ab04282f9bebec70c67cd267dff64ca6fced9ab415d0c31492b88a6"
+  },
+  "runs": {
+    "random": {
+      "summary": {
+        "scenarios": 200,
+        "success_rate": 0.0,
+        "final_success_rate": 0.0,
+        "mean_slate_size": 5.0,
+        "mean_clarifications": 0.0,
+        "hard_constraint_violations": 893,
+        "failure_counts": {
+          "answered_instead_of_clarifying": 4,
+          "results_where_none_exist": 4,
+          "state_mismatch:recommend": 8,
+          "unacceptable_item_shown": 192
+        },
+        "latency_p50_ms": null,
+        "latency_p95_ms": null,
+        "llm_calls": 0,
+        "llm_tokens": 0,
+        "evidence_count": 0,
+        "invalid_evidence_rate": null
+      },
+      "by_kind": {
+        "contradiction": {
+          "scenarios": 4,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 20,
+          "failure_counts": {
+            "answered_instead_of_clarifying": 4,
+            "state_mismatch:recommend": 4
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "course_level": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 59,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "course_practical": {
+          "scenarios": 14,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 67,
+          "failure_counts": {
+            "unacceptable_item_shown": 14
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_genre": {
+          "scenarios": 17,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 65,
+          "failure_counts": {
+            "unacceptable_item_shown": 17
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_multi": {
+          "scenarios": 20,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 92,
+          "failure_counts": {
+            "unacceptable_item_shown": 20
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_vague": {
+          "scenarios": 18,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 73,
+          "failure_counts": {
+            "unacceptable_item_shown": 18
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "domain_switch": {
+          "scenarios": 13,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 65,
+          "failure_counts": {
+            "unacceptable_item_shown": 13
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "exclusion_genre": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 57,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "incremental": {
+          "scenarios": 17,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 77,
+          "failure_counts": {
+            "unacceptable_item_shown": 17
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "mood_evening": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 40,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "more_variants": {
+          "scenarios": 13,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 59,
+          "failure_counts": {
+            "unacceptable_item_shown": 13
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "navigation_title": {
+          "scenarios": 13,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 65,
+          "failure_counts": {
+            "unacceptable_item_shown": 13
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "no_result": {
+          "scenarios": 4,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 20,
+          "failure_counts": {
+            "results_where_none_exist": 4,
+            "state_mismatch:recommend": 4
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "release_constraint": {
+          "scenarios": 9,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 44,
+          "failure_counts": {
+            "unacceptable_item_shown": 9
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "similar_seed": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 42,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "tone_negation": {
+          "scenarios": 10,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 48,
+          "failure_counts": {
+            "unacceptable_item_shown": 10
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        }
+      }
+    },
+    "popularity": {
+      "summary": {
+        "scenarios": 200,
+        "success_rate": 0.0,
+        "final_success_rate": 0.0,
+        "mean_slate_size": 5.0,
+        "mean_clarifications": 0.0,
+        "hard_constraint_violations": 896,
+        "failure_counts": {
+          "answered_instead_of_clarifying": 4,
+          "results_where_none_exist": 4,
+          "state_mismatch:recommend": 8,
+          "unacceptable_item_shown": 192
+        },
+        "latency_p50_ms": null,
+        "latency_p95_ms": null,
+        "llm_calls": 0,
+        "llm_tokens": 0,
+        "evidence_count": 0,
+        "invalid_evidence_rate": null
+      },
+      "by_kind": {
+        "contradiction": {
+          "scenarios": 4,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 20,
+          "failure_counts": {
+            "answered_instead_of_clarifying": 4,
+            "state_mismatch:recommend": 4
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "course_level": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 60,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "course_practical": {
+          "scenarios": 14,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 70,
+          "failure_counts": {
+            "unacceptable_item_shown": 14
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_genre": {
+          "scenarios": 17,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 63,
+          "failure_counts": {
+            "unacceptable_item_shown": 17
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_multi": {
+          "scenarios": 20,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 95,
+          "failure_counts": {
+            "unacceptable_item_shown": 20
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_vague": {
+          "scenarios": 18,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 76,
+          "failure_counts": {
+            "unacceptable_item_shown": 18
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "domain_switch": {
+          "scenarios": 13,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 65,
+          "failure_counts": {
+            "unacceptable_item_shown": 13
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "exclusion_genre": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 57,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "incremental": {
+          "scenarios": 17,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 80,
+          "failure_counts": {
+            "unacceptable_item_shown": 17
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "mood_evening": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 37,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "more_variants": {
+          "scenarios": 13,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 61,
+          "failure_counts": {
+            "unacceptable_item_shown": 13
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "navigation_title": {
+          "scenarios": 13,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 65,
+          "failure_counts": {
+            "unacceptable_item_shown": 13
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "no_result": {
+          "scenarios": 4,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 20,
+          "failure_counts": {
+            "results_where_none_exist": 4,
+            "state_mismatch:recommend": 4
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "release_constraint": {
+          "scenarios": 9,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 44,
+          "failure_counts": {
+            "unacceptable_item_shown": 9
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "similar_seed": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 38,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "tone_negation": {
+          "scenarios": 10,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 45,
+          "failure_counts": {
+            "unacceptable_item_shown": 10
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        }
+      }
+    },
+    "platform_quality": {
+      "summary": {
+        "scenarios": 200,
+        "success_rate": 0.0,
+        "final_success_rate": 0.0,
+        "mean_slate_size": 5.0,
+        "mean_clarifications": 0.0,
+        "hard_constraint_violations": 881,
+        "failure_counts": {
+          "answered_instead_of_clarifying": 4,
+          "results_where_none_exist": 4,
+          "state_mismatch:recommend": 8,
+          "unacceptable_item_shown": 192
+        },
+        "latency_p50_ms": null,
+        "latency_p95_ms": null,
+        "llm_calls": 0,
+        "llm_tokens": 0,
+        "evidence_count": 0,
+        "invalid_evidence_rate": null
+      },
+      "by_kind": {
+        "contradiction": {
+          "scenarios": 4,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 20,
+          "failure_counts": {
+            "answered_instead_of_clarifying": 4,
+            "state_mismatch:recommend": 4
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "course_level": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 60,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "course_practical": {
+          "scenarios": 14,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 70,
+          "failure_counts": {
+            "unacceptable_item_shown": 14
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_genre": {
+          "scenarios": 17,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 65,
+          "failure_counts": {
+            "unacceptable_item_shown": 17
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_multi": {
+          "scenarios": 20,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 91,
+          "failure_counts": {
+            "unacceptable_item_shown": 20
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_vague": {
+          "scenarios": 18,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 76,
+          "failure_counts": {
+            "unacceptable_item_shown": 18
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "domain_switch": {
+          "scenarios": 13,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 65,
+          "failure_counts": {
+            "unacceptable_item_shown": 13
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "exclusion_genre": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 59,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "incremental": {
+          "scenarios": 17,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 76,
+          "failure_counts": {
+            "unacceptable_item_shown": 17
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "mood_evening": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 29,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "more_variants": {
+          "scenarios": 13,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 62,
+          "failure_counts": {
+            "unacceptable_item_shown": 13
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "navigation_title": {
+          "scenarios": 13,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 65,
+          "failure_counts": {
+            "unacceptable_item_shown": 13
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "no_result": {
+          "scenarios": 4,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 20,
+          "failure_counts": {
+            "results_where_none_exist": 4,
+            "state_mismatch:recommend": 4
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "release_constraint": {
+          "scenarios": 9,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 43,
+          "failure_counts": {
+            "unacceptable_item_shown": 9
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "similar_seed": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 36,
+          "failure_counts": {
+            "unacceptable_item_shown": 12
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "tone_negation": {
+          "scenarios": 10,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 44,
+          "failure_counts": {
+            "unacceptable_item_shown": 10
+          },
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        }
+      }
+    },
+    "current": {
+      "summary": {
+        "scenarios": 200,
+        "success_rate": 0.39,
+        "final_success_rate": 0.395,
+        "mean_slate_size": 3.43,
+        "mean_clarifications": 0.375,
+        "hard_constraint_violations": 69,
+        "failure_counts": {
+          "answered_instead_of_clarifying": 4,
+          "empty_recommendation": 58,
+          "hard_constraint_violation": 19,
+          "incomplete_slate": 1,
+          "intermediate_state_mismatch": 3,
+          "state_mismatch:clarify": 57,
+          "state_mismatch:no_results": 1,
+          "state_mismatch:recommend": 4,
+          "unacceptable_item_shown": 59
+        },
+        "latency_p50_ms": 1.91,
+        "latency_p95_ms": 3.1,
+        "llm_calls": 0,
+        "llm_tokens": 0,
+        "evidence_count": 4054,
+        "invalid_evidence_rate": 0.0
+      },
+      "by_kind": {
+        "contradiction": {
+          "scenarios": 4,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 20,
+          "failure_counts": {
+            "answered_instead_of_clarifying": 4,
+            "hard_constraint_violation": 4,
+            "state_mismatch:recommend": 4
+          },
+          "latency_p50_ms": 2.2,
+          "latency_p95_ms": 2.75,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 78,
+          "invalid_evidence_rate": 0.0
+        },
+        "course_level": {
+          "scenarios": 12,
+          "success_rate": 0.25,
+          "final_success_rate": 0.25,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {
+            "unacceptable_item_shown": 9
+          },
+          "latency_p50_ms": 1.98,
+          "latency_p95_ms": 3.04,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 277,
+          "invalid_evidence_rate": 0.0
+        },
+        "course_practical": {
+          "scenarios": 14,
+          "success_rate": 0.07142857142857142,
+          "final_success_rate": 0.07142857142857142,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 23,
+          "failure_counts": {
+            "hard_constraint_violation": 9,
+            "unacceptable_item_shown": 13
+          },
+          "latency_p50_ms": 2.2,
+          "latency_p95_ms": 3.32,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 327,
+          "invalid_evidence_rate": 0.0
+        },
+        "discovery_genre": {
+          "scenarios": 17,
+          "success_rate": 0.058823529411764705,
+          "final_success_rate": 0.058823529411764705,
+          "mean_slate_size": 0.5882352941176471,
+          "mean_clarifications": 0.8823529411764706,
+          "hard_constraint_violations": 0,
+          "failure_counts": {
+            "empty_recommendation": 15,
+            "state_mismatch:clarify": 15,
+            "unacceptable_item_shown": 1
+          },
+          "latency_p50_ms": 1.12,
+          "latency_p95_ms": 2.29,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 46,
+          "invalid_evidence_rate": 0.0
+        },
+        "discovery_multi": {
+          "scenarios": 20,
+          "success_rate": 0.95,
+          "final_success_rate": 0.95,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {
+            "unacceptable_item_shown": 1
+          },
+          "latency_p50_ms": 2.14,
+          "latency_p95_ms": 3.1,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 398,
+          "invalid_evidence_rate": 0.0
+        },
+        "discovery_vague": {
+          "scenarios": 18,
+          "success_rate": 0.2222222222222222,
+          "final_success_rate": 0.2222222222222222,
+          "mean_slate_size": 1.3888888888888888,
+          "mean_clarifications": 1.7222222222222223,
+          "hard_constraint_violations": 0,
+          "failure_counts": {
+            "empty_recommendation": 13,
+            "state_mismatch:clarify": 13,
+            "unacceptable_item_shown": 1
+          },
+          "latency_p50_ms": 1.02,
+          "latency_p95_ms": 1.98,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 112,
+          "invalid_evidence_rate": 0.0
+        },
+        "domain_switch": {
+          "scenarios": 13,
+          "success_rate": 0.3076923076923077,
+          "final_success_rate": 0.3076923076923077,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {
+            "intermediate_state_mismatch": 1,
+            "unacceptable_item_shown": 9
+          },
+          "latency_p50_ms": 1.92,
+          "latency_p95_ms": 3.21,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 541,
+          "invalid_evidence_rate": 0.0
+        },
+        "exclusion_genre": {
+          "scenarios": 12,
+          "success_rate": 0.5,
+          "final_success_rate": 0.5,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 5,
+          "failure_counts": {
+            "hard_constraint_violation": 1,
+            "unacceptable_item_shown": 6
+          },
+          "latency_p50_ms": 2.19,
+          "latency_p95_ms": 3.4,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 217,
+          "invalid_evidence_rate": 0.0
+        },
+        "incremental": {
+          "scenarios": 17,
+          "success_rate": 0.7058823529411765,
+          "final_success_rate": 0.7058823529411765,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {
+            "unacceptable_item_shown": 5
+          },
+          "latency_p50_ms": 2.11,
+          "latency_p95_ms": 3.51,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 774,
+          "invalid_evidence_rate": 0.0
+        },
+        "mood_evening": {
+          "scenarios": 12,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 0.0,
+          "mean_clarifications": 1.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {
+            "empty_recommendation": 12,
+            "state_mismatch:clarify": 12
+          },
+          "latency_p50_ms": 1.11,
+          "latency_p95_ms": 1.71,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "more_variants": {
+          "scenarios": 13,
+          "success_rate": 0.5384615384615384,
+          "final_success_rate": 0.5384615384615384,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {
+            "unacceptable_item_shown": 6
+          },
+          "latency_p50_ms": 2.1,
+          "latency_p95_ms": 2.57,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 607,
+          "invalid_evidence_rate": 0.0
+        },
+        "navigation_title": {
+          "scenarios": 13,
+          "success_rate": 0.0,
+          "final_success_rate": 0.0,
+          "mean_slate_size": 0.0,
+          "mean_clarifications": 1.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {
+            "empty_recommendation": 13,
+            "state_mismatch:clarify": 13
+          },
+          "latency_p50_ms": 1.09,
+          "latency_p95_ms": 1.56,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "no_result": {
+          "scenarios": 4,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 0.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": 1.77,
+          "latency_p95_ms": 2.39,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "release_constraint": {
+          "scenarios": 9,
+          "success_rate": 0.6666666666666666,
+          "final_success_rate": 0.7777777777777778,
+          "mean_slate_size": 4.444444444444445,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {
+            "empty_recommendation": 1,
+            "intermediate_state_mismatch": 2,
+            "state_mismatch:no_results": 1,
+            "unacceptable_item_shown": 1
+          },
+          "latency_p50_ms": 1.74,
+          "latency_p95_ms": 2.76,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 304,
+          "invalid_evidence_rate": 0.0
+        },
+        "similar_seed": {
+          "scenarios": 12,
+          "success_rate": 0.5,
+          "final_success_rate": 0.5,
+          "mean_slate_size": 3.0,
+          "mean_clarifications": 0.3333333333333333,
+          "hard_constraint_violations": 1,
+          "failure_counts": {
+            "empty_recommendation": 4,
+            "hard_constraint_violation": 1,
+            "incomplete_slate": 1,
+            "state_mismatch:clarify": 4,
+            "unacceptable_item_shown": 2
+          },
+          "latency_p50_ms": 2.52,
+          "latency_p95_ms": 4.26,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 184,
+          "invalid_evidence_rate": 0.0
+        },
+        "tone_negation": {
+          "scenarios": 10,
+          "success_rate": 0.5,
+          "final_success_rate": 0.5,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 20,
+          "failure_counts": {
+            "hard_constraint_violation": 4,
+            "unacceptable_item_shown": 5
+          },
+          "latency_p50_ms": 2.05,
+          "latency_p95_ms": 2.66,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 189,
+          "invalid_evidence_rate": 0.0
+        }
+      }
+    },
+    "oracle": {
+      "summary": {
+        "scenarios": 200,
+        "success_rate": 1.0,
+        "final_success_rate": 1.0,
+        "mean_slate_size": 4.535,
+        "mean_clarifications": 0.0,
+        "hard_constraint_violations": 0,
+        "failure_counts": {},
+        "latency_p50_ms": null,
+        "latency_p95_ms": null,
+        "llm_calls": 0,
+        "llm_tokens": 0,
+        "evidence_count": 0,
+        "invalid_evidence_rate": null
+      },
+      "by_kind": {
+        "contradiction": {
+          "scenarios": 4,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 0.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "course_level": {
+          "scenarios": 12,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "course_practical": {
+          "scenarios": 14,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_genre": {
+          "scenarios": 17,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_multi": {
+          "scenarios": 20,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 4.95,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "discovery_vague": {
+          "scenarios": 18,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "domain_switch": {
+          "scenarios": 13,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "exclusion_genre": {
+          "scenarios": 12,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "incremental": {
+          "scenarios": 17,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "mood_evening": {
+          "scenarios": 12,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "more_variants": {
+          "scenarios": 13,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "navigation_title": {
+          "scenarios": 13,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 1.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "no_result": {
+          "scenarios": 4,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 0.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "release_constraint": {
+          "scenarios": 9,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "similar_seed": {
+          "scenarios": 12,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        },
+        "tone_negation": {
+          "scenarios": 10,
+          "success_rate": 1.0,
+          "final_success_rate": 1.0,
+          "mean_slate_size": 5.0,
+          "mean_clarifications": 0.0,
+          "hard_constraint_violations": 0,
+          "failure_counts": {},
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "llm_calls": 0,
+          "llm_tokens": 0,
+          "evidence_count": 0,
+          "invalid_evidence_rate": null
+        }
+      }
+    }
+  },
+  "paired_final_success": {
+    "current_minus_random": {
+      "delta_success_rate": 0.395,
+      "ci95": [
+        0.32142857142857145,
+        0.4719626168224299
+      ],
+      "resamples": 1000,
+      "seed": 42,
+      "clusters": 135,
+      "resampling_unit": "user_id"
+    },
+    "current_minus_popularity": {
+      "delta_success_rate": 0.395,
+      "ci95": [
+        0.32142857142857145,
+        0.4719626168224299
+      ],
+      "resamples": 1000,
+      "seed": 42,
+      "clusters": 135,
+      "resampling_unit": "user_id"
+    },
+    "current_minus_platform_quality": {
+      "delta_success_rate": 0.395,
+      "ci95": [
+        0.32142857142857145,
+        0.4719626168224299
+      ],
+      "resamples": 1000,
+      "seed": 42,
+      "clusters": 135,
+      "resampling_unit": "user_id"
+    }
+  },
+  "limitations": [
+    "Synthetic cold-start dialogues: no real Recsflow integration or user-history experiment.",
+    "Fixed utterance replay, without extra replies to final clarifications; not an adaptive simulator.",
+    "platform_quality is DemoProvider without query filters, not measured Recsflow quality.",
+    "Final-success comparisons use identical final criteria; full success also checks agent trajectory and slate size.",
+    "Evidence validation reuses the product checker; it is not an independent audit of explanation text.",
+    "Latency is sequential local execution, not HTTP load; zero calls in rules mode do not measure LLM speed.",
+    "Holdout shares template families with dev; only profiles and scenario sampling are separated."
+  ],
+  "command": [
+    "python",
+    "-m",
+    "scripts.evaluate_baselines",
+    "--check",
+    "--summary-output",
+    "report/baseline-dev.json"
+  ]
+}
