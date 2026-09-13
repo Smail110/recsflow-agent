@@ -1,15 +1,27 @@
+import os
+import subprocess
+import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 
 from recagent.agent import Agent
 from recagent.api import create_app
-from recagent.catalog import generate_catalog
-from recagent.grounding import validate_evidence
+from recagent.catalog import CATALOG_SIZE, catalog_sha256, generate_catalog
+from recagent.grounding import explain, validate_evidence
 from recagent.models import ChatRequest, Evidence, Query
 from recagent.providers import DemoProvider
+
+_SRC = Path(__file__).resolve().parents[1] / "src"
+
+
+def _seed_title(genre="детектив", kind="series"):
+    """Реальное название из каталога. Хардкодить названия нельзя: каталог генерируется."""
+    item = next(i for i in generate_catalog(42) if i.genre == genre and i.kind == kind)
+    return item.title
 
 
 def chat(agent, text, sid=None, user="new-user"):
@@ -19,7 +31,19 @@ def chat(agent, text, sid=None, user="new-user"):
 def test_catalog_reproducible():
     assert generate_catalog(42) == generate_catalog(42)
     assert generate_catalog(42) != generate_catalog(43)
-    assert len(generate_catalog()) == 84
+    assert len(generate_catalog()) == CATALOG_SIZE == 3000
+
+
+def test_catalog_deterministic_across_processes():
+    """Отпечаток совпадает между процессами, а не только внутри одного.
+
+    Сравнение объектов в одном процессе не поймало бы зависимость от порядка
+    обхода словаря или от случайного hash-сида Python: PYTHONHASHSEED различается
+    между запусками. Поэтому второй отпечаток считается в отдельном процессе.
+    """
+    code = "from recagent.catalog import catalog_sha256; print(catalog_sha256(42))"
+    out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True, env={**os.environ, "PYTHONPATH": str(_SRC)})
+    assert out.stdout.strip() == catalog_sha256(42)
 
 
 def test_negation_with_qualifier():
@@ -84,21 +108,46 @@ def test_grounding_rejects_forgery_and_no_fake_history():
 
 
 def test_history_exclusion_and_personalization():
-    result = chat(Agent(mode="rules"), "Лёгкий детективный сериал", user="demo")
-    assert all(r.item.id not in ("demo-009", "demo-013") for r in result.recommendations)
+    provider = DemoProvider()
+    history_ids = set(provider.history("demo"))
+    # Если история пуста, тест вырождается в проверку «ничего не исключено».
+    assert history_ids, "демо-профиль обязан иметь историю, иначе персонализация не проверяется"
+
+    result = chat(Agent(provider=provider, mode="rules"), "Лёгкий детективный сериал", user="demo")
+    assert all(r.item.id not in history_ids for r in result.recommendations)
     assert any(e.relation == "history" for r in result.recommendations for e in r.evidence)
+    # evidence про историю обязан ссылаться на объект, который реально в истории
+    assert all(e.source_item_id in history_ids for r in result.recommendations for e in r.evidence if e.relation == "history")
+
+
+def test_unknown_seasons_do_not_break_explanation():
+    """Объект с неизвестным числом сезонов объясняется, а не роняет запрос.
+
+    null = «нет данных»: про такой атрибут нельзя ни утверждать, ни падать.
+    """
+    item = next(i for i in generate_catalog(42) if i.kind == "series" and i.seasons is None)
+    rec = explain(item, Query(kind="series"), [], 0.5)
+    assert rec.explanation and "Сезонов" not in rec.explanation
+    assert all(e.value is not None for e in rec.evidence)
+    assert not any(e.field == "seasons" for e in rec.evidence)
 
 
 def test_seed_and_missing_seed():
+    title = _seed_title()
     agent = Agent(mode="rules")
-    result = chat(agent, "Сериал похожий на «Тайна старого маяка»")
+    result = chat(agent, f"Сериал похожий на «{title}»")
     assert result.recommendations
     assert result.recommendations[0].item.genre == "детектив"
-    assert all(r.item.title != "Тайна старого маяка" for r in result.recommendations)
+    assert all(r.item.title != title for r in result.recommendations)
     assert any(e.relation == "seed" for e in result.recommendations[0].evidence)
+
     result = chat(Agent(mode="rules"), "Сериал похожий на «Неизвестный сериал»")
     assert result.state == "clarify" and not result.recommendations
-    result = chat(Agent(mode="rules"), "Сериал похожий на «Тайну старого маяка»")
+
+    # Опечатка в одном символе. Падежное склонение процедурных названий не
+    # гарантировано, поэтому проверяем устойчивость к опечатке, а не к падежу.
+    typo = title[:-2] + ("ж" if title[-1] != "ж" else "ш") + title[-1]
+    result = chat(Agent(mode="rules"), f"Сериал похожий на «{typo}»")
     assert result.recommendations and result.recommendations[0].item.genre == "детектив"
 
 

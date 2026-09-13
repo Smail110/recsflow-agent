@@ -35,6 +35,7 @@ def matches(item: Item, query: Query) -> bool:
 class DemoProvider:
     def __init__(self, items: list[Item] | None = None):
         self.items = {i.id: i for i in (items if items is not None else generate_catalog())}
+        self._demo_history: list[str] = []
 
     def retrieve(self, user_id: str, query: Query, limit: int = 100) -> list[str]:
         # A real adapter maps its platform's retrieval here; hard filters are checked again by the agent.
@@ -45,8 +46,20 @@ class DemoProvider:
         return [self.items[i] for i in item_ids if i in self.items]
 
     def history(self, user_id: str) -> list[str]:
-        # Only the explicitly labelled demo profile has synthetic history.
-        return ["demo-009", "demo-013"] if user_id == "demo" else []
+        """История демо-профиля. У любого другого пользователя истории нет.
+
+        Id не захардкожены: каталог перегенерируется, и фиксированный id молча
+        перестал бы существовать (lookup отфильтровал бы его, история стала пустой,
+        а персонализация и исключение просмотренного тихо отключились бы). Поэтому
+        история выводится из самого каталога и детерминирована.
+        """
+        if user_id != "demo":
+            return []
+        if not self._demo_history:
+            detective = [i.id for i in self.items.values() if i.genre == "детектив"][:2]
+            comedy = [i.id for i in self.items.values() if i.genre == "комедия"][:1]
+            self._demo_history = detective + comedy
+        return list(self._demo_history)
 
     def find_title(self, title: str) -> Item | None:
         normalized = title.strip().casefold().replace("ё", "е")

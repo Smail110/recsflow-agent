@@ -31,7 +31,11 @@ class Item(StrictModel):
     minutes: int
     level: str | None = None
     practical: bool | None = None
+    year: int | None = Field(default=None, ge=1888, le=2100)
     quality: float = Field(ge=0, le=1)
+    # Число взаимодействий с объектом. Нужно b0-популярностному бейзлайну и фичам
+    # реранкера. Платформа может его не отдавать — тогда None, и это «нет данных».
+    popularity: int | None = Field(default=None, ge=0)
     description: str
     synthetic: bool = True
 

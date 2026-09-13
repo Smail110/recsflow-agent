@@ -23,3 +23,12 @@ data/raw/
 
 # Local-only evaluation runs
 report/*-local.json
+
+# Local files unrelated to this project (VPN/proxy configs).
+# THEY CONTAIN LIVE CREDENTIALS: passwords, private keys, UUIDs.
+# Never commit. Created by other tooling in this folder, not by RecAgent.
+remnanode_optimized.json
+xray_client_fixed.json
+*_optimized.json
+xray_client_*.json
+remnanode_*.json

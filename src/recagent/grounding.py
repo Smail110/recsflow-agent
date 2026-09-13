@@ -5,6 +5,8 @@ def validate_evidence(evidence: Evidence, item: Item, query: Query, history: lis
     if evidence.item_id != item.id or evidence.field not in Item.model_fields:
         return False
     value = getattr(item, evidence.field)
+    if value is None or evidence.value is None:
+        return False
     if type(value) is not type(evidence.value) or value != evidence.value:
         return False
     if evidence.relation == "history":
@@ -23,7 +25,15 @@ def validate_evidence(evidence: Evidence, item: Item, query: Query, history: lis
 def explain(item: Item, query: Query, history: list[Item], score: float, seed: Item | None = None) -> Recommendation:
     claims = []
     def add(field, sentence, relation="catalog", source=None):
-        evidence = Evidence(item_id=item.id, field=field, value=getattr(item, field), relation=relation, source_item_id=source)
+        value = getattr(item, field)
+        if value is None:
+            # Атрибут неизвестен — утверждать про него нечего. Это та же семантика,
+            # что зафиксирована в контракте: null означает «нет данных», а не
+            # «совпало с ограничением». Прежняя версия строила Evidence с value=None,
+            # и pydantic падал с ValidationError, то есть запрос с объектом без
+            # известного числа сезонов ломал весь ответ вместо пропуска одной фразы.
+            return
+        evidence = Evidence(item_id=item.id, field=field, value=value, relation=relation, source_item_id=source)
         if validate_evidence(evidence, item, query, history, seed):
             claims.append((sentence, evidence))
     add("genre", f"Жанр: {item.genre}.", "request" if query.genre else "catalog")

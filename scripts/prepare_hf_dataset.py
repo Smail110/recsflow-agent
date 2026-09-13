@@ -1,12 +1,19 @@
 """Create an auditable intent dataset. Demo mode is synthetic and is not a training claim."""
+
 import argparse
 import json
 import random
 from pathlib import Path
 
+from recagent.catalog import generate_catalog
+
+# Названия берутся из каталога, а не из строки: каталог перегенерируется, и
+# зашитое название перестало бы существовать, оставив датасет с мёртвой ссылкой.
+CATALOG_TITLES = tuple(i.title for i in generate_catalog(42))
+
 TEMPLATES = {
     "discovery": ["Подбери {kind} {genre}", "Что посмотреть сегодня?", "Хочу {genre} без лишней мрачности"],
-    "similar": ["Найди похожее на Тайна старого маяка", "Что-то в духе этого сериала"],
+    "similar": ["Найди похожее на {title}", "Что-то в духе этого сериала"],
     "mood": ["Хочу лёгкое на вечер", "Подбери что-нибудь после тяжёлого дня"],
     "navigation": ["Покажи в каталоге {genre}", "Найди курс по {genre}"],
 }
@@ -20,7 +27,8 @@ def build(seed=42, examples_per_label=40):
     for label, templates in TEMPLATES.items():
         for _ in range(examples_per_label):
             template = rng.choice(templates)
-            rows.append({"text": template.format(kind=rng.choice(kinds), genre=rng.choice(genres)), "label": label, "synthetic": True, "seed": seed})
+            text = template.format(kind=rng.choice(kinds), genre=rng.choice(genres), title=rng.choice(CATALOG_TITLES))
+            rows.append({"text": text, "label": label, "synthetic": True, "seed": seed})
     rng.shuffle(rows)
     return rows
 
@@ -38,4 +46,3 @@ if __name__ == "__main__":
     rows = build(args.seed, args.examples_per_label)
     path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in rows) + "\n", encoding="utf-8")
     print(f"Wrote {len(rows)} synthetic rows to {path}. This is a dry-run dataset, not real user data.")
-
