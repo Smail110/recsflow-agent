@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "dataset_id": "product-llm-first-dev-v2",
+  "status": "frozen_dev_only_before_inference",
+  "origin": "ai_authored",
+  "split": "dev",
+  "supersedes": "product-llm-first-dev-v1",
+  "semantic_correction": "Tone exclusion is not a positive light-tone constraint. The v1 before report is retained; it is rescored under this fixture without new inference.",
+  "catalog": {
+    "seed": 42,
+    "known_titles": {
+      "navigation": {"id": "it-00022", "title": "Декоратор в проде", "kind": "course"},
+      "similar": {"id": "it-00054", "title": "Северный кэш", "kind": "course"}
+    }
+  },
+  "model": {
+    "name": "qwen3:8b",
+    "expected_digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+    "ollama_version_before": "0.17.4",
+    "base_url": "http://127.0.0.1:11434"
+  },
+  "configuration": {
+    "mode": "ollama",
+    "question_policy": "adaptive",
+    "max_questions": 3,
+    "history": "cold_start"
+  },
+  "limitations": [
+    "Synthetic diagnostic product cohort; it is not human-authored data, traffic, a blind holdout or a model comparison.",
+    "Only literal non-membership against public v2 dev utterances is checked for unseen paraphrases; it does not prove linguistic independence.",
+    "The cohort has no theta-based utility claim. Recommendation checks use independently written spoken constraints and catalog membership."
+  ],
+  "dialogues": [
+    {
+      "id": "mandatory-quoted-course-python",
+      "tags": ["mandatory", "course_topic", "quoted"],
+      "turns": [
+        {"user": "Найти курс по теме «python».", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python"}, "spoken": {"kind": "course", "genre": "python"}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "mandatory-unquoted-course-python",
+      "tags": ["mandatory", "course_topic", "unquoted"],
+      "turns": [
+        {"user": "Найти курс по теме python.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python"}, "spoken": {"kind": "course", "genre": "python"}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "mandatory-practical-python",
+      "tags": ["mandatory", "course_practical"],
+      "turns": [
+        {"user": "Найди что-нибудь практическое по Python.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python", "practical": true}, "spoken": {"kind": "course", "genre": "python", "practical": true}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "mandatory-middle-resolution",
+      "tags": ["mandatory", "unsupported_level", "resolution"],
+      "turns": [
+        {"user": "Ищу курс уровня middle.", "expected_state": "clarify", "expected_query": {"intent": "discovery", "kind": "course"}, "forbidden_query": {"level": "начальный"}, "spoken": {"kind": "course"}, "recommendation_exists": false},
+        {"user": "Тогда начальный курс по Python.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python", "level": "начальный"}, "spoken": {"kind": "course", "genre": "python", "level": "начальный"}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "mandatory-navigation-known-title",
+      "tags": ["mandatory", "navigation", "literal_title"],
+      "turns": [
+        {"user": "Найди «Декоратор в проде».", "expected_state": "recommend", "expected_query": {"intent": "navigation", "seed_title": "Декоратор в проде", "kind": "course"}, "spoken": {"named_title": "Декоратор в проде"}, "recommendation_exists": true, "exact_recommendation_ids": ["it-00022"]}
+      ]
+    },
+    {
+      "id": "mandatory-similar-known-title",
+      "tags": ["mandatory", "similar", "literal_title"],
+      "turns": [
+        {"user": "Найди похожее на «Северный кэш».", "expected_state": "recommend", "expected_query": {"intent": "similar", "seed_title": "Северный кэш", "kind": "course"}, "spoken": {"kind": "course", "seed_title": "Северный кэш"}, "recommendation_exists": true, "forbidden_recommendation_ids": ["it-00054"]}
+      ]
+    },
+    {
+      "id": "unseen-course-topic-after-quote",
+      "tags": ["unseen_paraphrase", "course_topic", "quoted"],
+      "turns": [
+        {"user": "Подберите курс «python» по теме с заданиями.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python", "practical": true}, "spoken": {"kind": "course", "genre": "python", "practical": true}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "unseen-learning-topic-ml",
+      "tags": ["unseen_paraphrase", "course_topic", "quoted"],
+      "turns": [
+        {"user": "Хочу изучать тему «машинное обучение» на курсе с заданиями.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "машинное обучение", "practical": true}, "spoken": {"kind": "course", "genre": "машинное обучение", "practical": true}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "unseen-python-beginner",
+      "tags": ["unseen_paraphrase", "course_level"],
+      "turns": [
+        {"user": "Нужна программа обучения Python для начинающих.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python", "level": "начальный"}, "spoken": {"kind": "course", "genre": "python", "level": "начальный"}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "unseen-ml-advanced",
+      "tags": ["unseen_paraphrase", "course_level"],
+      "turns": [
+        {"user": "Подберите обучение по машинному обучению для опытного специалиста.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "машинное обучение", "level": "продвинутый"}, "spoken": {"kind": "course", "genre": "машинное обучение", "level": "продвинутый"}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "unseen-python-no-practice",
+      "tags": ["unseen_paraphrase", "course_practical"],
+      "turns": [
+        {"user": "Ищу курс по Python без практики.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python", "practical": false}, "spoken": {"kind": "course", "genre": "python", "practical": false}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "unseen-middle-python-resolution",
+      "tags": ["unseen_paraphrase", "unsupported_level", "resolution"],
+      "turns": [
+        {"user": "Нужна программа по Python для middle-разработчика.", "expected_state": "clarify", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python"}, "forbidden_query": {"level": "начальный"}, "spoken": {"kind": "course", "genre": "python"}, "recommendation_exists": false},
+        {"user": "Тогда для начинающего.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python", "level": "начальный"}, "spoken": {"kind": "course", "genre": "python", "level": "начальный"}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "unseen-python-practical",
+      "tags": ["unseen_paraphrase", "course_practical"],
+      "turns": [
+        {"user": "Хочу освоить Python на практическом курсе.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python", "practical": true}, "spoken": {"kind": "course", "genre": "python", "practical": true}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "unseen-ml-beginner",
+      "tags": ["unseen_paraphrase", "course_level"],
+      "turns": [
+        {"user": "Покажите курс по машинному обучению начального уровня.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "машинное обучение", "level": "начальный"}, "spoken": {"kind": "course", "genre": "машинное обучение", "level": "начальный"}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "regression-genre-conflict-resolution",
+      "tags": ["regression", "contradiction", "resolution"],
+      "turns": [
+        {"user": "Нужен фильм-комедия, но комедии не предлагайте.", "expected_state": "clarify", "spoken": {"kind": "film", "genre": "комедия", "excluded_genres": ["комедия"]}, "recommendation_exists": false},
+        {"user": "Оставьте комедии, нужен фильм.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "film", "genre": "комедия"}, "spoken": {"kind": "film", "genre": "комедия"}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "regression-consistent-no-result",
+      "tags": ["regression", "no_result"],
+      "turns": [
+        {"user": "Найди фильм-комедию не дольше 1 минуты.", "expected_state": "no_results", "expected_query": {"intent": "discovery", "kind": "film", "genre": "комедия", "max_minutes": 1}, "spoken": {"kind": "film", "genre": "комедия", "max_minutes": 1}, "recommendation_exists": false}
+      ]
+    },
+    {
+      "id": "regression-domain-switch",
+      "tags": ["regression", "domain_switch"],
+      "turns": [
+        {"user": "Хочу фильм-комедию.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "film", "genre": "комедия"}, "spoken": {"kind": "film", "genre": "комедия"}, "recommendation_exists": true},
+        {"user": "Нет, теперь хочу курс по Python.", "expected_state": "recommend", "expected_query": {"intent": "discovery", "kind": "course", "genre": "python"}, "spoken": {"kind": "course", "genre": "python"}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "regression-tone-exclusion",
+      "tags": ["regression", "tone_negation", "resolution", "legacy_intent_label_ambiguous"],
+      "turns": [
+        {"user": "Нужен фильм не мрачный.", "expected_state": "clarify", "expected_query": {"kind": "film"}, "forbidden_query": {"tone": "лёгкий"}, "legacy_label_note": "intent discovery versus mood is not a ground-truth distinction for this wording", "spoken": {"kind": "film", "excluded_tones": ["мрачный"]}, "recommendation_exists": false},
+        {"user": "Пусть будет детектив.", "expected_state": "recommend", "expected_query": {"kind": "film", "genre": "детектив"}, "forbidden_query": {"tone": "лёгкий"}, "legacy_label_note": "intent discovery versus mood is not a ground-truth distinction for this wording", "spoken": {"kind": "film", "genre": "детектив", "excluded_tones": ["мрачный"]}, "recommendation_exists": true}
+      ]
+    },
+    {
+      "id": "missing-navigation-title",
+      "tags": ["literal_title", "missing_metadata"],
+      "turns": [
+        {"user": "Найди «Несуществующий курс по Python».", "expected_state": "clarify", "expected_query": {"intent": "navigation", "seed_title": "Несуществующий курс по Python"}, "spoken": {}, "recommendation_exists": false}
+      ]
+    },
+    {
+      "id": "missing-similar-title",
+      "tags": ["literal_title", "missing_metadata"],
+      "turns": [
+        {"user": "Найди похожее на «Несуществующий учебник».", "expected_state": "clarify", "expected_query": {"intent": "similar", "seed_title": "Несуществующий учебник"}, "spoken": {}, "recommendation_exists": false}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+**
+!Dockerfile
+!requirements.txt
+!requirements-lock.txt
+!src/
+!src/**
+!app.py
+!.streamlit/
+!.streamlit/config.toml
+!docs/
+!docs/contract/
+!docs/contract/**
+!configs/
+!configs/workflow-v2.yaml
+!configs/customers/
+!configs/customers/**
+**/__pycache__/**

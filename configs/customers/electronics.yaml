@@ -1,0 +1,15 @@
+customer_id: electronics-mock
+version: "1"
+domain_id: electronics
+request_schema: ElectronicsQuery
+operations:
+  - recommend
+  - lookup
+capabilities:
+  - category_filter
+  - max_price_lte
+  - portable_filter
+field_mapping:
+  - [category, category]
+  - [max_price, price_rub]
+  - [portable, portable]

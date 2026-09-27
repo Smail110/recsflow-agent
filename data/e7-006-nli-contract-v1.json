@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "origin": "synthetic_ai_authored_nli_contract_pairs",
+  "purpose": "E7-006 fixed component replay. Labels are authored independently of NLI predictions and Query state.",
+  "pairs": [
+    {"id":"supported_light_paraphrase","category":"supported","eligible":true,"premise":"Ищу фильм с лёгким настроением.","hypothesis":"Пользователь требует лёгкий тон.","opposite_hypothesis":"Пользователь исключает лёгкий тон."},
+    {"id":"insufficient_light_basis","category":"unresolved_value_relation","eligible":true,"premise":"Ищу хороший фильм.","hypothesis":"Пользователь требует лёгкий тон.","opposite_hypothesis":"Пользователь исключает лёгкий тон."},
+    {"id":"contradicted_dark_set","category":"contradicted","eligible":true,"premise":"Не хочу мрачный сериал.","hypothesis":"Пользователь требует мрачный тон.","opposite_hypothesis":"Пользователь исключает мрачный тон."},
+    {"id":"supported_dark_exclude","category":"supported","eligible":true,"premise":"Не хочу мрачный сериал.","hypothesis":"Пользователь исключает мрачный тон.","opposite_hypothesis":"Пользователь требует мрачный тон."},
+    {"id":"scope_not_only_comedy","category":"scope_uncertainty","eligible":true,"premise":"Хочу фильм не только комедию.","hypothesis":"Пользователь требует комедию.","opposite_hypothesis":"Пользователь исключает комедию."},
+    {"id":"ambiguous_training_course","category":"unresolved_value_relation","eligible":true,"premise":"Нужно обучение Python.","hypothesis":"Пользователь ищет курс Python.","opposite_hypothesis":"Пользователь исключает курс Python."},
+    {"id":"supported_course_python","category":"supported","eligible":true,"premise":"Нужен курс по Python.","hypothesis":"Пользователь ищет курс Python.","opposite_hypothesis":"Пользователь исключает курс Python."},
+    {"id":"supported_no_practice","category":"supported","eligible":true,"premise":"Без практики, пожалуйста.","hypothesis":"Пользователь не хочет практический формат.","opposite_hypothesis":"Пользователь требует практический формат."},
+    {"id":"supported_pending_level","category":"supported","eligible":true,"premise":"В ответ на вопрос о уровне: начальный.","hypothesis":"Пользователь требует начальный уровень курса.","opposite_hypothesis":"Пользователь исключает начальный уровень курса."},
+    {"id":"unsupported_middle","category":"unsupported","eligible":false,"premise":"Нужен курс для middle-разработчика.","hypothesis":"Пользователь требует продвинутый уровень курса.","opposite_hypothesis":"Пользователь исключает продвинутый уровень курса."},
+    {"id":"invalid_evidence","category":"invalid_evidence","eligible":false,"premise":"Нужен курс Python.","hypothesis":"Пользователь требует практический формат.","opposite_hypothesis":"Пользователь не хочет практический формат."},
+    {"id":"safe_positive_control","category":"supported","eligible":true,"premise":"Ищу лёгкий детективный сериал.","hypothesis":"Пользователь ищет сериал детективного жанра.","opposite_hypothesis":"Пользователь исключает детективный жанр."}
+  ]
+}

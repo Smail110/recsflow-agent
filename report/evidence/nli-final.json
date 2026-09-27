@@ -1,0 +1,120 @@
+{
+  "decision": "REJECT_FOR_PRODUCT_STOP_EXPERIMENTS",
+  "default_changed": false,
+  "product_dev_contract_run": false,
+  "data_status": "Open synthetic V4 dev and previously inspected MASSIVE silver; exploratory, not independent.",
+  "synthetic": {
+    "baseline": {
+      "support_recall": 0.38405797101449274,
+      "support_denominator": 828,
+      "non_support_false_support": 185,
+      "non_support_denominator": 4140,
+      "wrong_citation_false_support": 30,
+      "wrong_citation_denominator": 2484
+    },
+    "adapted": {
+      "support_recall": 0.9782608695652174,
+      "support_denominator": 828,
+      "non_support_false_support": 381,
+      "non_support_denominator": 4140,
+      "wrong_citation_false_support": 94,
+      "wrong_citation_denominator": 2484
+    }
+  },
+  "external": {
+    "baseline": {
+      "groups": 985,
+      "support_recall": 0.6456852791878173,
+      "wrong_citation_false_support_rate": 0.7055837563451777,
+      "both_exact_rate": 0.06700507614213198,
+      "prediction_flip_rate": 0.20609137055837565,
+      "counts": {
+        "primary_support": 636,
+        "wrong_citation_support": 695,
+        "both_exact": 66,
+        "changed": 203
+      }
+    },
+    "adapted": {
+      "groups": 985,
+      "support_recall": 0.19390862944162437,
+      "wrong_citation_false_support_rate": 0.008121827411167513,
+      "both_exact_rate": 0.18781725888324874,
+      "prediction_flip_rate": 0.1918781725888325,
+      "counts": {
+        "primary_support": 191,
+        "wrong_citation_support": 8,
+        "both_exact": 185,
+        "changed": 189
+      }
+    }
+  },
+  "new_false_support_rows": 357,
+  "product_component_gate": {
+    "support_recall_gte_0_70": true,
+    "non_support_false_support_lte_0_10": true,
+    "wrong_citation_false_support_lte_0_01": false,
+    "false_support_not_increased": false,
+    "no_new_false_support_rows": false
+  },
+  "external_gate": {
+    "both_exact_improved": true,
+    "wrong_support_not_increased": true,
+    "recall_drop_lte_0_02": false
+  },
+  "all_component_gates_passed": false,
+  "paired_source_bootstrap": {
+    "seed": 42,
+    "samples": 1000,
+    "source_utterances": 422,
+    "delta": {
+      "both_exact": {
+        "point": 0.12081218274111676,
+        "percentile_95pct": [
+          0.0911854103343465,
+          0.15015015015015015
+        ]
+      },
+      "wrong_support": {
+        "point": -0.6974619289340102,
+        "percentile_95pct": [
+          -0.7318045862412762,
+          -0.6653061224489796
+        ]
+      },
+      "support_recall": {
+        "point": -0.4517766497461929,
+        "percentile_95pct": [
+          -0.4904904904904905,
+          -0.41284403669724773
+        ]
+      }
+    }
+  },
+  "parity": {
+    "zero_init_max_abs_logit_delta": 0.0,
+    "reload_max_abs_logit_delta": 0.0
+  },
+  "training": {
+    "seed": 42,
+    "epochs": 1,
+    "optimizer_steps": 488,
+    "trainable_parameters": 2803971,
+    "seconds": 182.40058360004332,
+    "loss": 0.47238157623483296
+  },
+  "runtime": {
+    "gpu": "NVIDIA GeForce RTX 5070 Ti",
+    "vram_total_bytes": 17094475776,
+    "vram_free_before_bytes": 15738077184,
+    "peak_cuda_allocated_bytes": 2000420352,
+    "torch": "2.12.1+cu130",
+    "transformers": "4.57.6",
+    "peft": "0.18.1",
+    "latency_single_pair_ms": {
+      "count": 64,
+      "p50": 29.40785003011115,
+      "p95": 36.302269966108724
+    }
+  }
+}

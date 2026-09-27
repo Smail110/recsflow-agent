@@ -1,0 +1,15 @@
+{
+  "dataset_id": "product-contract-ru-v1",
+  "version": "1.0.0",
+  "origin": "ai_authored_synthetic",
+  "seed": 137,
+  "sha256": "c18bc46c5d8a3275f3763b5a9fcdc55d162253e7e78b9095b6b2833311581958",
+  "generator_sha256": "6d98cffdf60310cda50d1b1cf44014c55e1b91b075848e893d56f421fa2c0bd0",
+  "dialogs": 12,
+  "turns": 20,
+  "signature": {
+    "scheme": "sha256_content_address",
+    "cryptographic_author_signature": null,
+    "note": "Integrity receipt, not proof of human authorship or a private-key signature."
+  }
+}

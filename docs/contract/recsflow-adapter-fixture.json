@@ -1,0 +1,7 @@
+{
+  "status": "proposed_contract_fixture",
+  "production_confirmed": false,
+  "reason": "Real Recsflow endpoint, credentials and versioned schema were not provided.",
+  "adapter": {"interface": "RecommendationProvider", "operations": ["retrieve", "lookup", "history", "find_title"], "batch_lookup_path": "/v1/items:batchGet", "single_lookup_path": "/v1/items/{item_id}", "request_id_header": "X-Request-ID", "errors": "RFC 7807 application/problem+json"},
+  "required_inputs_for_production_acceptance": ["staging endpoint URL", "authentication scheme and credential", "versioned OpenAPI/schema fixture", "field semantics for duration, score and history", "staging test user/catalog and approved SLA"]
+}

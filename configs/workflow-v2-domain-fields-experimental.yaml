@@ -1,0 +1,19 @@
+implementation: workflow-v2
+migration_stage: validation-state-retrieval
+interpretation:
+  transport: domain-fields
+  domain_value_required: false
+  experimental: true
+validation:
+  semantic_mode: code-only
+  nli: off
+retrieval:
+  provider_k: 100
+  lexical_k: 100
+  fused_k: 150
+  dense: off
+ranking:
+  method: deterministic-rrf
+  rrf_k: 60
+reranker: off
+model_selection: artifacts/workflow-v2/model-selection/selection.json

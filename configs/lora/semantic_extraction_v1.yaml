@@ -1,0 +1,143 @@
+experiment_version: semantic-lora-pilot-v1
+production_contract: recagent.interpretation.StructuredRequest
+
+base_model:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+  tokenizer_id: Qwen/Qwen3-8B
+  tokenizer_revision: b968826d9c46dd6066d109eabc6255188de91218
+  local_files_only: true
+  trust_remote_code: false
+  ollama_tag: qwen3:8b
+  ollama_digest: 500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41
+  ollama_base_blob_sha256: a3de86cd1c132c822487ededd47a324c50491393e6565cd14bafa40d0b8e686f
+  ollama_version: 0.17.4
+
+dataset:
+  root: data/lora/semantic_extraction_v1
+  generator: scripts/generate_semantic_lora_dataset.py
+  generator_version: semantic-lora-schema-first-v1
+  manifest: data/lora/semantic_extraction_v1/manifest.json
+  leakage_report: data/lora/semantic_extraction_v1/leakage-report.json
+  train:
+    path: data/lora/semantic_extraction_v1/train.jsonl
+    examples: 1200
+    sha256: 139183952c33d62fcdc05d55d72bcbe72e19c116da065c3d6dec660aaa37b0a9
+  dev:
+    path: data/lora/semantic_extraction_v1/dev.jsonl
+    examples: 180
+    sha256: 7fe4191a1f6df7d64519cac20958a6d405c9a5ec9571b365848616e9be05343d
+  blind:
+    path: data/lora/semantic_extraction_v1/blind.jsonl
+    seal: data/lora/semantic_extraction_v1/blind.seal.json
+    examples: 120
+    sha256: 5958053f47de9277ca27fa8f3eb6beefb8e974385cb46a38a5729933465bb42d
+  seen_schema_eval_fraction: 0.10
+
+seeds:
+  generation: 20260915
+  split: 41002
+  shuffle: 41003
+  python: 41004
+  numpy: 41005
+  torch: 41006
+  trainer: 41007
+  evaluation: 41008
+  bootstrap: 41009
+
+training:
+  output_dir: artifacts/lora/semantic_extraction_v1/training
+  max_sequence_length: 2304
+  reject_overlength: true
+  assistant_only_loss: true
+  enable_thinking: false
+  lora:
+    rank: 16
+    alpha: 32
+    dropout: 0.05
+    target_modules: all-linear
+    bias: none
+    task_type: CAUSAL_LM
+    use_rslora: false
+  quantization:
+    load_in_4bit: true
+    type: nf4
+    double_quant: true
+    compute_dtype: bfloat16
+  epochs: 3
+  learning_rate: 0.0001
+  optimizer: paged_adamw_8bit
+  scheduler: cosine
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 16
+  gradient_checkpointing: true
+  gradient_checkpointing_use_reentrant: false
+  packing: false
+  group_by_length: false
+  dataloader_num_workers: 0
+  logging_steps: 5
+  eval_strategy: epoch
+  save_strategy: epoch
+  save_total_limit: 3
+  load_best_model_at_end: true
+  metric_for_best_model: eval_loss
+  greater_is_better: false
+  bf16: true
+  fp16: false
+  tf32: false
+  full_determinism: true
+
+evaluation:
+  base_url: http://127.0.0.1:11434
+  lora_ollama_tag: recsflow-qwen3-8b-semantic-v1
+  temperature: 0
+  seed: 42
+  num_predict: 700
+  num_ctx: 4096
+  think: false
+  timeout_seconds: 120
+  renamed_cases: 24
+  enum_randomized_cases: 24
+  without_schema_cases: 24
+  bootstrap_samples: 20000
+
+acceptance:
+  valid_structured_output_rate_min: 0.99
+  blind_grounded_correct_delta_min: 0.05
+  blind_grounded_correct_delta_ci_low_min: 0.0
+  blind_fact_f1_delta_min: 0.05
+  blind_omission_rate_delta_max: -0.05
+  blind_compound_complete_delta_min: 0.10
+  blind_invented_rate_delta_max: 0.00
+  issue_preservation_delta_min_each: 0.20
+  unseen_schema_grounded_delta_min: 0.05
+  unseen_to_seen_gain_ratio_min: 0.50
+  renamed_grounded_drop_max: 0.10
+  renamed_gain_min: 0.03
+  enum_randomized_grounded_drop_max: 0.10
+  enum_randomized_gain_min: 0.03
+  schema_conditional_correctness_min: 0.60
+  schema_conditional_delta_min: 0.10
+  without_schema_unsafe_guess_rate_max: 0.10
+  without_schema_unsafe_guess_delta_max: 0.03
+
+environment:
+  python: 3.11.9
+  requirements_input: requirements/lora-win-cu130.in
+  requirements_lock: requirements/lora-win-cu130.lock
+  expected_gpu: NVIDIA GeForce RTX 5070 Ti
+  expected_compute_capability: "12.0"
+  cuda_runtime: "13.0"
+  driver: "591.86"
+  deterministic_warning: CUDA/bitsandbytes execution is procedure-reproducible but not promised bit-identical.
+
+export:
+  adapter_dir: artifacts/lora/semantic_extraction_v1/training/final-adapter
+  llama_cpp_dir: artifacts/lora/tooling/llama.cpp
+  llama_cpp_commit: 6011c34ce6099646ccdf0d39a61c6e681477c178
+  gguf_adapter: artifacts/lora/semantic_extraction_v1/export/semantic-extraction-v1-f16.gguf
+  modelfile: artifacts/lora/semantic_extraction_v1/export/Modelfile

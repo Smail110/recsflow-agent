@@ -1,0 +1,689 @@
+{
+  "schema_version": 1,
+  "dataset_id": "product-contract-ru-v1",
+  "version": "1.0.0",
+  "split": "contract",
+  "origin": "ai_authored_synthetic",
+  "status": "frozen_before_candidate_outputs",
+  "generation_seed": 137,
+  "catalog": {
+    "seed": 137,
+    "known_titles": {
+      "navigation": {
+        "id": "it-00001",
+        "title": "Тишина в ожидании поезда",
+        "kind": "film"
+      }
+    }
+  },
+  "model": {
+    "name": "qwen3:8b",
+    "expected_digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"
+  },
+  "configuration": {
+    "mode": "ollama",
+    "question_policy": "adaptive",
+    "max_questions": 3,
+    "history": "cold_start"
+  },
+  "limitations": [
+    "AI-authored synthetic diagnostic cases, not human annotation or independent final holdout.",
+    "Authored after inspecting older DEV failure classes; independence from all prior development is not claimed.",
+    "Frozen before outputs on this cohort; fixed order, seed controls the public synthetic catalog only.",
+    "No preference-utility score. Similar only checks explicit spoken constraints and exclusion of the named seed.",
+    "expected_query is diagnostic only; observable acceptance cannot derive labels from runtime state.",
+    "Clear/include/domain-change existence checks do not prove recall; component invariants test state transitions separately."
+  ],
+  "dialogues": [
+    {
+      "id": "explicit-course",
+      "tags": [
+        "explicit-course"
+      ],
+      "turns": [
+        {
+          "user": "Для занятий выбираю курс: тема Python, уровень начальный, обязательно практика.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "course",
+            "genre": "python",
+            "level": "начальный",
+            "practical": true
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Для занятий выбираю курс: тема Python, уровень начальный, обязательно практика."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "numeric-correction",
+      "tags": [
+        "numeric-correction"
+      ],
+      "turns": [
+        {
+          "user": "Подберите сериал: жанр фантастика, серии максимум 35 минут.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "series",
+            "genre": "фантастика",
+            "max_minutes": 35
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Подберите сериал: жанр фантастика, серии максимум 35 минут."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        },
+        {
+          "user": "Исправлю длительность: максимум 55 минут, остальное сохраняем.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "series",
+            "genre": "фантастика",
+            "max_minutes": 55
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Подберите сериал: жанр фантастика, серии максимум 35 минут."
+              },
+              {
+                "turn": 1,
+                "quote": "Исправлю длительность: максимум 55 минут, остальное сохраняем."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "accumulate-exclusions",
+      "tags": [
+        "accumulate-exclusions"
+      ],
+      "turns": [
+        {
+          "user": "Нужен фильм нейтрального тона, без драмы.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "tone": "нейтральный",
+            "excluded_genres": [
+              "драма"
+            ]
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Нужен фильм нейтрального тона, без драмы."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        },
+        {
+          "user": "И комедию тоже исключите.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "tone": "нейтральный",
+            "excluded_genres": [
+              "драма",
+              "комедия"
+            ]
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Нужен фильм нейтрального тона, без драмы."
+              },
+              {
+                "turn": 1,
+                "quote": "И комедию тоже исключите."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "include-exact",
+      "tags": [
+        "include-exact"
+      ],
+      "turns": [
+        {
+          "user": "Ищу фильм: тон нейтральный, исключить драму и комедию.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "tone": "нейтральный",
+            "excluded_genres": [
+              "драма",
+              "комедия"
+            ]
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Ищу фильм: тон нейтральный, исключить драму и комедию."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        },
+        {
+          "user": "Комедию снова разрешаю; запрет на драму остаётся.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "tone": "нейтральный",
+            "excluded_genres": [
+              "драма"
+            ]
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Ищу фильм: тон нейтральный, исключить драму и комедию."
+              },
+              {
+                "turn": 1,
+                "quote": "Комедию снова разрешаю; запрет на драму остаётся."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "clear-limit",
+      "tags": [
+        "clear-limit"
+      ],
+      "turns": [
+        {
+          "user": "Фильм жанра приключения, не длиннее 110 минут.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "genre": "приключения",
+            "max_minutes": 110
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Фильм жанра приключения, не длиннее 110 минут."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        },
+        {
+          "user": "Снимите ограничение длительности; приключения оставьте.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "genre": "приключения"
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Фильм жанра приключения, не длиннее 110 минут."
+              },
+              {
+                "turn": 1,
+                "quote": "Снимите ограничение длительности; приключения оставьте."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "domain-change",
+      "tags": [
+        "domain-change"
+      ],
+      "turns": [
+        {
+          "user": "Хочется фильм-драму длительностью до 100 минут.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "genre": "драма",
+            "max_minutes": 100
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Хочется фильм-драму длительностью до 100 минут."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        },
+        {
+          "user": "Начнём другой подбор: курс по Python для начинающего, без практики.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "course",
+            "genre": "python",
+            "level": "начальный",
+            "practical": false
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Хочется фильм-драму длительностью до 100 минут."
+              },
+              {
+                "turn": 1,
+                "quote": "Начнём другой подбор: курс по Python для начинающего, без практики."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "navigation",
+      "tags": [
+        "navigation"
+      ],
+      "turns": [
+        {
+          "user": "Откройте единственный объект с точным названием «Тишина в ожидании поезда».",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "named_title": "Тишина в ожидании поезда"
+          },
+          "expected_query": {
+            "intent": "navigation"
+          },
+          "commit_policy": "not_applicable",
+          "exact_recommendation_ids": [
+            "it-00001"
+          ],
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Откройте единственный объект с точным названием «Тишина в ожидании поезда»."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "similar",
+      "tags": [
+        "similar"
+      ],
+      "turns": [
+        {
+          "user": "Порекомендуйте другой фильм, похожий на «Тишина в ожидании поезда».",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "seed_title": "Тишина в ожидании поезда"
+          },
+          "expected_query": {
+            "intent": "similar"
+          },
+          "commit_policy": "not_applicable",
+          "forbidden_recommendation_ids": [
+            "it-00001"
+          ],
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Порекомендуйте другой фильм, похожий на «Тишина в ожидании поезда»."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "mood",
+      "tags": [
+        "mood"
+      ],
+      "turns": [
+        {
+          "user": "Для лёгкого настроения выберу сериал с лёгким тоном.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "series",
+            "tone": "лёгкий"
+          },
+          "expected_query": {
+            "intent": "mood"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Для лёгкого настроения выберу сериал с лёгким тоном."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "negative-tone-more",
+      "tags": [
+        "negative-tone-more"
+      ],
+      "turns": [
+        {
+          "user": "Предложите фильм-детектив, только не мрачный.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "genre": "детектив",
+            "excluded_tones": [
+              "мрачный"
+            ]
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Предложите фильм-детектив, только не мрачный."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        },
+        {
+          "user": "Покажите ещё, сохранив условия.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "genre": "детектив",
+            "excluded_tones": [
+              "мрачный"
+            ]
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "disjoint_from_turns": [
+            0
+          ],
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Предложите фильм-детектив, только не мрачный."
+              },
+              {
+                "turn": 1,
+                "quote": "Покажите ещё, сохранив условия."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "unknown-level-resolution",
+      "tags": [
+        "unknown-level-resolution"
+      ],
+      "turns": [
+        {
+          "user": "Подбираю курс Python, уровень грандмастер.",
+          "expected_state": "clarify",
+          "recommendation_exists": false,
+          "spoken": {
+            "kind": "course",
+            "genre": "python"
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "required_unresolved",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Подбираю курс Python, уровень грандмастер."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        },
+        {
+          "user": "Уточняю уровень: начальный.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "course",
+            "genre": "python",
+            "level": "начальный"
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "Подбираю курс Python, уровень грандмастер."
+              },
+              {
+                "turn": 1,
+                "quote": "Уточняю уровень: начальный."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "optional-preference",
+      "tags": [
+        "optional-preference"
+      ],
+      "turns": [
+        {
+          "user": "В этот раз выбираю фильм.",
+          "spoken": {
+            "kind": "film"
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "allowed_states": [
+            "clarify",
+            "recommend"
+          ],
+          "presence_by_state": {
+            "clarify": false,
+            "recommend": true
+          },
+          "commit_policy": "optional_after_commit",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "В этот раз выбираю фильм."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        },
+        {
+          "user": "Жанр не важен; тон нужен нейтральный.",
+          "expected_state": "recommend",
+          "recommendation_exists": true,
+          "spoken": {
+            "kind": "film",
+            "tone": "нейтральный"
+          },
+          "expected_query": {
+            "intent": "discovery"
+          },
+          "commit_policy": "not_applicable",
+          "source_annotations": {
+            "author": "AI assistant",
+            "kind": "explicit_synthetic_annotation",
+            "evidence": [
+              {
+                "turn": 0,
+                "quote": "В этот раз выбираю фильм."
+              },
+              {
+                "turn": 1,
+                "quote": "Жанр не важен; тон нужен нейтральный."
+              }
+            ],
+            "scope": "Cumulative explicitly stated constraints; corrections override only their addressed condition."
+          }
+        }
+      ]
+    }
+  ]
+}

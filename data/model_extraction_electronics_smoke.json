@@ -1,0 +1,52 @@
+{
+  "dataset_id": "model-extraction-electronics-smoke-v1",
+  "origin": "Synthetic portability smoke aligned with the existing electronics second-customer fixture.",
+  "expected_turns": 1,
+  "cases": [
+    {
+      "dialogue_id": "electronics-portable-budget",
+      "turn": 0,
+      "user": "Нужен лёгкий ноутбук до 100000 рублей.",
+      "expected_intent": "discovery",
+      "expected_reset": false,
+      "expected_facts": [
+        {"field":"category","operation":"set","value":"laptop","source_any_of":["ноутбук"]},
+        {"field":"max_price","operation":"set","value":100000,"source_any_of":["100000 рублей"]},
+        {"field":"portable","operation":"set","value":true,"source_any_of":["лёгкий"]}
+      ],
+      "expected_issues": [],
+      "primary_category": null,
+      "representability": "direct"
+    }
+  ],
+  "embedded_contexts": [
+    {
+      "dialogue_id": "electronics-portable-budget",
+      "turn": 0,
+      "payload": {
+        "message": "Нужен лёгкий ноутбук до 100000 рублей.",
+        "previous": {"intent":"discovery","category":null,"max_price":null,"portable":null},
+        "pending_question": null,
+        "unresolved": [],
+        "domain": {
+          "schema": {
+            "additionalProperties": false,
+            "properties": {
+              "intent": {"default":"discovery","enum":["discovery","similar","mood","navigation"],"title":"Intent","type":"string"},
+              "category": {"anyOf":[{"enum":["laptop","tablet"],"type":"string"},{"type":"null"}],"default":null,"title":"Category"},
+              "max_price": {"anyOf":[{"minimum":1,"type":"integer"},{"type":"null"}],"default":null,"title":"Max Price"},
+              "portable": {"anyOf":[{"type":"boolean"},{"type":"null"}],"default":null,"title":"Portable"}
+            },
+            "title": "ElectronicsQuery",
+            "type": "object"
+          },
+          "aliases": {"category":{"ноутбук":"laptop","планшет":"tablet"}},
+          "exclusion_fields": {},
+          "field_labels": {"category":"категория","max_price":"максимальная цена","portable":"портативность"},
+          "scalar_aliases": {"portable":{"лёгкий":true}},
+          "numeric_units": {"max_price":{"рублей":1,"рубля":1,"₽":1}}
+        }
+      }
+    }
+  ]
+}

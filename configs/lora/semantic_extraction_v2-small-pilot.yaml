@@ -1,0 +1,177 @@
+experiment_version: semantic-lora-small-generalization-pilot-v2
+production_contract: recagent.interpretation.StructuredRequest
+base_model:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+  tokenizer_id: Qwen/Qwen3-8B
+  tokenizer_revision: b968826d9c46dd6066d109eabc6255188de91218
+  local_files_only: true
+  trust_remote_code: false
+  ollama_tag: qwen3:8b
+  ollama_digest: 500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41
+  ollama_base_blob_sha256: a3de86cd1c132c822487ededd47a324c50491393e6565cd14bafa40d0b8e686f
+  ollama_version: 0.17.4
+dataset:
+  root: data/lora/semantic_extraction_v2
+  generator: scripts/generate_semantic_lora_dataset_v2.py
+  generator_version: semantic-lora-schema-first-v2
+  manifest: data/lora/semantic_extraction_v2/manifest.json
+  leakage_report: data/lora/semantic_extraction_v2/leakage-report.json
+  schemas: data/lora/semantic_extraction_v2/schemas.json
+  train:
+    path: data/lora/semantic_extraction_v2/train.jsonl
+    examples: 960
+    sha256: 510baf3d4487872ace74127279c2093b972d7ee14dbd18f56a5c40a9d7275b8b
+  dev:
+    path: data/lora/semantic_extraction_v2/dev.jsonl
+    examples: 160
+    sha256: f477211a381baa8d45cb5f2776cacaf3466ec76d676924e027c9debefaeea311
+  blind:
+    path: data/lora/semantic_extraction_v2/blind.jsonl
+    seal: data/lora/semantic_extraction_v2/blind.seal.json
+    examples: 120
+    sha256: 8a72cb62f8bdd802127fdd68a9bbd5ca4be2ab65559dc6d488e72d7193e9977b
+  seen_schema_eval_fraction: 0.75
+seeds:
+  generation: 20260916
+  split: 42002
+  shuffle: 42003
+  python: 42004
+  numpy: 42005
+  torch: 42006
+  trainer: 42007
+  evaluation: 42008
+  bootstrap: 42009
+  tiny_selection: 42010
+training:
+  output_dir: artifacts/lora/semantic_extraction_v2-small-pilot/training
+  prompt_mode: production
+  max_sequence_length: 2400
+  reject_overlength: true
+  assistant_only_loss: true
+  enable_thinking: false
+  lora:
+    rank: 4
+    alpha: 8
+    dropout: 0.05
+    target_modules:
+    - q_proj
+    - v_proj
+    bias: none
+    task_type: CAUSAL_LM
+    use_rslora: false
+  quantization:
+    load_in_4bit: true
+    type: nf4
+    double_quant: true
+    compute_dtype: bfloat16
+  epochs: 1
+  learning_rate: 0.0001
+  optimizer: paged_adamw_8bit
+  scheduler: cosine
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 16
+  gradient_checkpointing: true
+  gradient_checkpointing_use_reentrant: false
+  packing: false
+  group_by_length: false
+  dataloader_num_workers: 0
+  logging_steps: 5
+  eval_strategy: epoch
+  save_strategy: epoch
+  save_total_limit: 3
+  load_best_model_at_end: true
+  metric_for_best_model: eval_loss
+  greater_is_better: false
+  bf16: true
+  fp16: false
+  tf32: false
+  full_determinism: false
+  rank: 4
+  alpha: 8
+  dropout: 0.05
+  target_modules:
+  - q_proj
+  - v_proj
+  per_device_batch_size: 1
+tiny_overfit:
+  examples: 16
+  selection: shortest_then_stable_hash
+  max_steps: 16
+  gradient_accumulation_steps: 1
+  learning_rate: 0.001
+  warmup_steps: 0
+  evaluation_every_steps: 4
+  required_loss_relative_drop: 0.2
+  required_target_token_accuracy_gain: 0.1
+  required_exact_sequence_gain: 1
+  reload_nll_absolute_tolerance: 0.01
+  reload_token_accuracy_absolute_tolerance: 0.01
+  step_timeout_seconds: 180
+  total_timeout_seconds: 3600
+  output_dir: artifacts/lora/semantic_extraction_v2/small-pilot-tiny-overfit
+evaluation:
+  base_url: http://127.0.0.1:11434
+  lora_ollama_tag: recsflow-qwen3-8b-semantic-v2-small
+  temperature: 0
+  seed: 42
+  num_predict: 700
+  num_ctx: 4096
+  think: false
+  timeout_seconds: 120
+  renamed_cases: 24
+  enum_randomized_cases: 24
+  without_schema_cases: 24
+  bootstrap_samples: 20000
+acceptance:
+  valid_structured_output_rate_min: 0.99
+  blind_grounded_correct_delta_min: 0.05
+  blind_grounded_correct_delta_ci_low_min: 0.0
+  blind_fact_f1_delta_min: 0.05
+  blind_omission_rate_delta_max: -0.05
+  blind_compound_complete_delta_min: 0.1
+  blind_invented_rate_delta_max: 0.0
+  issue_preservation_delta_min_each: 0.2
+  unseen_schema_grounded_delta_min: 0.05
+  unseen_to_seen_gain_ratio_min: 0.5
+  renamed_grounded_drop_max: 0.1
+  renamed_gain_min: 0.03
+  enum_randomized_grounded_drop_max: 0.1
+  enum_randomized_gain_min: 0.03
+  schema_conditional_correctness_min: 0.6
+  schema_conditional_delta_min: 0.1
+  without_schema_unsafe_guess_rate_max: 0.1
+  without_schema_unsafe_guess_delta_max: 0.03
+protocol_integrity:
+  status: FROZEN_BEFORE_BASELINE
+  seal: artifacts/lora/semantic_extraction_v2-small-pilot/protocol-v2.seal.json
+  evaluator_sha256: c420f6c25d9e8b1a1c61502063ae08a1c6171612abb323c9e26606bf95cbe1b3
+  scorer_transforms_normalization_sha256: c0836bf3717203a0c2967c1adc8ddb70e8a5949e97d40027258aa76776d0ca7e
+  generator_sha256: 906ea848e2682537e10d6bc86d42e26d9e476d9752657e29340a91a40069edda
+  generator_dependency_sha256: 7d312f4dc05ce62ffd4d07856dab5a5626f8f5f3965706fc76047e7b2a16c363
+  manifest_sha256: dd8e1dd3841d8952cdd96b2b4bcb32ebefb2b19519e72c59655996acab928ba2
+  schemas_sha256: a75733d05dae5ff31f5c9f598c98060ee72e60a22b6ce30e725b5f895becd35b
+  leakage_report_sha256: 1b55acce9880b6d55270be6281e34919391b50dd6329804c639b853142ec1c58
+  acceptance_sha256: ace07bbe802d09b30a5f862c434fb1cd9b55716694d529eaa40fab1e17a693c0
+  production_interpretation_sha256: eff48fcfd53a8037c894231839f4841934a03806764d6f12afd1b5d454e0ec5e
+  structured_request_schema_sha256: f15b33f6e727aedec846e73e5164f77844067017b275b2af576d1846c0a94508
+environment:
+  python: 3.11.9
+  requirements_input: requirements/lora-win-cu130.in
+  requirements_lock: requirements/lora-win-cu130.lock
+  expected_gpu: NVIDIA GeForce RTX 5070 Ti
+  expected_compute_capability: '12.0'
+  cuda_runtime: '13.0'
+  driver: '591.86'
+  deterministic_warning: CUDA/bitsandbytes execution is procedure-reproducible but
+    not promised bit-identical.
+export:
+  adapter_dir: artifacts/lora/semantic_extraction_v2-small-pilot/training/final-adapter
+  llama_cpp_dir: artifacts/lora/tooling/llama.cpp
+  llama_cpp_commit: 6011c34ce6099646ccdf0d39a61c6e681477c178
+  gguf_adapter: artifacts/lora/semantic_extraction_v2-small-pilot/export/adapter.gguf
+  modelfile: artifacts/lora/semantic_extraction_v2-small-pilot/export/Modelfile

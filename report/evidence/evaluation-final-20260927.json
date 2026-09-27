@@ -1,0 +1,63 @@
+{
+  "kind": "submission_snapshot",
+  "date": "27.09.2026",
+  "model": {
+    "model": "qwen3:8b",
+    "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+    "ollama_version": "0.17.4",
+    "base_url": "http://127.0.0.1:11434"
+  },
+  "quality": {
+    "dev": {
+      "passed": 15,
+      "total": 20
+    },
+    "contract": {
+      "passed": 12,
+      "total": 12,
+      "turns_passed": 20,
+      "turns_total": 20
+    },
+    "grounding": {
+      "claims": 315,
+      "unsupported": 0
+    },
+    "accounting": {
+      "clarification_turns": 2,
+      "mean_clarifications_per_dialogue": 0.16666666666666666,
+      "llm_calls": {
+        "available": true,
+        "total": 40
+      },
+      "llm_tokens": {
+        "available": true,
+        "total": 84855
+      }
+    }
+  },
+  "engineering": {
+    "scope": "Отдельная копия выбранных исходников и зависимостей. Внешние корпуса и архивные результаты в неё не включены.",
+    "tests_passed": 1161,
+    "tests_skipped": 8,
+    "subtests_passed": 7,
+    "workspace_tests_passed": 1175,
+    "ruff": "PASS: src scripts tests evals app.py",
+    "diff_check": "PASS",
+    "clean_public_tree": "PASS: install, pip check, pytest, Ruff, OpenAPI, notebook rules/ollama, HTTP smoke, controlled fallback, Docker build/up/health/chat"
+  },
+  "limitations": [
+    "Small reused synthetic DEV and CONTRACT; not independent final evaluation.",
+    "Historical role and load measurements are separately dated.",
+    "Product NLI disabled."
+  ],
+  "sources": {
+    "artifacts/submission-final-2026-09-27/dev.json": "8cbee87429e22c2771a3f12f392efd6d174dcfad871d481281e1f46981638a1d",
+    "artifacts/submission-final-2026-09-27/contract.json": "dc35cbaee9d7df4b8e3eb209e54a75fc3e55b8b8c830cea6637d0335108e5ca1",
+    "artifacts/submission-final-2026-09-27/contract.evaluation.json": "092ef66017ea3f1279b95fc98869a83ccb027b3adbc91b6c90cba5dd10a64c27",
+    "artifacts/submission-final-2026-09-27/tests-workspace.xml": "fe2c043220ea4ea35cf48d5518bde235bd718a530caac3038c9e4f234af66777",
+    "artifacts/submission-final-2026-09-27/tests-clean.xml": "ab071746bb6dd4401dc6a39ebb6ed93a6800d5c4cabccf1d89f96a731cbad063",
+    "artifacts/submission-final-2026-09-27/docker-clean-chat.json": "4cb0ed0b6afbd46fb49381b80e95949d7683f4bb3f255a64b66fca211a11ec90",
+    "artifacts/submission-final-2026-09-27/http-clean.log": "2e96ca9bc0ca93217f448bd7b005aee6848f445c004ae22c2efd683f43014182",
+    "artifacts/submission-final-2026-09-27/notebook-clean.log": "10490c72e0ebde42fb3014b4a820b02bc1e7a0af216e00ab8bdb54086bfcf28b"
+  }
+}

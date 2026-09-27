@@ -1,0 +1,1508 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RecAgent — проверяемые результаты</title><style>body{max-width:1080px;margin:auto;padding:30px;color:#172f36;background:#f7f7f3;font:16px/1.6 system-ui}h1{font-size:52px;line-height:1.1}h2{margin-top:38px}header{border-bottom:3px solid #168b70;padding-bottom:24px}table{border-collapse:collapse;width:100%;background:white}th,td{padding:11px;text-align:left;border-bottom:1px solid #ddd;overflow-wrap:anywhere}th{background:#e7efeb}.scroll{overflow:auto}pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:16px;background:#e7efeb}code{overflow-wrap:anywhere}a{color:#087264}section{margin:36px 0}aside{padding:16px;background:#fff0cc}.receipt{background:white;padding:14px 18px;margin:12px 0;border:1px solid #d8e4df}.receipt>summary{cursor:pointer;font-weight:650}.flow{padding:20px;background:#e7efeb;border-left:4px solid #168b70}nav{display:flex;gap:18px;flex-wrap:wrap;padding:20px 0}footer{font-size:13px;color:#4b646c;border-top:1px solid #d8e4df;padding-top:20px}@media(max-width:650px){body{padding:20px}h1{font-size:38px}th,td{min-width:75px;font-size:14px}}@media print{body{background:white;font-size:10pt}nav{display:none}h2{break-after:avoid}details{break-inside:avoid}}</style></head><body><header><p>Диалоговый рекомендательный агент · прототип для демонстрации</p><h1>RecAgent</h1>
+<p>Автор: Герман Роев Александрович.</p>
+<p>Один прототип: от естественного запроса до рекомендаций с проверяемыми объяснениями.</p></header>
+<nav aria-label="Разделы отчёта"><a href="#task">Задача</a><a href="#quality">Качество</a><a href="#roles">LLM-роли</a>
+<a href="#performance">Нагрузка</a><a href="#next">Ограничения и план</a><a href="#evidence">Источники</a></nav>
+<section id="task"><h2>Задача и архитектура</h2>
+<p>Пользователь описывает цель, уточняет предпочтения и меняет условия в диалоге. Агент должен находить
+подходящие фильмы, сериалы или курсы, объяснять выбор фактами каталога и сохранять условия при продолжении поиска.</p>
+<p>Чат и REST API управляют LangGraph workflow-v2: структурированное понимание запроса,
+память условий, кандидаты и метаданные, строгие фильтры, ранжирование, уточнения и объяснения с фактами каталога.
+Основная локальная модель — qwen3:8b; rules — отдельный режим деградации.</p>
+<p class="flow">Streamlit / REST → LangGraph → LLM и проверка структуры → память условий →
+provider / каталог → строгая фильтрация и RRF → уточнение или рекомендация с фактами</p>
+<p>Recsflow представлен заменяемым адаптером и проверяемым HTTP mock. Реальный endpoint, credentials и контракт
+не предоставлены; совместимость с закрытым production API не заявляется.</p>
+<h3>Данные и методика</h3><p>DEV — 20 синтетических диалогов с каталогом seed 42;
+CONTRACT — 12 AI-написанных сценариев, 20 ходов и каталог seed 137. Названия, профили и ряд атрибутов
+созданы генератором. MovieLens 100K калибрует отдельные распределения, но не служит каталогом выдачи
+или эталоном диалогов. ReDial и CCPE не входят в показанные продуктовые метрики.</p>
+<aside>Результаты ниже относятся только к явно выбранным запускам. Инженерные тесты, HTTP 200,
+успех диалога и процент готовности — разные величины. Неизвестные ресурсы и стоимость обозначены null.
+Повторно используемый DEV не является независимой финальной оценкой. Даты в исходных записях обозначают
+происхождение отдельных измерений, а не разные продукты или единую одновременную приёмку.
+Закрытые наборы этот отчёт не читает.</aside></section>
+<section id="quality"><h2>Качество версии для сдачи</h2><p>Проверка от 27.09.2026. Основная модель — qwen3:8b. Успех полного диалога требует подходящей выдачи и выполнения критериев сценария; ответ HTTP 200 сам по себе успехом не считается.</p><div class="scroll"><table><thead><tr><th>Набор</th><th>Успешные диалоги</th><th>Что проверяет</th></tr></thead><tbody><tr><td>DEV</td><td>15/20</td><td>Подбор и уточнение предпочтений в полном диалоге</td></tr><tr><td>CONTRACT</td><td>12/12</td><td>Изменение условий, запреты, продолжение и наблюдаемая выдача</td></tr></tbody></table></div><p>Оба набора небольшие, синтетические и повторно использованы при разработке. Результат описывает эти сценарии, а не вероятность успеха на реальном пользовательском трафике.</p><div class="scroll"><table><thead><tr><th>Инженерная проверка</th><th>Результат</th><th>Что подтверждает</th></tr></thead><tbody><tr><td>Автоматические тесты</td><td>1161 passed; 7 subtests</td><td>Проверенные контракты, состояния и обработку ошибок</td></tr><tr><td>Ruff</td><td>PASS: src scripts tests evals app.py</td><td>Соответствие исходников заданным статическим проверкам</td></tr><tr><td>git diff --check</td><td>PASS</td><td>Отсутствие ошибок пробелов и конфликтных маркеров в diff</td></tr></tbody></table></div><p>Прохождение инженерных тестов не означает, что модель всегда верно понимает свободную речь. Для этого отдельно считаются успех диалога, лишние уточнения и ошибки grounding.</p><p>Область проверки: Отдельная копия выбранных исходников и зависимостей. Внешние корпуса и архивные результаты в неё не включены. Пропущено тестов: 8.</p><a href="#receipt-evaluation-final-20260927">Проверка версии для сдачи: JSON и SHA-256</a></section><section id="roles"><h2>LLM-симулятор и судья</h2><p>Дата выбранного прогона — 23.09.2026; это отдельное сохранённое измерение.</p><p>Симулятор формулирует ответ на реальный уточняющий вопрос из скрытых предпочтений сценария. Отдельная роль проверяет сохранение смысла ответа; судья оценивает видимый диалог и факты. Окончательный успех задаёт независимый детерминированный оракул. Судья даёт дополнительную оценку и не может переопределить его результат.</p><div class="scroll"><table><thead><tr><th>Показатель</th><th>Результат</th></tr></thead><tbody><tr><td>Технически завершённые протоколы</td><td>8/8</td></tr><tr><td>Строго успешные эпизоды</td><td>2/8</td></tr><tr><td>Среднее число уточнений</td><td>1,375</td></tr><tr><td>Неподтверждённые факты поддерживаемых шаблонов</td><td>0/119</td></tr><tr><td>Завершённые оценки судьи</td><td>8</td></tr></tbody></table></div><p>Завершение всех ролей подтверждает работоспособность цепочки, но строгий успех остаётся низким. Это отдельная малая синтетическая когорта; её нельзя складывать с DEV или CONTRACT. Агент и роли используют qwen3:8b, поэтому их ошибки могут быть связаны. Ответы, параметры и модельные identities сохранены для проверки происхождения и replay.</p><a href="#receipt-evaluation-roles">LLM-симулятор, валидатор и судья: JSON и SHA-256</a></section><section id="performance"><h2>Задержка, нагрузка и стоимость</h2><p>Измерено 24.09.2026. После последующих изменений кода нагрузка повторно не проверялась.</p><p>HTTP-нагрузка использует один повторяемый синтетический запрос. Во всех выбранных опытах работал Ollama; HTTP-успех и непустая выдача здесь не означают успех произвольного диалога.</p><div class="scroll"><table><thead><tr><th>Параллельность</th><th>Запросы</th><th>HTTP-успех</th><th>p50, с</th><th>p95, с</th><th>LLM-вызовы</th><th>Токены</th></tr></thead><tbody><tr><td>1</td><td>50</td><td>50/50</td><td>3,94</td><td>3,98</td><td>100</td><td>205 600</td></tr><tr><td>2</td><td>50</td><td>50/50</td><td>6,88</td><td>6,94</td><td>100</td><td>205 925</td></tr><tr><td>4</td><td>50</td><td>50/50</td><td>13,48</td><td>14,36</td><td>100</td><td>206 081</td></tr></tbody></table></div><p>С ростом параллельности увеличивается время ожидания. Эти измерения относятся к одному локальному окружению и не задают production SLA. Покрытие токенов и времени инференса отражено в каждом JSON; агрегаты API не подтверждают полноту сведений об отдельных LLM-вызовах.</p><p><strong>Денежная стоимость неизвестна (null).</strong> Нет принятой цены инфраструктуры, измерения электроэнергии и методики распределения расходов. Токены не являются рублями, а сумма времени инференса не равна оплачиваемому времени работы всей машины. Изолированные CPU/RAM/VRAM процесса API в этих выбранных записях не измерены.</p><p><a href="#receipt-evaluation-load-c1">HTTP-нагрузка: concurrency 1: JSON и SHA-256</a> · <a href="#receipt-evaluation-load-c2">HTTP-нагрузка: concurrency 2: JSON и SHA-256</a> · <a href="#receipt-evaluation-load-c4">HTTP-нагрузка: concurrency 4: JSON и SHA-256</a></p></section><section id="nli"><h2>Эксперимент с NLI</h2><p>Я проверил дополнительную модель, которая должна подтверждать извлечённое условие по цитате пользователя. Последний вариант использовал mDeBERTa, LoRA и прямое выделение представления цитаты и гипотезы. В рабочем агенте NLI выключен.</p><div class="scroll"><table><thead><tr><th>Показатель</th><th>До</th><th>После</th></tr></thead><tbody><tr><td>DEV: неверная цитата подтверждена</td><td>30/2484</td><td>94/2484</td></tr><tr><td>MASSIVE silver: верная цитата подтверждена</td><td>636/985</td><td>191/985</td></tr><tr><td>MASSIVE silver: неверная цитата подтверждена</td><td>695/985</td><td>8/985</td></tr></tbody></table></div><p>Уменьшение ошибок на внешних неверных цитатах сопровождалось потерей верных подтверждений. Условия приёмки не выполнены; кандидат отклонён. Оба набора открытые и уже использовались для анализа. Это результат конкретного обучения, а не доказательство того, что NLI в целом уступает правилам. Для продолжения нужны более широкие данные и независимая проверка разметки.</p><a href="#receipt-nli-final">Последний эксперимент NLI: JSON и SHA-256</a></section>
+<section id="next"><h2>Узкие места и план продуктивизации</h2>
+<p>Часть полных DEV-диалогов и эпизодов с LLM-симулятором ещё не проходит строгий критерий успеха.
+Проверки иногда приводят к лишнему уточнению; сложные разговорные формулировки требуют более широкой оценки.
+Политика уточнения использует разнообразие кандидатов и стоимость вопроса как эвристику; её преимущество
+над фиксированным порядком не доказано.</p>
+<ol><li><strong>Довести качество диалога.</strong> Разобрать оставшиеся ошибки по этапам, исправлять общий механизм,
+сравнивать на неизменных DEV/CONTRACT и соседних формулировках. Принимать улучшение без потери прежних успехов
+и новых нарушений жёстких условий или grounding. Малую повторно используемую синтетику дополнить отдельной
+русской выборкой с независимой разметкой и разбором разногласий.</li>
+<li><strong>Проверить стоимость второго LLM-вызова.</strong> Сравнить выбор готовых evidence через LLM
+и детерминированный вариант на одинаковых входах. Это гипотеза следующего опыта: ускорение принимается
+только при сохранении качества полного диалога. Замена default-модели заранее не предполагается.</li>
+<li><strong>Развить NLI-проверку.</strong> Собрать более широкий набор запросов с разметкой роли, цитаты,
+отрицания и операции над условием. Независимо проверить разметку, разделить данные по сценариям и формулировкам,
+затем обучать и оценивать модель. Улучшение на знакомой синтетике само по себе недостаточно для подключения.</li>
+<li><strong>Подключить настоящую платформу.</strong> Нужны staging endpoint, схема авторизации,
+описание retrieval/lookup/history/title search, семантика полей, тестовый каталог и ограничения нагрузки.
+После проверки адаптера — авторизация пользователя, постоянные сессии, мониторинг, лимиты и проверка SLO.
+Предложенный OpenAPI описывает mock-границу, а не подтверждённый Recsflow API.</li></ol>
+<p>Для демонстрации доступны UI, API, контролируемая деградация и замена provider. Production readiness
+и качество на реальных пользователях этими измерениями не установлены. Процент готовности не выводится.</p></section>
+<section id="evidence"><h2>Проверяемые источники</h2><p>Сводка выше читает только явно выбранные JSON.
+Каждая запись ниже доступна рядом с HTML; selection.json фиксирует её SHA-256. Наблюдения сохранены
+без повторного inference или пересчёта критериев по ответам агента.</p><details id="receipt-evaluation-final-20260927" class="receipt"><summary>Проверка версии для сдачи</summary><p>Источник: <code>report/evidence/evaluation-final-20260927.json</code><br>SHA-256: <code>16f1357eea037e660781d07bc01ccb48a7c8c634db3fd6a463ad015ee934bb3a</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>kind</td><td>submission_snapshot</td></tr><tr><td>date</td><td>27.09.2026</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;kind&quot;: &quot;submission_snapshot&quot;,
+  &quot;date&quot;: &quot;27.09.2026&quot;,
+  &quot;model&quot;: {
+    &quot;model&quot;: &quot;qwen3:8b&quot;,
+    &quot;digest&quot;: &quot;500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41&quot;,
+    &quot;ollama_version&quot;: &quot;0.17.4&quot;,
+    &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;
+  },
+  &quot;quality&quot;: {
+    &quot;dev&quot;: {
+      &quot;passed&quot;: 15,
+      &quot;total&quot;: 20
+    },
+    &quot;contract&quot;: {
+      &quot;passed&quot;: 12,
+      &quot;total&quot;: 12,
+      &quot;turns_passed&quot;: 20,
+      &quot;turns_total&quot;: 20
+    },
+    &quot;grounding&quot;: {
+      &quot;claims&quot;: 315,
+      &quot;unsupported&quot;: 0
+    },
+    &quot;accounting&quot;: {
+      &quot;clarification_turns&quot;: 2,
+      &quot;mean_clarifications_per_dialogue&quot;: 0.16666666666666666,
+      &quot;llm_calls&quot;: {
+        &quot;available&quot;: true,
+        &quot;total&quot;: 40
+      },
+      &quot;llm_tokens&quot;: {
+        &quot;available&quot;: true,
+        &quot;total&quot;: 84855
+      }
+    }
+  },
+  &quot;engineering&quot;: {
+    &quot;scope&quot;: &quot;Отдельная копия выбранных исходников и зависимостей. Внешние корпуса и архивные результаты в неё не включены.&quot;,
+    &quot;tests_passed&quot;: 1161,
+    &quot;tests_skipped&quot;: 8,
+    &quot;subtests_passed&quot;: 7,
+    &quot;workspace_tests_passed&quot;: 1175,
+    &quot;ruff&quot;: &quot;PASS: src scripts tests evals app.py&quot;,
+    &quot;diff_check&quot;: &quot;PASS&quot;,
+    &quot;clean_public_tree&quot;: &quot;PASS: install, pip check, pytest, Ruff, OpenAPI, notebook rules/ollama, HTTP smoke, controlled fallback, Docker build/up/health/chat&quot;
+  },
+  &quot;limitations&quot;: [
+    &quot;Small reused synthetic DEV and CONTRACT; not independent final evaluation.&quot;,
+    &quot;Historical role and load measurements are separately dated.&quot;,
+    &quot;Product NLI disabled.&quot;
+  ],
+  &quot;sources&quot;: {
+    &quot;artifacts/submission-final-2026-09-27/dev.json&quot;: &quot;8cbee87429e22c2771a3f12f392efd6d174dcfad871d481281e1f46981638a1d&quot;,
+    &quot;artifacts/submission-final-2026-09-27/contract.json&quot;: &quot;dc35cbaee9d7df4b8e3eb209e54a75fc3e55b8b8c830cea6637d0335108e5ca1&quot;,
+    &quot;artifacts/submission-final-2026-09-27/contract.evaluation.json&quot;: &quot;092ef66017ea3f1279b95fc98869a83ccb027b3adbc91b6c90cba5dd10a64c27&quot;,
+    &quot;artifacts/submission-final-2026-09-27/tests-workspace.xml&quot;: &quot;fe2c043220ea4ea35cf48d5518bde235bd718a530caac3038c9e4f234af66777&quot;,
+    &quot;artifacts/submission-final-2026-09-27/tests-clean.xml&quot;: &quot;ab071746bb6dd4401dc6a39ebb6ed93a6800d5c4cabccf1d89f96a731cbad063&quot;,
+    &quot;artifacts/submission-final-2026-09-27/docker-clean-chat.json&quot;: &quot;4cb0ed0b6afbd46fb49381b80e95949d7683f4bb3f255a64b66fca211a11ec90&quot;,
+    &quot;artifacts/submission-final-2026-09-27/http-clean.log&quot;: &quot;2e96ca9bc0ca93217f448bd7b005aee6848f445c004ae22c2efd683f43014182&quot;,
+    &quot;artifacts/submission-final-2026-09-27/notebook-clean.log&quot;: &quot;10490c72e0ebde42fb3014b4a820b02bc1e7a0af216e00ab8bdb54086bfcf28b&quot;
+  }
+}</pre></details><p><a href="evidence/evaluation-final-20260927.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-dev" class="receipt"><summary>Ответы агента: DEV</summary><p>Источник: <code>artifacts/submission-final-2026-09-27/dev.json</code><br>SHA-256: <code>8cbee87429e22c2771a3f12f392efd6d174dcfad871d481281e1f46981638a1d</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>schema_version</td><td>1</td></tr><tr><td>label</td><td>after</td></tr><tr><td>complete</td><td>True</td></tr><tr><td>created_at_utc</td><td>2026-09-27T17:45:43.522422+00:00</td></tr><tr><td>summary.full_dialogues</td><td>20</td></tr><tr><td>summary.full_dialog_successes</td><td>15</td></tr><tr><td>summary.failure_counts.clarify!=recommend</td><td>2</td></tr><tr><td>summary.failure_counts.genre=None!=&#x27;python&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.genre=None!=&#x27;комедия&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.genre=None!=&#x27;машинное обучение&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.kind=None!=&#x27;course&#x27;</td><td>3</td></tr><tr><td>summary.failure_counts.kind=None!=&#x27;film&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.level=None!=&#x27;продвинутый&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.missing_recommendation</td><td>2</td></tr><tr><td>summary.failure_counts.recommend!=clarify</td><td>1</td></tr><tr><td>summary.failure_counts.tone=None!=&#x27;лёгкий&#x27;</td><td>2</td></tr><tr><td>summary.failure_counts.unexpected_recommendation</td><td>1</td></tr><tr><td>summary.stages.turns</td><td>25</td></tr><tr><td>summary.stages.raw_extraction.validated_outputs</td><td>29</td></tr><tr><td>summary.stages.raw_extraction.errors</td><td>0</td></tr><tr><td>summary.stages.raw_extraction.issue_count</td><td>2</td></tr><tr><td>summary.stages.raw_extraction.clarification_required</td><td>2</td></tr><tr><td>summary.stages.raw_extraction.update_fields.genre</td><td>21</td></tr><tr><td>summary.stages.raw_extraction.update_fields.kind</td><td>15</td></tr><tr><td>summary.stages.raw_extraction.update_fields.level</td><td>8</td></tr><tr><td>summary.stages.raw_extraction.update_fields.max_minutes</td><td>1</td></tr><tr><td>summary.stages.raw_extraction.update_fields.practical</td><td>5</td></tr><tr><td>summary.stages.raw_extraction.update_fields.seed_title</td><td>4</td></tr><tr><td>summary.stages.raw_extraction.update_fields.tone</td><td>1</td></tr><tr><td>summary.stages.adapter.semantic_pass_turns</td><td>19</td></tr><tr><td>summary.stages.adapter.semantic_mismatch_turns</td><td>6</td></tr><tr><td>summary.stages.policy.eligible_after_adapter</td><td>19</td></tr><tr><td>summary.stages.policy.expected_state_pass</td><td>19</td></tr><tr><td>summary.stages.policy.recommendation_contract_pass</td><td>19</td></tr><tr><td>summary.stages.note</td><td>Raw evidence is descriptive: an omitted update is not automatically an error when the field is inherited or derived from a known title.</td></tr><tr><td>comparison.before_path</td><td>artifacts\contract-routing-2026-09-27\dev-o.json</td></tr><tr><td>comparison.before_report_sha256</td><td>17a5e18f4933853904ed5cad6f8fc981158fc564b2f00ecdd3c4fefe7732e4f3</td></tr><tr><td>comparison.changed_dialogue_count</td><td>0</td></tr><tr><td>report_sha256</td><td>873080970540feee8a768c1b418b45163ee3382d6d26f5d0e9486755702df0f7</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;schema_version&quot;: 1,
+  &quot;label&quot;: &quot;after&quot;,
+  &quot;complete&quot;: true,
+  &quot;created_at_utc&quot;: &quot;2026-09-27T17:45:43.522422+00:00&quot;,
+  &quot;cohort&quot;: {
+    &quot;path&quot;: &quot;C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\data\\product_llm_first_dev.json&quot;,
+    &quot;sha256&quot;: &quot;4771b5468062bf3be662f9c67b8818146be40e9ee804ef9bfb9e7a97795c346f&quot;,
+    &quot;origin&quot;: &quot;synthetic_code&quot;,
+    &quot;split&quot;: &quot;dev&quot;
+  },
+  &quot;model_identity_before&quot;: {
+    &quot;model&quot;: &quot;qwen3:8b&quot;,
+    &quot;digest&quot;: &quot;500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41&quot;,
+    &quot;ollama_version&quot;: &quot;0.17.4&quot;,
+    &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;
+  },
+  &quot;model_identity_after&quot;: {
+    &quot;model&quot;: &quot;qwen3:8b&quot;,
+    &quot;digest&quot;: &quot;500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41&quot;,
+    &quot;ollama_version&quot;: &quot;0.17.4&quot;,
+    &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;
+  },
+  &quot;model_selection&quot;: {
+    &quot;cohort_model&quot;: &quot;qwen3:8b&quot;,
+    &quot;cohort_expected_digest&quot;: &quot;500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41&quot;,
+    &quot;effective_model&quot;: &quot;qwen3:8b&quot;,
+    &quot;expected_digest&quot;: &quot;500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41&quot;,
+    &quot;model_override&quot;: false
+  },
+  &quot;configuration&quot;: {
+    &quot;mode&quot;: &quot;ollama&quot;,
+    &quot;question_policy&quot;: &quot;adaptive&quot;,
+    &quot;max_questions&quot;: 3,
+    &quot;history&quot;: &quot;cold_start&quot;,
+    &quot;timeout_s&quot;: 90.0,
+    &quot;implementation&quot;: &quot;workflow-v2&quot;,
+    &quot;workflow_config_sha256&quot;: &quot;d026305c81a6b4ecdb1123eee1b0ad1aa7665ca8ecbde9981d80ecfb16979e07&quot;
+  },
+  &quot;component_identity&quot;: {
+    &quot;implementation&quot;: &quot;workflow-v2&quot;,
+    &quot;status&quot;: &quot;integrated-dev&quot;,
+    &quot;migration_stage&quot;: &quot;validation-state-retrieval&quot;,
+    &quot;validation&quot;: &quot;proposal+reducer&quot;,
+    &quot;provider&quot;: &quot;provider+bm25+rrf&quot;,
+    &quot;renderer&quot;: &quot;legacy-grounded&quot;
+  },
+  &quot;source&quot;: {
+    &quot;commit&quot;: &quot;5d09189c3945dbc19687d3498e732a9338d5fbe9&quot;,
+    &quot;dirty&quot;: true,
+    &quot;files_sha256&quot;: {
+      &quot;src/recagent/agent.py&quot;: &quot;e6a114565df960b318ed7ff2de3babe7a0adaf8b3e481cb4f2b915b4ded58e1b&quot;,
+      &quot;src/recagent/contracts.py&quot;: &quot;573be4a6f631ed1ebd8e5c9b904f235d652827f3b9217baaa76993a3603c923b&quot;,
+      &quot;src/recagent/config/settings.py&quot;: &quot;12a6376d4903cf3e49c06694e61853311940ef6182b8338c5eb0b2110fd74ce2&quot;,
+      &quot;src/recagent/domains/__init__.py&quot;: &quot;728b61363d2e2cb1c9ca719decc2f88ef27453dfb7c2e7ffc7a28635fbcb8e19&quot;,
+      &quot;src/recagent/domains/demo.py&quot;: &quot;44db291deba9ce29d85d2e7b67c938b910dccf4506cdb843e7a1cb0774b9372a&quot;,
+      &quot;src/recagent/factory.py&quot;: &quot;f98bb2b41001886c8c7ccafdff3cef32fc0889f50abc173c6774967780209da7&quot;,
+      &quot;src/recagent/filtering.py&quot;: &quot;b99a77f0eef9f9427f011ce39e438a0ba05b32a6b010e533887771c5c6fdbd3c&quot;,
+      &quot;src/recagent/grounding.py&quot;: &quot;ef48b1a11ef1ace00dca39e6ec1129ce61bcc3c76c5e130f4feb02f4c8e9a972&quot;,
+      &quot;src/recagent/interpretation.py&quot;: &quot;9d2349a8f9ce3f360e9891d68c85e7aaa6e28f5ff0f4db8410603a8dd7c8ed81&quot;,
+      &quot;src/recagent/models.py&quot;: &quot;27a21ae38da2f7836370edd0bf8b6e51bd4b628419507ecb30b22b0db48d2b00&quot;,
+      &quot;src/recagent/parsing.py&quot;: &quot;4a1880af0491277b3c48033e5d84fc6de08494b4b86f44e26be1131a7907d4ee&quot;,
+      &quot;src/recagent/questions.py&quot;: &quot;e53f821c1ef655ff581bbaf6ebf49e0ef96672fe3c9afe0050b02c5d0e9c80ed&quot;,
+      &quot;src/recagent/query_compilation.py&quot;: &quot;1958294d4640bedcd5b47ca2b4101a59e403902f8833aab0ff8ba4892e0b501a&quot;,
+      &quot;src/recagent/providers.py&quot;: &quot;006610d144daa3a48bc391c7f25d18adfe2661fbdb8bef03d4b779ec4405821a&quot;,
+      &quot;src/recagent/request_mapping.py&quot;: &quot;7df2db308fcced5ec55d0391b76f781a66d05b7becb7e800b3382057690df3a7&quot;,
+      &quot;src/recagent/response_generation.py&quot;: &quot;3a3162d870f6df2f1ee40d0c4e0d6c1cedbe4b8cc2af257871ce2568328df7e3&quot;,
+      &quot;src/recagent/ranking.py&quot;: &quot;f64545614a14f571ccb04126305810abc9654ec5414e07b1155ef914e721f25d&quot;,
+      &quot;scripts/evaluate_llm_first_product.py&quot;: &quot;921bfb232ddc8d4fb2f702e3c2132d3dc478df966209b5253a42fe706441960d&quot;,
+      &quot;src/recagent/state.py&quot;: &quot;39eb2fc9c94afca294efbaf0892c7c2a32be570c8f6173dd3dbd915e20d3c6a7&quot;,
+      &quot;src/recagent/validation.py&quot;: &quot;67e7438467a50da7beb237baecda6884b669c50554c67283df313852ca33b347&quot;,
+      &quot;src/recagent/workflow.py&quot;: &quot;d5dce5594732db3361a742cf68445c938122f75d395a28a4d20e4a64d2393ff5&quot;
+    }
+  },
+  &quot;environment&quot;: {
+    &quot;python&quot;: &quot;3.12.14&quot;,
+    &quot;platform&quot;: &quot;Windows-11-10.0.26100-SP0&quot;
+  },
+  &quot;summary&quot;: {
+    &quot;full_dialogues&quot;: 20,
+    &quot;full_dialog_successes&quot;: 15,
+    &quot;failure_counts&quot;: {
+      &quot;clarify!=recommend&quot;: 2,
+      &quot;genre=None!=&#x27;python&#x27;&quot;: 1,
+      &quot;genre=None!=&#x27;комедия&#x27;&quot;: 1,
+      &quot;genre=None!=&#x27;машинное обучение&#x27;&quot;: 1,
+      &quot;kind=None!=&#x27;course&#x27;&quot;: 3,
+      &quot;kind=None!=&#x27;film&#x27;&quot;: 1,
+      &quot;level=None!=&#x27;продвинутый&#x27;&quot;: 1,
+      &quot;missing_recommendation&quot;: 2,
+      &quot;recommend!=clarify&quot;: 1,
+      &quot;tone=None!=&#x27;лёгкий&#x27;&quot;: 2,
+      &quot;unexpected_recommendation&quot;: 1
+    },
+    &quot;stages&quot;: {
+      &quot;turns&quot;: 25,
+      &quot;raw_extraction&quot;: {
+        &quot;validated_outputs&quot;: 29,
+        &quot;errors&quot;: 0,
+        &quot;issue_count&quot;: 2,
+        &quot;clarification_required&quot;: 2,
+        &quot;update_fields&quot;: {
+          &quot;genre&quot;: 21,
+          &quot;kind&quot;: 15,
+          &quot;level&quot;: 8,
+          &quot;max_minutes&quot;: 1,
+          &quot;practical&quot;: 5,
+          &quot;seed_title&quot;: 4,
+          &quot;tone&quot;: 1
+        }
+      },
+      &quot;adapter&quot;: {
+        &quot;semantic_pass_turns&quot;: 19,
+        &quot;semantic_mismatch_turns&quot;: 6
+      },
+      &quot;policy&quot;: {
+        &quot;eligible_after_adapter&quot;: 19,
+        &quot;expected_state_pass&quot;: 19,
+        &quot;recommendation_contract_pass&quot;: 19
+      },
+      &quot;note&quot;: &quot;Raw evidence is descriptive: an omitted update is not automatically an error when the field is inherited or derived from a known title.&quot;
+    }
+  },
+  &quot;comparison&quot;: {
+    &quot;before_path&quot;: &quot;artifacts\\contract-routing-2026-09-27\\dev-o.json&quot;,
+    &quot;before_report_sha256&quot;: &quot;17a5e18f4933853904ed5cad6f8fc981158fc564b2f00ecdd3c4fefe7732e4f3&quot;,
+    &quot;changed_dialogue_count&quot;: 0
+  },
+  &quot;experiment_scope&quot;: {
+    &quot;cohort_role&quot;: &quot;fixed public DEV-only synthetic measurement fixture&quot;,
+    &quot;scope&quot;: &quot;full&quot;,
+    &quot;original_dialogues&quot;: 20,
+    &quot;original_cohort_sha256&quot;: &quot;4771b5468062bf3be662f9c67b8818146be40e9ee804ef9bfb9e7a97795c346f&quot;,
+    &quot;interpretation&quot;: &quot;A paired comparison requires the same cohort, decoding, prompt/schema/pipeline and product-source hashes; it does not establish production or traffic performance.&quot;
+  },
+  &quot;limitations&quot;: [
+    &quot;Synthetic diagnostic product cohort; it is not human-authored data, traffic, a blind holdout or a model comparison.&quot;,
+    &quot;Only literal non-membership against public v2 dev utterances is checked for unseen paraphrases; it does not prove linguistic independence.&quot;,
+    &quot;The cohort has no theta-based utility claim. Recommendation checks use independently written spoken constraints and catalog membership.&quot;,
+    &quot;The frozen cohort is reused as a fixed fixture for this controlled comparison; it is not a new independent model-evaluation split.&quot;
+  ],
+  &quot;report_sha256&quot;: &quot;873080970540feee8a768c1b418b45163ee3382d6d26f5d0e9486755702df0f7&quot;
+}</pre></details><p><a href="evidence/evaluation-dev.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-contract" class="receipt"><summary>Ответы агента: CONTRACT</summary><p>Источник: <code>artifacts/submission-final-2026-09-27/contract.evaluation.json</code><br>SHA-256: <code>092ef66017ea3f1279b95fc98869a83ccb027b3adbc91b6c90cba5dd10a64c27</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>metric_version</td><td>observable-product-v1</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;metric_version&quot;: &quot;observable-product-v1&quot;,
+  &quot;catalog_identity&quot;: {
+    &quot;verified&quot;: true,
+    &quot;recorded_sha256&quot;: &quot;5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258&quot;,
+    &quot;scoring_sha256&quot;: &quot;5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258&quot;
+  },
+  &quot;lanes&quot;: {
+    &quot;observable_delivery&quot;: {
+      &quot;dialogues_pass&quot;: 12,
+      &quot;turns_pass&quot;: 20,
+      &quot;turns&quot;: 20
+    },
+    &quot;legacy_recorded&quot;: {
+      &quot;available&quot;: false,
+      &quot;dialogues_pass&quot;: null,
+      &quot;rescored&quot;: false
+    },
+    &quot;active_query_diagnostics&quot;: {
+      &quot;failed_turns&quot;: 0,
+      &quot;affects_observable_verdict&quot;: false
+    }
+  },
+  &quot;observed_accounting&quot;: {
+    &quot;clarification_turns&quot;: 2,
+    &quot;mean_clarifications_per_dialogue&quot;: 0.16666666666666666,
+    &quot;llm_calls&quot;: {
+      &quot;available&quot;: true,
+      &quot;total&quot;: 40
+    },
+    &quot;llm_tokens&quot;: {
+      &quot;available&quot;: true,
+      &quot;total&quot;: 84855
+    }
+  }
+}</pre></details><p><a href="evidence/evaluation-contract.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-roles" class="receipt"><summary>LLM-симулятор, валидатор и судья</summary><p>Источник: <code>report/evidence/evaluation-roles.json</code><br>SHA-256: <code>9162c633b4fe52e4caa16ac2242c7014e661252c52ffd8d7660f7f3184fa1d88</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>protocol_manifest_path</td><td>artifacts\prototype-product-2026-09-23\roles-final-record.protocol.json</td></tr><tr><td>protocol_manifest_file_sha256</td><td>b2da047f0008bb1118ef1218e2b59181fe7fce4320a14d6a2f80f45835dcb5ad</td></tr><tr><td>status</td><td>complete</td></tr><tr><td>report_sha256_input</td><td>eff89ae9948892f81a7dcb41b52b118e9090ca69b22c03d9d2f27a7a2818d2f2</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;protocol&quot;: {
+    &quot;protocol_version&quot;: &quot;llm-clarification-v0.7&quot;,
+    &quot;scope&quot;: &quot;public_v2_dev_recommend_episode_with_bounded_clarifications&quot;,
+    &quot;max_clarifications&quot;: 3,
+    &quot;selection_strategy&quot;: &quot;round_robin_by_scenario_family_with_discovery_vague_first&quot;,
+    &quot;requested_limit&quot;: 8,
+    &quot;excluded_before_inference&quot;: {
+      &quot;v2-contradiction-dev-0001&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0002&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0003&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0004&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0005&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0006&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0007&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0008&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0009&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0010&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0011&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0012&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0013&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0014&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0015&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0016&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0017&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0018&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0019&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0020&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0021&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0022&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0023&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0024&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-contradiction-dev-0025&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-domain_switch-dev-0001&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0002&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0003&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0004&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0005&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0006&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0007&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0008&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0009&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0010&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0011&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0012&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0013&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0014&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0015&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0016&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0017&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0018&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0019&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0020&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0021&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0022&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0023&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0024&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-domain_switch-dev-0025&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0001&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0002&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0003&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0004&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0005&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0006&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0007&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0008&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0009&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0010&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0011&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0012&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0013&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0014&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0015&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0016&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0017&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0018&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0019&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0020&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0021&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0022&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0023&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0024&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-incremental-dev-0025&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0001&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0002&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0003&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0004&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0005&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0006&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0007&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0008&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0009&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0010&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0011&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0012&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0013&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0014&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0015&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0016&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0017&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0018&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0019&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0020&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0021&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0022&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0023&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0024&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-more_variants-dev-0025&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-no_result-dev-0001&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0002&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0003&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0004&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0005&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0006&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0007&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0008&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0009&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0010&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0011&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0012&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0013&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0014&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0015&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0016&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0017&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0018&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0019&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0020&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0021&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0022&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0023&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0024&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-no_result-dev-0025&quot;: &quot;recommend_scope&quot;,
+      &quot;v2-release_constraint-dev-0001&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0002&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0003&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0004&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0005&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0006&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0007&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0008&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0009&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0010&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0011&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0012&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0013&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0014&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0015&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0016&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0017&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0018&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0019&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0020&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0021&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0022&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0023&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0024&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-release_constraint-dev-0025&quot;: &quot;one_turn_scope&quot;,
+      &quot;v2-course_level-dev-0002&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0003&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0004&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0005&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0006&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0007&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0008&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0009&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0010&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0011&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0012&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0013&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0014&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0015&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0016&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0017&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0018&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0019&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0020&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0021&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0022&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0023&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0024&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_level-dev-0025&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0002&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0003&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0004&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0005&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0006&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0007&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0008&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0009&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0010&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0011&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0012&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0013&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0014&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0015&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0016&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0017&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0018&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0019&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0020&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0021&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0022&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0023&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0024&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-course_practical-dev-0025&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0002&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0003&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0004&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0005&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0006&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0007&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0008&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0009&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0010&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0011&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0012&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0013&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0014&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0015&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0016&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0017&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0018&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0019&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0020&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0021&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0022&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0023&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0024&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_genre-dev-0025&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0002&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0003&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0004&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0005&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0006&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0007&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0008&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0009&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0010&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0011&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0012&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0013&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0014&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0015&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0016&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0017&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0018&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0019&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0020&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0021&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0022&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0023&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0024&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_multi-dev-0025&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0002&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0003&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0004&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0005&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0006&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0007&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0008&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0009&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0010&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0011&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0012&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0013&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0014&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0015&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0016&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0017&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0018&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0019&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0020&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0021&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0022&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0023&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0024&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-discovery_vague-dev-0025&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0002&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0003&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0004&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0005&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0006&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0007&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0008&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0009&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0010&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0011&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0012&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0013&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0014&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0015&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0016&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0017&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0018&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0019&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0020&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0021&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0022&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0023&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0024&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-exclusion_genre-dev-0025&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0002&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0003&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0004&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0005&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0006&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0007&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0008&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0009&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0010&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0011&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0012&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0013&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0014&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0015&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0016&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0017&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0018&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0019&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0020&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0021&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0022&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0023&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0024&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-mood_evening-dev-0025&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0002&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0003&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0004&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0005&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0006&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0007&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0008&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0009&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0010&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0011&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0012&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0013&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0014&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0015&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0016&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0017&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0018&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0019&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0020&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0021&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0022&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0023&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0024&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-navigation_title-dev-0025&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0001&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0002&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0003&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0004&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0005&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0006&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0007&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0008&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0009&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0010&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0011&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0012&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0013&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0014&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0015&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0016&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0017&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0018&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0019&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0020&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0021&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0022&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0023&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0024&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-similar_seed-dev-0025&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0001&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0002&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0003&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0004&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0005&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0006&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0007&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0008&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0009&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0010&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0011&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0012&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0013&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0014&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0015&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0016&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0017&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0018&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0019&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0020&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0021&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0022&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0023&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0024&quot;: &quot;limit_not_selected&quot;,
+      &quot;v2-tone_negation-dev-0025&quot;: &quot;limit_not_selected&quot;
+    },
+    &quot;protocol_sha256&quot;: &quot;c730996205cc3ae669fd31bfd727920bd74bab7ca336ba7d086e31eae86a2d97&quot;
+  },
+  &quot;protocol_manifest_path&quot;: &quot;artifacts\\prototype-product-2026-09-23\\roles-final-record.protocol.json&quot;,
+  &quot;protocol_manifest_file_sha256&quot;: &quot;b2da047f0008bb1118ef1218e2b59181fe7fce4320a14d6a2f80f45835dcb5ad&quot;,
+  &quot;result&quot;: {
+    &quot;protocol_version&quot;: &quot;llm-clarification-v0.7&quot;,
+    &quot;max_clarifications&quot;: 3,
+    &quot;metrics&quot;: {
+      &quot;success_rate&quot;: 0.25,
+      &quot;mean_clarifications&quot;: 1.375,
+      &quot;text_claims&quot;: 119,
+      &quot;unsupported_text_claims&quot;: 0,
+      &quot;unsupported_text_claim_rate&quot;: 0.0,
+      &quot;agent_latency_p50_ms&quot;: 1938.89869999839,
+      &quot;agent_latency_p95_ms&quot;: 3840.480999991996,
+      &quot;judge_grounded_rate&quot;: 1.0,
+      &quot;judge_completed_cases&quot;: 8,
+      &quot;claim_metric_scope&quot;: &quot;Independent conservative catalog/history audit of supported explanation templates; advisory judge is separate.&quot;
+    },
+    &quot;case_count&quot;: 8,
+    &quot;denominator&quot;: 8,
+    &quot;success_count&quot;: 2,
+    &quot;oracle_success_count&quot;: 2,
+    &quot;core_success_count&quot;: 2,
+    &quot;protocol_complete_count&quot;: 8,
+    &quot;failure_count&quot;: 6,
+    &quot;replay_sha256&quot;: &quot;66285ab08826bc6b5e4248eca9b7cda77b53a4234c3e833434161a03e8fb3fdf&quot;,
+    &quot;latency_note&quot;: &quot;observed_latency_ms измеряется локально и намеренно исключён из replay_sha256&quot;
+  },
+  &quot;status&quot;: &quot;complete&quot;,
+  &quot;component_identity&quot;: {
+    &quot;implementation&quot;: &quot;workflow-v2&quot;,
+    &quot;status&quot;: &quot;integrated-dev&quot;,
+    &quot;migration_stage&quot;: &quot;validation-state-retrieval&quot;,
+    &quot;validation&quot;: &quot;proposal+reducer&quot;,
+    &quot;provider&quot;: &quot;provider+bm25+rrf&quot;,
+    &quot;renderer&quot;: &quot;legacy-grounded&quot;
+  },
+  &quot;agent_transport&quot;: {
+    &quot;note&quot;: &quot;Transport errors can trigger product fallback; an incomplete cache is never a successful replay.&quot;
+  },
+  &quot;configuration&quot;: {
+    &quot;manifest&quot;: &quot;artifacts\\eval-v2-20260914\\recagent-eval-v2.0-dev.manifest.json&quot;,
+    &quot;manifest_sha256&quot;: &quot;5f15f130c6a248b5f8c0370579146dd76f71a7ac607ed9afe718ebe648af26d9&quot;,
+    &quot;cache_mode&quot;: &quot;record&quot;,
+    &quot;limit&quot;: 8,
+    &quot;agent_mode&quot;: &quot;ollama&quot;,
+    &quot;question_policy&quot;: &quot;adaptive&quot;,
+    &quot;implementation&quot;: &quot;workflow-v2&quot;,
+    &quot;max_clarifications&quot;: 3,
+    &quot;workflow_config&quot;: &quot;configs\\workflow-v2.yaml&quot;,
+    &quot;agent_model&quot;: &quot;qwen3:8b&quot;,
+    &quot;role_models&quot;: {
+      &quot;simulator&quot;: &quot;qwen3:8b&quot;,
+      &quot;semantic_validator&quot;: &quot;qwen3:8b&quot;,
+      &quot;judge&quot;: &quot;qwen3:8b&quot;
+    },
+    &quot;role_configs&quot;: {
+      &quot;simulator&quot;: {
+        &quot;role&quot;: &quot;simulator&quot;,
+        &quot;model&quot;: &quot;qwen3:8b&quot;,
+        &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;,
+        &quot;timeout_s&quot;: 90.0,
+        &quot;seed&quot;: 42,
+        &quot;temperature&quot;: 0.0,
+        &quot;num_predict&quot;: 700,
+        &quot;think&quot;: false,
+        &quot;max_attempts&quot;: 2
+      },
+      &quot;semantic_validator&quot;: {
+        &quot;role&quot;: &quot;semantic_validator&quot;,
+        &quot;model&quot;: &quot;qwen3:8b&quot;,
+        &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;,
+        &quot;timeout_s&quot;: 90.0,
+        &quot;seed&quot;: 42,
+        &quot;temperature&quot;: 0.0,
+        &quot;num_predict&quot;: 700,
+        &quot;think&quot;: false,
+        &quot;max_attempts&quot;: 2
+      },
+      &quot;judge&quot;: {
+        &quot;role&quot;: &quot;judge&quot;,
+        &quot;model&quot;: &quot;qwen3:8b&quot;,
+        &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;,
+        &quot;timeout_s&quot;: 90.0,
+        &quot;seed&quot;: 42,
+        &quot;temperature&quot;: 0.0,
+        &quot;num_predict&quot;: 700,
+        &quot;think&quot;: false,
+        &quot;max_attempts&quot;: 2
+      },
+      &quot;agent&quot;: {
+        &quot;role&quot;: &quot;agent&quot;,
+        &quot;model&quot;: &quot;qwen3:8b&quot;,
+        &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;,
+        &quot;timeout_s&quot;: 90.0,
+        &quot;seed&quot;: 42,
+        &quot;temperature&quot;: 0.0,
+        &quot;num_predict&quot;: 700,
+        &quot;think&quot;: false,
+        &quot;max_attempts&quot;: 2
+      }
+    }
+  },
+  &quot;run_identity&quot;: {
+    &quot;cwd&quot;: &quot;C:\\Users\\roev_\\Documents\\ChatGPT\\МТС&quot;,
+    &quot;environment&quot;: {
+      &quot;python&quot;: &quot;3.12.14&quot;,
+      &quot;implementation&quot;: &quot;CPython&quot;,
+      &quot;executable&quot;: &quot;C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\.venv\\Scripts\\python.exe&quot;,
+      &quot;platform&quot;: &quot;Windows-11-10.0.26100-SP0&quot;,
+      &quot;packages&quot;: {
+        &quot;altair&quot;: &quot;6.2.2&quot;,
+        &quot;annotated-doc&quot;: &quot;0.0.5&quot;,
+        &quot;annotated-types&quot;: &quot;0.8.0&quot;,
+        &quot;anyio&quot;: &quot;4.15.1&quot;,
+        &quot;attrs&quot;: &quot;26.1.0&quot;,
+        &quot;certifi&quot;: &quot;2026.7.22&quot;,
+        &quot;charset-normalizer&quot;: &quot;3.5.1&quot;,
+        &quot;click&quot;: &quot;8.5.0&quot;,
+        &quot;colorama&quot;: &quot;0.4.6&quot;,
+        &quot;distro&quot;: &quot;1.9.0&quot;,
+        &quot;fastapi&quot;: &quot;0.141.1&quot;,
+        &quot;h11&quot;: &quot;0.16.0&quot;,
+        &quot;httpcore&quot;: &quot;1.0.9&quot;,
+        &quot;httpcore2&quot;: &quot;2.12.0&quot;,
+        &quot;httptools&quot;: &quot;0.8.0&quot;,
+        &quot;httpx&quot;: &quot;0.28.1&quot;,
+        &quot;httpx2&quot;: &quot;2.12.0&quot;,
+        &quot;hypothesis&quot;: &quot;6.168.0&quot;,
+        &quot;idna&quot;: &quot;3.19&quot;,
+        &quot;imageio-ffmpeg&quot;: &quot;0.6.0&quot;,
+        &quot;iniconfig&quot;: &quot;2.3.0&quot;,
+        &quot;itsdangerous&quot;: &quot;2.2.0&quot;,
+        &quot;jinja2&quot;: &quot;3.1.6&quot;,
+        &quot;jsonpatch&quot;: &quot;1.33&quot;,
+        &quot;jsonpointer&quot;: &quot;3.1.1&quot;,
+        &quot;jsonschema&quot;: &quot;4.26.0&quot;,
+        &quot;jsonschema-path&quot;: &quot;0.5.0&quot;,
+        &quot;jsonschema-specifications&quot;: &quot;2025.9.1&quot;,
+        &quot;langchain-core&quot;: &quot;1.6.2&quot;,
+        &quot;langchain-protocol&quot;: &quot;0.0.19&quot;,
+        &quot;langgraph&quot;: &quot;1.2.11&quot;,
+        &quot;langgraph-checkpoint&quot;: &quot;4.2.0&quot;,
+        &quot;langgraph-prebuilt&quot;: &quot;1.1.0&quot;,
+        &quot;langgraph-sdk&quot;: &quot;0.4.4&quot;,
+        &quot;langsmith&quot;: &quot;0.12.4&quot;,
+        &quot;lazy-object-proxy&quot;: &quot;1.12.0&quot;,
+        &quot;markupsafe&quot;: &quot;3.0.3&quot;,
+        &quot;narwhals&quot;: &quot;2.26.0&quot;,
+        &quot;numpy&quot;: &quot;2.4.6&quot;,
+        &quot;openapi-schema-validator&quot;: &quot;0.9.0&quot;,
+        &quot;openapi-spec-validator&quot;: &quot;0.9.0&quot;,
+        &quot;orjson&quot;: &quot;3.12.0&quot;,
+        &quot;ormsgpack&quot;: &quot;1.12.2&quot;,
+        &quot;packaging&quot;: &quot;26.3&quot;,
+        &quot;pandas&quot;: &quot;3.0.5&quot;,
+        &quot;pathable&quot;: &quot;0.6.0&quot;,
+        &quot;pillow&quot;: &quot;12.3.0&quot;,
+        &quot;pip&quot;: &quot;24.0&quot;,
+        &quot;pluggy&quot;: &quot;1.6.0&quot;,
+        &quot;protobuf&quot;: &quot;7.36.1&quot;,
+        &quot;pyarrow&quot;: &quot;25.0.1&quot;,
+        &quot;pydantic&quot;: &quot;2.13.5&quot;,
+        &quot;pydantic-settings&quot;: &quot;2.15.0&quot;,
+        &quot;pydantic_core&quot;: &quot;2.46.5&quot;,
+        &quot;pydeck&quot;: &quot;0.9.3&quot;,
+        &quot;pygments&quot;: &quot;2.21.0&quot;,
+        &quot;pytest&quot;: &quot;9.1.1&quot;,
+        &quot;pytest-asyncio&quot;: &quot;1.4.0&quot;,
+        &quot;python-dateutil&quot;: &quot;2.9.0.post0&quot;,
+        &quot;python-dotenv&quot;: &quot;1.2.3&quot;,
+        &quot;python-multipart&quot;: &quot;0.0.32&quot;,
+        &quot;pyyaml&quot;: &quot;6.0.3&quot;,
+        &quot;recagent&quot;: &quot;0.2.0&quot;,
+        &quot;referencing&quot;: &quot;0.37.0&quot;,
+        &quot;requests&quot;: &quot;2.34.2&quot;,
+        &quot;requests-toolbelt&quot;: &quot;1.0.0&quot;,
+        &quot;respx&quot;: &quot;0.23.1&quot;,
+        &quot;rfc3339-validator&quot;: &quot;0.1.4&quot;,
+        &quot;rpds-py&quot;: &quot;2026.6.3&quot;,
+        &quot;ruff&quot;: &quot;0.16.7&quot;,
+        &quot;setuptools&quot;: &quot;65.5.0&quot;,
+        &quot;six&quot;: &quot;1.17.0&quot;,
+        &quot;sniffio&quot;: &quot;1.3.1&quot;,
+        &quot;sortedcontainers&quot;: &quot;2.4.0&quot;,
+        &quot;starlette&quot;: &quot;1.6.0&quot;,
+        &quot;streamlit&quot;: &quot;1.63.0&quot;,
+        &quot;structlog&quot;: &quot;26.1.0&quot;,
+        &quot;tenacity&quot;: &quot;9.1.4&quot;,
+        &quot;toml&quot;: &quot;0.10.2&quot;,
+        &quot;truststore&quot;: &quot;0.10.4&quot;,
+        &quot;typing-inspection&quot;: &quot;0.4.4&quot;,
+        &quot;typing_extensions&quot;: &quot;4.16.0&quot;,
+        &quot;tzdata&quot;: &quot;2026.3&quot;,
+        &quot;urllib3&quot;: &quot;2.7.0&quot;,
+        &quot;uuid_utils&quot;: &quot;0.17.1&quot;,
+        &quot;uvicorn&quot;: &quot;0.52.4&quot;,
+        &quot;watchdog&quot;: &quot;6.0.0&quot;,
+        &quot;websockets&quot;: &quot;16.1.1&quot;,
+        &quot;xxhash&quot;: &quot;4.0.1&quot;,
+        &quot;zstandard&quot;: &quot;0.25.0&quot;
+      },
+      &quot;lock_file_sha256&quot;: {
+        &quot;pyproject.toml&quot;: &quot;d45e09ba2b00e46429249e68b9be164560fa6166072bbaf6c24b33eddb3c88f2&quot;,
+        &quot;requirements.txt&quot;: &quot;a9ea9263f4bf13bee34c308d5c004cba0683fe68f190a4806b0a001de9036a7c&quot;,
+        &quot;requirements-lock.txt&quot;: &quot;0a439c7a16303932d7077c4ebc4b0931d8412df69a76481aa5996927f2c7a88d&quot;,
+        &quot;requirements-hf.txt&quot;: &quot;18754e546e93c325124b21c018d273931457a5727745205bcd41f984489460c9&quot;
+      },
+      &quot;git&quot;: {
+        &quot;available&quot;: true,
+        &quot;commit&quot;: &quot;5d09189c3945dbc19687d3498e732a9338d5fbe9&quot;,
+        &quot;branch&quot;: &quot;codex/experiment-compound-questions&quot;,
+        &quot;dirty&quot;: true,
+        &quot;porcelain_sha256&quot;: &quot;35a047aee82d027805fd72f2938041a8a7793541502e529e5e1d60f1e18515cd&quot;
+      }
+    },
+    &quot;source_file_sha256&quot;: {
+      &quot;evals/__init__.py&quot;: &quot;9fdb76665d70b85203dc2c93f23b82e10ba849f8213e6f41d10cdaffad7bb286&quot;,
+      &quot;evals/adversarial_ru.py&quot;: &quot;e215c18a6ae2984832a4bfe4b8ee7a240976fd990fc0104b58fca9e480c68817&quot;,
+      &quot;evals/dataset_v2.py&quot;: &quot;47f38bcb27377a0a27d2e2f0776a2f4a6c348d4dee3147aee466a0183711c9fd&quot;,
+      &quot;evals/explanations.py&quot;: &quot;8c35acc8049e295afe37cc9a1f839067b199abb67e11048521740c83791479a1&quot;,
+      &quot;evals/llm_protocol.py&quot;: &quot;f9135540a2e2a14999076b34aa733ae5adfc4fd7c906f63df0f2036d867e498e&quot;,
+      &quot;evals/llm_replay.py&quot;: &quot;c6212c78007aa5335fc343b805ef503cea6e0835d9d28b15ff50aa8eb571dca2&quot;,
+      &quot;evals/metrics.py&quot;: &quot;14a3b5c044569599f087e698b50573edfb8193e5b07a8a96aad8771a34246a9e&quot;,
+      &quot;evals/observable_product.py&quot;: &quot;eb9f90b6650a858db79eeebdbcb88cdb35e5563b19e767bb867ecaa522b6171c&quot;,
+      &quot;evals/oracle.py&quot;: &quot;9c3303fb4819c297bd89b39bc312f2d7aeb77cbff845e8d7b3812f6c85372ee7&quot;,
+      &quot;evals/redial_annotation.py&quot;: &quot;04fcb6b3dd7c9169b97a0273b2ae819172bf510064d616d1267e4057614ff548&quot;,
+      &quot;evals/scenarios.py&quot;: &quot;158b77e992ce59fa694543981ee4484d84b88cfce1db7ba62bab27932df423f7&quot;,
+      &quot;evals/simulator.py&quot;: &quot;8b40c36099b4b3ccf15b6e0e1c91684729c5a515aad4bf83590a588f99e39ff1&quot;,
+      &quot;pyproject.toml&quot;: &quot;d45e09ba2b00e46429249e68b9be164560fa6166072bbaf6c24b33eddb3c88f2&quot;,
+      &quot;requirements-hf.txt&quot;: &quot;18754e546e93c325124b21c018d273931457a5727745205bcd41f984489460c9&quot;,
+      &quot;requirements-lock.txt&quot;: &quot;0a439c7a16303932d7077c4ebc4b0931d8412df69a76481aa5996927f2c7a88d&quot;,
+      &quot;requirements.txt&quot;: &quot;a9ea9263f4bf13bee34c308d5c004cba0683fe68f190a4806b0a001de9036a7c&quot;,
+      &quot;scripts/evaluate_llm_protocol.py&quot;: &quot;eae7479013647fcebef7c06b47d43758b76a3a8c072195c4341fa179072d6aee&quot;,
+      &quot;src/recagent/__init__.py&quot;: &quot;298e8ee79d1d48a9d3756d46d06f9de9fcca9b5d9fd02b6cb3988e150c095b3d&quot;,
+      &quot;src/recagent/agent.py&quot;: &quot;12842e81417d68cc82381be913b169e7de86cf42b269e69bc81e0a0889c48be6&quot;,
+      &quot;src/recagent/api/__init__.py&quot;: &quot;15dc2f7115d5a9e8615fd6918a694a878187d4c9201bd69500cd17392b5d0763&quot;,
+      &quot;src/recagent/api/app.py&quot;: &quot;f470c51d970530f33addd65d484265a0925b4d5498b1673ebd4867b1a44dafd8&quot;,
+      &quot;src/recagent/api/errors.py&quot;: &quot;a5da8e7048fbba53419beb22bc64741cf768084b46f7591a57a45c987ed204dc&quot;,
+      &quot;src/recagent/api/health.py&quot;: &quot;7fedd8e04368f329eb506b0e01fc866541ca973ad742adc941a9dfee9187e120&quot;,
+      &quot;src/recagent/api/middleware.py&quot;: &quot;e054c0e0ed95f9057f58f698ae3591e9b24c3f3319aedd16917f3d14c77bb8b3&quot;,
+      &quot;src/recagent/catalog/__init__.py&quot;: &quot;8c961f7843ed74f38696c6efd7149250aae5dde16a4853e534849d221fc3737b&quot;,
+      &quot;src/recagent/catalog/calibration.py&quot;: &quot;9d1980b260d24194118f9741ff462e9e5d7480aacffaf7d5e680efd00ed68b27&quot;,
+      &quot;src/recagent/catalog/generator.py&quot;: &quot;67ec895d813f9aadde9ff98baf1aa5419fb26e01a059956237197faef8ef2709&quot;,
+      &quot;src/recagent/catalog/users.py&quot;: &quot;ee3fb319a96ffb67414d36eb4e8f3f9affc0c56964a4ba9aff90733e3d386472&quot;,
+      &quot;src/recagent/catalog/words.py&quot;: &quot;b94e664d5231b0846b65141dff3faf97d0983d42faf1c78272b07797aaa47db8&quot;,
+      &quot;src/recagent/config/__init__.py&quot;: &quot;bb9254bbf848fe4f9c8c856ae0676ab3d785c3e4d511a8fa8e3da6913a8d0619&quot;,
+      &quot;src/recagent/config/settings.py&quot;: &quot;3143261f48f06c3cbc811b0daefa588e6b032035c73ee369c37835fc1d72394e&quot;,
+      &quot;src/recagent/contracts.py&quot;: &quot;573be4a6f631ed1ebd8e5c9b904f235d652827f3b9217baaa76993a3603c923b&quot;,
+      &quot;src/recagent/domains/__init__.py&quot;: &quot;728b61363d2e2cb1c9ca719decc2f88ef27453dfb7c2e7ffc7a28635fbcb8e19&quot;,
+      &quot;src/recagent/domains/base.py&quot;: &quot;319e4dc72903bcd35aac9f7385664b4c646b1aa54379f42904aa3f54be20cd3b&quot;,
+      &quot;src/recagent/domains/demo.py&quot;: &quot;310faebb68763f9c4c027635aa98ed0c825014925911b788815af37e63e30f96&quot;,
+      &quot;src/recagent/factory.py&quot;: &quot;161806ae599357b534071a3330dc9d97fe82ecf033449d4e95e060804fd75753&quot;,
+      &quot;src/recagent/filtering.py&quot;: &quot;0fe5e6f9662ad295df1ff0ce4ec4be7564c5206bc0d10aa70d958cd89901c8b6&quot;,
+      &quot;src/recagent/generic_workflow.py&quot;: &quot;f37e9feadf9801e331a0d5a2c729b364d66945566eb66701ce44d1944898d4c1&quot;,
+      &quot;src/recagent/grounding.py&quot;: &quot;366e3719f7d9cec1f3d911258d9577fa0a562a7887310cf53aa6568b6b2d48aa&quot;,
+      &quot;src/recagent/interpretation.py&quot;: &quot;328ced9293e085298ae2c2a86af82a3ae61df7f277508c9ae36f788f77adceae&quot;,
+      &quot;src/recagent/mock_platform.py&quot;: &quot;ae0d9625f6ce12606e5f6ba138aa0d8b14d3e21c5847bc888be134e1b9d08a75&quot;,
+      &quot;src/recagent/models.py&quot;: &quot;26e5559ac4ac973576f8e28de120700e5c620b005a2adee573ffaaf1b53bd064&quot;,
+      &quot;src/recagent/observability/__init__.py&quot;: &quot;a75f9c3102c8d03f244e7f66add788711d3cb15919adc9ce1d3c31f8bf187491&quot;,
+      &quot;src/recagent/observability/logging.py&quot;: &quot;193d96ddba038fa120a35ec1582fc2ab0f47386ef08bc45d7f64f263631546d7&quot;,
+      &quot;src/recagent/onboarding.py&quot;: &quot;c28b4fa24726f5b5964f74aabfe8c8e7242bb48392e5369d9d9388297edc2f30&quot;,
+      &quot;src/recagent/parsing.py&quot;: &quot;850fdea4a4b202a25280cfa074e96d94381c7ce3fe0ec334a35ba7e0bba2a540&quot;,
+      &quot;src/recagent/pending_preview.py&quot;: &quot;821600ce00f43a0917498a22cc5b4608ca87939a6a38059219cd6696e0bca078&quot;,
+      &quot;src/recagent/planner.py&quot;: &quot;36f7600948f7aa52ee681adc2e8c8b713bd6b3fe8b4a184e3d40ece51d901706&quot;,
+      &quot;src/recagent/platform_contract.py&quot;: &quot;f98e6f1ab4c7a34f7c0913ca7fe860f303930dd2f7de554aa223d33b1585d047&quot;,
+      &quot;src/recagent/preferences.py&quot;: &quot;df9591dee6b19d59698cf368c00409c5b373a292fe9d37b2c582c34340648422&quot;,
+      &quot;src/recagent/providers.py&quot;: &quot;006610d144daa3a48bc391c7f25d18adfe2661fbdb8bef03d4b779ec4405821a&quot;,
+      &quot;src/recagent/query_compilation.py&quot;: &quot;1958294d4640bedcd5b47ca2b4101a59e403902f8833aab0ff8ba4892e0b501a&quot;,
+      &quot;src/recagent/questions.py&quot;: &quot;6da3a36eed9eec8a70769a87d55a4b9bebd0a62e6725f4a50dfdb1e4a17585a2&quot;,
+      &quot;src/recagent/ranking.py&quot;: &quot;b7611bb129c47c5ec91254eea5d2b3e3f51a668df75225c219e31350f9228355&quot;,
+      &quot;src/recagent/recsflow.py&quot;: &quot;16498a139d71c24f5f5c9da24a197838876bf2b9793be61fee94662219b8f669&quot;,
+      &quot;src/recagent/request_mapping.py&quot;: &quot;5830db335555096d93e6593afe51aed7f218aeadf1815144387d6978f8fc54ae&quot;,
+      &quot;src/recagent/resilience/__init__.py&quot;: &quot;7bc1aee0eb6c2e5fbf1da721c96c57368a504d5cb14332ea142098366042c35a&quot;,
+      &quot;src/recagent/resilience/degradation.py&quot;: &quot;c5f8f24cd956517faa93198b178e69b576e120033db656a75daa79749b00ecc6&quot;,
+      &quot;src/recagent/resolution.py&quot;: &quot;26cef8b2a2046e5a8b0b3254cfb404f3b6e5be0f4257840a8766ffa6363ef115&quot;,
+      &quot;src/recagent/response_generation.py&quot;: &quot;b34a776444a6222bfd362d354e1c2a8b837aa76680bccf9b98af85a68d153419&quot;,
+      &quot;src/recagent/retrieval.py&quot;: &quot;10ccd7a4d25472ed3b61701c1427f955763a025f0e811936f62528aed832063b&quot;,
+      &quot;src/recagent/semantic.py&quot;: &quot;340ef7e5e5acf62f735fe2fbd45adee2033ec1f708e0367115c5091214734faf&quot;,
+      &quot;src/recagent/state.py&quot;: &quot;d3784f88065336f78873c41131c6addb1310af9063ff66435e33552ef11129f1&quot;,
+      &quot;src/recagent/validation.py&quot;: &quot;fda9c951db44e7df08c6cc74166437f36bfa213c7cbd71909f32d945a902eef0&quot;,
+      &quot;src/recagent/workflow.py&quot;: &quot;de8ba2de5bc28055811df5b6151be247f751daea433c3c05dfa65c5879cd6601&quot;,
+      &quot;configs\\workflow-v2.yaml&quot;: &quot;d026305c81a6b4ecdb1123eee1b0ad1aa7665ca8ecbde9981d80ecfb16979e07&quot;
+    }
+  },
+  &quot;identities&quot;: {
+    &quot;simulator&quot;: {
+      &quot;cache_schema_version&quot;: 1,
+      &quot;role&quot;: &quot;simulator&quot;,
+      &quot;model_identity&quot;: {
+        &quot;model&quot;: &quot;qwen3:8b&quot;,
+        &quot;digest&quot;: &quot;500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41&quot;,
+        &quot;ollama_version&quot;: &quot;0.17.4&quot;,
+        &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;
+      },
+      &quot;options&quot;: {
+        &quot;temperature&quot;: 0.0,
+        &quot;num_predict&quot;: 700,
+        &quot;seed&quot;: 42,
+        &quot;think&quot;: false
+      },
+      &quot;manifest_sha256&quot;: &quot;c4267addc8e8f21e4194de8b377441df907ab9a9521779a52cfe60a9769cf2b9&quot;
+    },
+    &quot;semantic_validator&quot;: {
+      &quot;cache_schema_version&quot;: 1,
+      &quot;role&quot;: &quot;semantic_validator&quot;,
+      &quot;model_identity&quot;: {
+        &quot;model&quot;: &quot;qwen3:8b&quot;,
+        &quot;digest&quot;: &quot;500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41&quot;,
+        &quot;ollama_version&quot;: &quot;0.17.4&quot;,
+        &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;
+      },
+      &quot;options&quot;: {
+        &quot;temperature&quot;: 0.0,
+        &quot;num_predict&quot;: 700,
+        &quot;seed&quot;: 42,
+        &quot;think&quot;: false
+      },
+      &quot;manifest_sha256&quot;: &quot;83b152f650e2fddd033e25977a9aef6e7ceb584adadbd63b9df962ce761e2b67&quot;
+    },
+    &quot;judge&quot;: {
+      &quot;cache_schema_version&quot;: 1,
+      &quot;role&quot;: &quot;judge&quot;,
+      &quot;model_identity&quot;: {
+        &quot;model&quot;: &quot;qwen3:8b&quot;,
+        &quot;digest&quot;: &quot;500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41&quot;,
+        &quot;ollama_version&quot;: &quot;0.17.4&quot;,
+        &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;
+      },
+      &quot;options&quot;: {
+        &quot;temperature&quot;: 0.0,
+        &quot;num_predict&quot;: 700,
+        &quot;seed&quot;: 42,
+        &quot;think&quot;: false
+      },
+      &quot;manifest_sha256&quot;: &quot;449441be5f3b283a2a80b8a066283767f44c7466017bfeb946cbdc8915992a8d&quot;
+    },
+    &quot;agent&quot;: {
+      &quot;cache_schema_version&quot;: 1,
+      &quot;role&quot;: &quot;agent&quot;,
+      &quot;model_identity&quot;: {
+        &quot;model&quot;: &quot;qwen3:8b&quot;,
+        &quot;digest&quot;: &quot;500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41&quot;,
+        &quot;ollama_version&quot;: &quot;0.17.4&quot;,
+        &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;
+      },
+      &quot;options&quot;: {
+        &quot;temperature&quot;: 0.0,
+        &quot;num_predict&quot;: 700,
+        &quot;seed&quot;: 42,
+        &quot;think&quot;: false
+      },
+      &quot;manifest_sha256&quot;: &quot;9c9a312a335be5f989d681c2917d60beb34f6c771fb481f31aa9681d483763e9&quot;
+    }
+  },
+  &quot;cache_entry_sha256&quot;: {
+    &quot;agent/entries/074ff088829ef5449a43a5983d0a2bef92c9d5667471b474e79695f3a896b221.json&quot;: &quot;93991d78f6f5f3a2b27b055c1c252ad823719983daa0486663f91c0af696d83b&quot;,
+    &quot;agent/entries/09c381e8426c6eba0135904b47e401af1dbaac4eec7467fcfa61cb33723c75c0.json&quot;: &quot;ceadf8c329e1ddefdb8182d421035ddb49d4868238977121f6d692d5355bc013&quot;,
+    &quot;agent/entries/132807e1d82e19206cf8b201b7aded44155834d1873eb96cc52454c84b492fd5.json&quot;: &quot;72502c00cf8f4a93dc6e99984ec5af0cc38dcdfb07dc6654ca4b5393798f2de8&quot;,
+    &quot;agent/entries/15cc01842e44563236168c2c03078e4c8be1590c7b8e4b137d40da101e88f15f.json&quot;: &quot;01812c5616c698117e3f2400444315991550a67821bd0c2abcb615b02717c052&quot;,
+    &quot;agent/entries/539bcf6286fea31dc67e3859925a36445a6fdbffecd2dfb13121f72e36f9ce2b.json&quot;: &quot;3a8207e178a4d7e9534d90457a792c5e5115a3307b2067134dd928c599f0da88&quot;,
+    &quot;agent/entries/5efd58da02dad6e58990c6efbe72f4b4956ab48294334b9b205c5e78963cc4ac.json&quot;: &quot;354ed2a5d138a0dcbc70abe6ccbd90eb31a68cd8f483703fce18d8e867f1c927&quot;,
+    &quot;agent/entries/624cc46917356cabcd13194b373a852b423e4578594c82f60f745951d83cdd4b.json&quot;: &quot;f46cc575003ef4143cae1b3addd6ce3e11707f34843f008a1f541110a29175ed&quot;,
+    &quot;agent/entries/8c409e699f5f44329ce11f759bf7e12c21d01f730ea5e77484cf7af610084c94.json&quot;: &quot;1eabb126baa05b6963959100e89344f35da5accff2d3779c80a02762632c43e0&quot;,
+    &quot;agent/entries/9196ca82bdb23db8f5cb6b43f204d5bdcc684298ea12c08d5ae4072bf1ac4071.json&quot;: &quot;dad79767bcca86398ec4276c8343828463e8d0409ed69df3484129a2bcf26b7c&quot;,
+    &quot;agent/entries/968622668598d16af0e3a0681c2acbce3947fb933d069beedb122ffb6f6ac11a.json&quot;: &quot;d6ecd7bd15e36274df73a12463e70efd30f913e133e3610749a38efb846dcbb2&quot;,
+    &quot;agent/entries/a40959444728897d34e7984220a2331fcbee2969ca8b7bb035f2e057dcfff105.json&quot;: &quot;e39192a509e20fe2c84826a44fb907d03f1c4d5156c89477756bbe80cbdf3e28&quot;,
+    &quot;agent/entries/ab37e04803952ef070317f27a4512046eea0a5ecc557645a5d68d85125dc06be.json&quot;: &quot;02cea9ec3ecfd2251a892fbfd169e1b8e8b7a54c7c662a3e5264cac7984ac3d3&quot;,
+    &quot;agent/entries/b6918a07327d4c1f36892d340444a395b415a2f55d8b5be5eafbe9ea49bc00cc.json&quot;: &quot;5b347913d7866c39b4c2467e9b100be9fb3b3166cb571891923d3c3bb944c80c&quot;,
+    &quot;agent/entries/c5cbc4e3e18c4f8337dd6d8671b0d610d2a4dd55d1739baf56afa159c49e5d1d.json&quot;: &quot;0e2b339088a6000c54227ffebeed1de41810c3eafd5b49d1a81df97de8d8342e&quot;,
+    &quot;agent/entries/cee1398cebde08d7a09a694306fdff2696fbae541e56a3fea1ac9f898942af9f.json&quot;: &quot;942c374a885ad0267aa510a713e185fae8530b7513af7d11e1fb5573b258d61c&quot;,
+    &quot;agent/entries/d4a1d42356471add04dc655a5a2fbebb78b4bca935827bac03b0ca8ac300c0f5.json&quot;: &quot;a5ac46bf20fa0c384aaf5b47235c717dea835f3aecd1f855b7784644674a2074&quot;,
+    &quot;agent/entries/dd91f0e2673dddc0cefd55e3e9ae9c58c7c63331c19536c1bd3941f9b195d850.json&quot;: &quot;acc7c89abfef35000171c63f4cd9dc6e69251ea77ecfa02010cbf84fab5c3c3f&quot;,
+    &quot;agent/entries/e00e2b950f15e6a855598719673fbf309f9dbc4b93547dd9e94163e08ffed6fe.json&quot;: &quot;5ff1bcd66a2a7426bd2b8dcb250d276fa60d9c4066f3e8556921d3053aba42ea&quot;,
+    &quot;agent/entries/e71892c010921da1240f567c826a34bd0e069d04c63341be21203ffc511082e7.json&quot;: &quot;18b0a5c5b0860a851ebb6e216c53c949ec31f9dc6cf4c5cb4f6937484e238d80&quot;,
+    &quot;agent/entries/ebda89cd2d3e116072f9a9195f479a868d63b403b8201d03c2db269a52b5b8ff.json&quot;: &quot;d8ff6fdc76a35054b2c1ac9bdbe189fdfcd4c7ba95db982e1ce07ea3932aae11&quot;,
+    &quot;agent/entries/eea7e7ddcf3022fda89b069648707acc5ac2088e52be57221cc169cc398f82a2.json&quot;: &quot;16ef85ce66fbaa323cada6d09e45a14a92e8afbcc2ff9ec9e38822aff6b44238&quot;,
+    &quot;agent/entries/ff22bc387847cc6635a340aec5d6ef1ddb634677789dbbcf4d17af68f54b699f.json&quot;: &quot;c2350f3b9654638c41800e8b22d2193cd125cd349f7802b0f30ef1c5842f2871&quot;,
+    &quot;judge/entries/06d66fae866ff7969341ae907a4f48e808afccc5ac637f45d3ebdf96df2fbf0e.json&quot;: &quot;f802d5ed9c05ab926987984e564aceb23ed477ac61b7b8ecff9f8f3045b6cb27&quot;,
+    &quot;judge/entries/7a825a0f19842acce6ed7b64ef3649c22e11d4e033dca6527ea4a9a5c20fb41e.json&quot;: &quot;933bc379c1920269aa4f5877b0fe2a33b9cfd0cb54619c8d562eb6a8d10bc453&quot;,
+    &quot;judge/entries/9feb7c1e93c9b04462c264d598ecb632867329f495f345ec8e805fc0861be3b4.json&quot;: &quot;d9d7020039f9ad5b82d6aade4641ad9084869aa83c08e97d697f67776649fad6&quot;,
+    &quot;judge/entries/a5cba51083d4e95c9dbe84b3da6f4bd905cbacf66e8b74514ece5346dd806d8b.json&quot;: &quot;63c6e359d386d27a807de576ca2744f005a824dbd83b2fb212628257948869cf&quot;,
+    &quot;judge/entries/ae560b3a5c8a52e0e918940a286533a55beecec3871b7d4e73a990de372d1465.json&quot;: &quot;c066e1bfc798541476d3e86514f19dbf327cb36ab258dc694ed995ae8739e3a5&quot;,
+    &quot;judge/entries/b5b0e5102822fecae48beeb6571e861516ff2e5b2be9abce4899779b8b397bfb.json&quot;: &quot;74a7db7f05e579f620e79185ff0a965b37321aae442543363b0cb5992c3a4c31&quot;,
+    &quot;judge/entries/d96eea3e6c0783a63eaf27d601d4ce1004edbebc6389d96617f80ed30322a6ea.json&quot;: &quot;74d0e639d14b6deb2eaf05b4ddd57296f357b0c5f2f91c444238cbf451d36087&quot;,
+    &quot;judge/entries/f3fcd0d717297249181de70d1f61ae484bb392900459b7a5d4b546bf8d3fc9da.json&quot;: &quot;88a00c58e945696698829fe7b81795c107b890f24ef3b286fbdc3dcff66fe3b1&quot;,
+    &quot;semantic_validator/entries/041280aa759a8d9407b220cd5fb327e4e7eba81ca136a92f87d6c067e8096d3b.json&quot;: &quot;1929d6dcbf2f06218229235670b1636d0ea8dbc6fd44e820a51124ccdca02c0d&quot;,
+    &quot;semantic_validator/entries/1fffdb6abc151d4219cb056118d2381016b8300b1d6ee86550bcc04e51ab2a94.json&quot;: &quot;57ea019d3fd8bcba2171503b0a643c1852334e65d4787fbce8f5e51e48da32ad&quot;,
+    &quot;semantic_validator/entries/7fdb3455417442745dc5284dbace537fe97a9a12bb81ca5e7851409f55aa69c3.json&quot;: &quot;fdfbc99a694f71f1dd63486477dd216f7de5daa348727dfc655e6a782cacc3c5&quot;,
+    &quot;semantic_validator/entries/9260131270389080fb7866540b678b9b04a5dca2539d3183ae7d3c47de8341d6.json&quot;: &quot;941dcf9ebb7ca08e2aa4a00adb50bdc6a3355ee19f92309d3bd9419a6fcf6f12&quot;,
+    &quot;semantic_validator/entries/c7501c1045ced563eb9824224b22a0b715901d2cd0ed069ca1eebbc0104e98c0.json&quot;: &quot;ee5a845cf00b2c08d44c0fd0cbb2d6da33de647786a5f1443f6ee62534c5a143&quot;,
+    &quot;semantic_validator/entries/eaae8efdeaa995f0a77224f37050554de98551c71ca93a549d22a1529cb11689.json&quot;: &quot;863f6850763b967f9ebb29f35ed643630beaf5f086c9028f63b1682227134fd8&quot;,
+    &quot;simulator/entries/0a93f0a7702df1d41ec23fb80958349ab29cf874a973d38d5fd44f48f55d1f7c.json&quot;: &quot;d9f3f5f348a71799837d47e683a9c230ca8d149b8a1afc4f556fe714be7ec8a0&quot;,
+    &quot;simulator/entries/2212f879a468c58657564fa464fb7bae8bfa0df01f48a9d76712fecab783d564.json&quot;: &quot;39f10f4c38d16f4d76bba361ed9f351c43c26897f3d7640d52d85558aedf4119&quot;,
+    &quot;simulator/entries/249fc79ba9233e4091c5d3f1c822e99a830464407139a7109a4116cf4a648590.json&quot;: &quot;b608c24ce00df42f74c7e60788547255afb1206a6d54ff6d9e8a9078ed16a2a2&quot;,
+    &quot;simulator/entries/5e3605a67ecfb7555218b2cb817700dbde8c7781458c31ceb5ff55060f81396b.json&quot;: &quot;5d29e415963ee5c6a4756866718e2b1869a6e062d3bae1023e0eb843c2dede31&quot;,
+    &quot;simulator/entries/7e3821f5d0a9acfcdab21a09626d13089795f148e72a08a26fcc5d280ae45391.json&quot;: &quot;eca29b30d23a3ce359f26e7bdcfd747987b62ea07bdf8fe8627ac5e0753d3e55&quot;,
+    &quot;simulator/entries/a4da30d5dc5f79cde5ecc07e89224470c1b6f099940baa08653d80766631905f.json&quot;: &quot;de02e17e95151c67eacf33de775d8942f5c306244659f8d95751b543584d3ccf&quot;,
+    &quot;simulator/entries/aff198a8877f3a9d77e8784cca23454a73aea464632bbfc02d9b170d8a2434ee.json&quot;: &quot;798ddcbccbe4a60f13c22e0fd585ff5a32a0505c033bac79572bf2089c889ba5&quot;,
+    &quot;simulator/entries/b67c2f65e24ef8ba599ca36e688f3aeade3c2b9d3f83c7e32a2d5a91c792c754.json&quot;: &quot;5c3fa4db46147c4ab708a64f605abee5dbb767ea4226c9166b51064177fc3ae6&quot;,
+    &quot;simulator/entries/be45a2822c2047cf2ced1cc66e1ababada9919b5789b0b779d88c0a5104e70d3.json&quot;: &quot;38b7a3aea4bd9b54a3393ad0c042371456b10cb8b9cd7b8a987f5509ae2b5c7e&quot;
+  },
+  &quot;report_sha256_input&quot;: &quot;eff89ae9948892f81a7dcb41b52b118e9090ca69b22c03d9d2f27a7a2818d2f2&quot;,
+  &quot;limitations&quot;: [
+    &quot;Только синтетический публичный v2 dev; это не blind holdout и не оценка трафика.&quot;,
+    &quot;Когорта recommend-episode прежняя; число фактических уточнений ограничено заранее. Это не проверка всех сценариев и смены предпочтений.&quot;,
+    &quot;Детерминированная стратифицированная когорта — protocol smoke, она не статистически репрезентативна.&quot;,
+    &quot;Judge advisory и не может изменить детерминированный verdict oracle.&quot;
+  ]
+}</pre></details><p><a href="evidence/evaluation-roles.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-load-c1" class="receipt"><summary>HTTP-нагрузка: concurrency 1</summary><p>Источник: <code>report/evidence/evaluation-load-c1.json</code><br>SHA-256: <code>d6f6cc804f446b7ea741d292c6076f9fb27d191e11b0a577272111956b1b05e6</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>timestamp_utc</td><td>2026-09-24T10:00:06.604835+00:00</td></tr><tr><td>target</td><td>http://127.0.0.1:8000</td></tr><tr><td>requests</td><td>50</td></tr><tr><td>concurrency</td><td>1</td></tr><tr><td>elapsed_seconds</td><td>197.23137409999617</td></tr><tr><td>requests_per_second</td><td>0.25350936294065485</td></tr><tr><td>successes</td><td>50</td></tr><tr><td>errors</td><td>0</td></tr><tr><td>http_successes</td><td>50</td></tr><tr><td>http_errors</td><td>0</td></tr><tr><td>recommendation_successes</td><td>50</td></tr><tr><td>p50_ms</td><td>3944.6014999994077</td></tr><tr><td>p95_ms</td><td>3975.63539998373</td></tr><tr><td>max_ms</td><td>3986.152500001481</td></tr><tr><td>agent_llm_calls</td><td>100</td></tr><tr><td>requests_with_llm_usage</td><td>50</td></tr><tr><td>agent_tokens</td><td>205600</td></tr><tr><td>observed_agent_tokens</td><td>205600</td></tr><tr><td>observed_inference_seconds</td><td>172.3240006</td></tr><tr><td>inference_seconds</td><td>172.3240006</td></tr><tr><td>monetary_cost</td><td>не измерено / null</td></tr><tr><td>observed_monetary_cost</td><td>не измерено / null</td></tr><tr><td>usage_coverage.requests_with_reported_llm_calls</td><td>50</td></tr><tr><td>usage_coverage.requests_with_llm_attempts</td><td>50</td></tr><tr><td>usage_coverage.requests_with_zero_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_unknown_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_inference_seconds</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_inference_seconds</td><td>0</td></tr><tr><td>usage_coverage.request_inference_complete</td><td>True</td></tr><tr><td>usage_coverage.requests_with_observed_tokens</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_tokens</td><td>0</td></tr><tr><td>usage_coverage.request_tokens_complete</td><td>True</td></tr><tr><td>cost_assumptions.gpu_hour_cost_rub</td><td>не измерено / null</td></tr><tr><td>cost_assumptions.basis</td><td>Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.</td></tr><tr><td>fallback_requests</td><td>0</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;timestamp_utc&quot;: &quot;2026-09-24T10:00:06.604835+00:00&quot;,
+  &quot;target&quot;: &quot;http://127.0.0.1:8000&quot;,
+  &quot;requests&quot;: 50,
+  &quot;concurrency&quot;: 1,
+  &quot;elapsed_seconds&quot;: 197.23137409999617,
+  &quot;requests_per_second&quot;: 0.25350936294065485,
+  &quot;successes&quot;: 50,
+  &quot;errors&quot;: 0,
+  &quot;http_successes&quot;: 50,
+  &quot;http_errors&quot;: 0,
+  &quot;recommendation_successes&quot;: 50,
+  &quot;p50_ms&quot;: 3944.6014999994077,
+  &quot;p95_ms&quot;: 3975.63539998373,
+  &quot;max_ms&quot;: 3986.152500001481,
+  &quot;agent_llm_calls&quot;: 100,
+  &quot;requests_with_llm_usage&quot;: 50,
+  &quot;agent_tokens&quot;: 205600,
+  &quot;observed_agent_tokens&quot;: 205600,
+  &quot;mode_counts&quot;: {
+    &quot;ollama&quot;: 50
+  },
+  &quot;observed_inference_seconds&quot;: 172.3240006,
+  &quot;inference_seconds&quot;: 172.3240006,
+  &quot;monetary_cost&quot;: null,
+  &quot;observed_monetary_cost&quot;: null,
+  &quot;usage_coverage&quot;: {
+    &quot;requests_with_reported_llm_calls&quot;: 50,
+    &quot;requests_with_llm_attempts&quot;: 50,
+    &quot;requests_with_zero_llm_calls&quot;: 0,
+    &quot;requests_with_unknown_llm_calls&quot;: 0,
+    &quot;requests_with_inference_seconds&quot;: 50,
+    &quot;requests_missing_inference_seconds&quot;: 0,
+    &quot;request_inference_complete&quot;: true,
+    &quot;requests_with_observed_tokens&quot;: 50,
+    &quot;requests_missing_tokens&quot;: 0,
+    &quot;request_tokens_complete&quot;: true
+  },
+  &quot;metric_definitions&quot;: {
+    &quot;successes&quot;: &quot;Историческое поле: ответы с непустыми recommendations; errors — все остальные запросы, включая clarify.&quot;,
+    &quot;http_successes&quot;: &quot;HTTP-ответы без ошибки статуса; clarify тоже является HTTP-успехом.&quot;,
+    &quot;agent_llm_calls&quot;: &quot;Сумма сообщённых попыток LLM; для потерянных ответов число попыток неизвестно.&quot;,
+    &quot;agent_tokens&quot;: &quot;Полная сумма токенов, если coverage полная; иначе null.&quot;,
+    &quot;observed_agent_tokens&quot;: &quot;Сумма токенов по запросам с наблюдаемым usage; не полная при missing tokens.&quot;,
+    &quot;requests_with_llm_usage&quot;: &quot;Запросы с непустым aggregate usage, не количество успешных LLM calls.&quot;,
+    &quot;usage_coverage&quot;: &quot;Покрытие HTTP-запросов, не отдельных LLM-вызовов; полнота per-call usage неизвестна.&quot;,
+    &quot;observed_inference_seconds&quot;: &quot;Сумма доступных замеров; при неполном покрытии не является полным временем инференса.&quot;
+  },
+  &quot;cost_assumptions&quot;: {
+    &quot;gpu_hour_cost_rub&quot;: null,
+    &quot;basis&quot;: &quot;Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.&quot;
+  },
+  &quot;fallback_requests&quot;: 0
+}</pre></details><p><a href="evidence/evaluation-load-c1.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-load-c2" class="receipt"><summary>HTTP-нагрузка: concurrency 2</summary><p>Источник: <code>report/evidence/evaluation-load-c2.json</code><br>SHA-256: <code>ce3fa36a721e25ff11ed1de7ba5142366c55cc7a7c5669aedf228b27a7f23a66</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>timestamp_utc</td><td>2026-09-24T10:03:30.850416+00:00</td></tr><tr><td>target</td><td>http://127.0.0.1:8000</td></tr><tr><td>requests</td><td>50</td></tr><tr><td>concurrency</td><td>2</td></tr><tr><td>elapsed_seconds</td><td>172.32949249999365</td></tr><tr><td>requests_per_second</td><td>0.29014186297799166</td></tr><tr><td>successes</td><td>50</td></tr><tr><td>errors</td><td>0</td></tr><tr><td>http_successes</td><td>50</td></tr><tr><td>http_errors</td><td>0</td></tr><tr><td>recommendation_successes</td><td>50</td></tr><tr><td>p50_ms</td><td>6878.302700002678</td></tr><tr><td>p95_ms</td><td>6940.130600007251</td></tr><tr><td>max_ms</td><td>7127.978099975735</td></tr><tr><td>agent_llm_calls</td><td>100</td></tr><tr><td>requests_with_llm_usage</td><td>50</td></tr><tr><td>agent_tokens</td><td>205925</td></tr><tr><td>observed_agent_tokens</td><td>205925</td></tr><tr><td>observed_inference_seconds</td><td>158.3244407</td></tr><tr><td>inference_seconds</td><td>158.3244407</td></tr><tr><td>monetary_cost</td><td>не измерено / null</td></tr><tr><td>observed_monetary_cost</td><td>не измерено / null</td></tr><tr><td>usage_coverage.requests_with_reported_llm_calls</td><td>50</td></tr><tr><td>usage_coverage.requests_with_llm_attempts</td><td>50</td></tr><tr><td>usage_coverage.requests_with_zero_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_unknown_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_inference_seconds</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_inference_seconds</td><td>0</td></tr><tr><td>usage_coverage.request_inference_complete</td><td>True</td></tr><tr><td>usage_coverage.requests_with_observed_tokens</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_tokens</td><td>0</td></tr><tr><td>usage_coverage.request_tokens_complete</td><td>True</td></tr><tr><td>cost_assumptions.gpu_hour_cost_rub</td><td>не измерено / null</td></tr><tr><td>cost_assumptions.basis</td><td>Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.</td></tr><tr><td>fallback_requests</td><td>0</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;timestamp_utc&quot;: &quot;2026-09-24T10:03:30.850416+00:00&quot;,
+  &quot;target&quot;: &quot;http://127.0.0.1:8000&quot;,
+  &quot;requests&quot;: 50,
+  &quot;concurrency&quot;: 2,
+  &quot;elapsed_seconds&quot;: 172.32949249999365,
+  &quot;requests_per_second&quot;: 0.29014186297799166,
+  &quot;successes&quot;: 50,
+  &quot;errors&quot;: 0,
+  &quot;http_successes&quot;: 50,
+  &quot;http_errors&quot;: 0,
+  &quot;recommendation_successes&quot;: 50,
+  &quot;p50_ms&quot;: 6878.302700002678,
+  &quot;p95_ms&quot;: 6940.130600007251,
+  &quot;max_ms&quot;: 7127.978099975735,
+  &quot;agent_llm_calls&quot;: 100,
+  &quot;requests_with_llm_usage&quot;: 50,
+  &quot;agent_tokens&quot;: 205925,
+  &quot;observed_agent_tokens&quot;: 205925,
+  &quot;mode_counts&quot;: {
+    &quot;ollama&quot;: 50
+  },
+  &quot;observed_inference_seconds&quot;: 158.3244407,
+  &quot;inference_seconds&quot;: 158.3244407,
+  &quot;monetary_cost&quot;: null,
+  &quot;observed_monetary_cost&quot;: null,
+  &quot;usage_coverage&quot;: {
+    &quot;requests_with_reported_llm_calls&quot;: 50,
+    &quot;requests_with_llm_attempts&quot;: 50,
+    &quot;requests_with_zero_llm_calls&quot;: 0,
+    &quot;requests_with_unknown_llm_calls&quot;: 0,
+    &quot;requests_with_inference_seconds&quot;: 50,
+    &quot;requests_missing_inference_seconds&quot;: 0,
+    &quot;request_inference_complete&quot;: true,
+    &quot;requests_with_observed_tokens&quot;: 50,
+    &quot;requests_missing_tokens&quot;: 0,
+    &quot;request_tokens_complete&quot;: true
+  },
+  &quot;metric_definitions&quot;: {
+    &quot;successes&quot;: &quot;Историческое поле: ответы с непустыми recommendations; errors — все остальные запросы, включая clarify.&quot;,
+    &quot;http_successes&quot;: &quot;HTTP-ответы без ошибки статуса; clarify тоже является HTTP-успехом.&quot;,
+    &quot;agent_llm_calls&quot;: &quot;Сумма сообщённых попыток LLM; для потерянных ответов число попыток неизвестно.&quot;,
+    &quot;agent_tokens&quot;: &quot;Полная сумма токенов, если coverage полная; иначе null.&quot;,
+    &quot;observed_agent_tokens&quot;: &quot;Сумма токенов по запросам с наблюдаемым usage; не полная при missing tokens.&quot;,
+    &quot;requests_with_llm_usage&quot;: &quot;Запросы с непустым aggregate usage, не количество успешных LLM calls.&quot;,
+    &quot;usage_coverage&quot;: &quot;Покрытие HTTP-запросов, не отдельных LLM-вызовов; полнота per-call usage неизвестна.&quot;,
+    &quot;observed_inference_seconds&quot;: &quot;Сумма доступных замеров; при неполном покрытии не является полным временем инференса.&quot;
+  },
+  &quot;cost_assumptions&quot;: {
+    &quot;gpu_hour_cost_rub&quot;: null,
+    &quot;basis&quot;: &quot;Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.&quot;
+  },
+  &quot;fallback_requests&quot;: 0
+}</pre></details><p><a href="evidence/evaluation-load-c2.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-load-c4" class="receipt"><summary>HTTP-нагрузка: concurrency 4</summary><p>Источник: <code>report/evidence/evaluation-load-c4.json</code><br>SHA-256: <code>c816b7edda23a79abba2a6707608240a3c5d63dd38e9be2c91d60e19519af995</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>timestamp_utc</td><td>2026-09-24T10:06:46.127293+00:00</td></tr><tr><td>target</td><td>http://127.0.0.1:8000</td></tr><tr><td>requests</td><td>50</td></tr><tr><td>concurrency</td><td>4</td></tr><tr><td>elapsed_seconds</td><td>170.928313899989</td></tr><tr><td>requests_per_second</td><td>0.29252029028529025</td></tr><tr><td>successes</td><td>50</td></tr><tr><td>errors</td><td>0</td></tr><tr><td>http_successes</td><td>50</td></tr><tr><td>http_errors</td><td>0</td></tr><tr><td>recommendation_successes</td><td>50</td></tr><tr><td>p50_ms</td><td>13475.255800003652</td></tr><tr><td>p95_ms</td><td>14361.929500009865</td></tr><tr><td>max_ms</td><td>14534.46859997348</td></tr><tr><td>agent_llm_calls</td><td>100</td></tr><tr><td>requests_with_llm_usage</td><td>50</td></tr><tr><td>agent_tokens</td><td>206081</td></tr><tr><td>observed_agent_tokens</td><td>206081</td></tr><tr><td>observed_inference_seconds</td><td>157.0282678</td></tr><tr><td>inference_seconds</td><td>157.0282678</td></tr><tr><td>monetary_cost</td><td>не измерено / null</td></tr><tr><td>observed_monetary_cost</td><td>не измерено / null</td></tr><tr><td>usage_coverage.requests_with_reported_llm_calls</td><td>50</td></tr><tr><td>usage_coverage.requests_with_llm_attempts</td><td>50</td></tr><tr><td>usage_coverage.requests_with_zero_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_unknown_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_inference_seconds</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_inference_seconds</td><td>0</td></tr><tr><td>usage_coverage.request_inference_complete</td><td>True</td></tr><tr><td>usage_coverage.requests_with_observed_tokens</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_tokens</td><td>0</td></tr><tr><td>usage_coverage.request_tokens_complete</td><td>True</td></tr><tr><td>cost_assumptions.gpu_hour_cost_rub</td><td>не измерено / null</td></tr><tr><td>cost_assumptions.basis</td><td>Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.</td></tr><tr><td>fallback_requests</td><td>0</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;timestamp_utc&quot;: &quot;2026-09-24T10:06:46.127293+00:00&quot;,
+  &quot;target&quot;: &quot;http://127.0.0.1:8000&quot;,
+  &quot;requests&quot;: 50,
+  &quot;concurrency&quot;: 4,
+  &quot;elapsed_seconds&quot;: 170.928313899989,
+  &quot;requests_per_second&quot;: 0.29252029028529025,
+  &quot;successes&quot;: 50,
+  &quot;errors&quot;: 0,
+  &quot;http_successes&quot;: 50,
+  &quot;http_errors&quot;: 0,
+  &quot;recommendation_successes&quot;: 50,
+  &quot;p50_ms&quot;: 13475.255800003652,
+  &quot;p95_ms&quot;: 14361.929500009865,
+  &quot;max_ms&quot;: 14534.46859997348,
+  &quot;agent_llm_calls&quot;: 100,
+  &quot;requests_with_llm_usage&quot;: 50,
+  &quot;agent_tokens&quot;: 206081,
+  &quot;observed_agent_tokens&quot;: 206081,
+  &quot;mode_counts&quot;: {
+    &quot;ollama&quot;: 50
+  },
+  &quot;observed_inference_seconds&quot;: 157.0282678,
+  &quot;inference_seconds&quot;: 157.0282678,
+  &quot;monetary_cost&quot;: null,
+  &quot;observed_monetary_cost&quot;: null,
+  &quot;usage_coverage&quot;: {
+    &quot;requests_with_reported_llm_calls&quot;: 50,
+    &quot;requests_with_llm_attempts&quot;: 50,
+    &quot;requests_with_zero_llm_calls&quot;: 0,
+    &quot;requests_with_unknown_llm_calls&quot;: 0,
+    &quot;requests_with_inference_seconds&quot;: 50,
+    &quot;requests_missing_inference_seconds&quot;: 0,
+    &quot;request_inference_complete&quot;: true,
+    &quot;requests_with_observed_tokens&quot;: 50,
+    &quot;requests_missing_tokens&quot;: 0,
+    &quot;request_tokens_complete&quot;: true
+  },
+  &quot;metric_definitions&quot;: {
+    &quot;successes&quot;: &quot;Историческое поле: ответы с непустыми recommendations; errors — все остальные запросы, включая clarify.&quot;,
+    &quot;http_successes&quot;: &quot;HTTP-ответы без ошибки статуса; clarify тоже является HTTP-успехом.&quot;,
+    &quot;agent_llm_calls&quot;: &quot;Сумма сообщённых попыток LLM; для потерянных ответов число попыток неизвестно.&quot;,
+    &quot;agent_tokens&quot;: &quot;Полная сумма токенов, если coverage полная; иначе null.&quot;,
+    &quot;observed_agent_tokens&quot;: &quot;Сумма токенов по запросам с наблюдаемым usage; не полная при missing tokens.&quot;,
+    &quot;requests_with_llm_usage&quot;: &quot;Запросы с непустым aggregate usage, не количество успешных LLM calls.&quot;,
+    &quot;usage_coverage&quot;: &quot;Покрытие HTTP-запросов, не отдельных LLM-вызовов; полнота per-call usage неизвестна.&quot;,
+    &quot;observed_inference_seconds&quot;: &quot;Сумма доступных замеров; при неполном покрытии не является полным временем инференса.&quot;
+  },
+  &quot;cost_assumptions&quot;: {
+    &quot;gpu_hour_cost_rub&quot;: null,
+    &quot;basis&quot;: &quot;Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.&quot;
+  },
+  &quot;fallback_requests&quot;: 0
+}</pre></details><p><a href="evidence/evaluation-load-c4.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-fallback" class="receipt"><summary>HTTP-проверка отказа LLM в отдельном процессе</summary><p>Источник: <code>artifacts/submission-final-2026-09-27/fallback-process/receipt.json</code><br>SHA-256: <code>dd04ce2d372d9ecde5eeeee4da0978d780143295b99d148c391f0a58ab4b3675</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>status</td><td>PASS</td></tr><tr><td>started_at_utc</td><td>2026-09-27T18:02:18.091823+00:00</td></tr><tr><td>cwd</td><td>C:\Users\roev_\Documents\ChatGPT\МТС\dist\git-docs-20260927-review</td></tr><tr><td>python</td><td>3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]</td></tr><tr><td>scenario</td><td>WorkflowAgent(mode=ollama), BrokenLLM.structured raises TimeoutError; deterministic grounded renderer</td></tr><tr><td>real_ollama_calls</td><td>0</td></tr><tr><td>port</td><td>31642</td></tr><tr><td>checks.http_200</td><td>True</td></tr><tr><td>checks.readiness_200</td><td>True</td></tr><tr><td>checks.recommendations_present</td><td>True</td></tr><tr><td>checks.all_explicit_constraints_satisfied</td><td>True</td></tr><tr><td>checks.catalog_evidence_matches_attributes</td><td>True</td></tr><tr><td>checks.rules_fallback_mode</td><td>True</td></tr><tr><td>checks.no_llm_degradation</td><td>True</td></tr><tr><td>checks.telemetry_fallback_mode</td><td>True</td></tr><tr><td>checks.telemetry_failure_reason</td><td>True</td></tr><tr><td>checks.telemetry_request_id</td><td>True</td></tr><tr><td>checks.telemetry_success</td><td>True</td></tr><tr><td>script_sha256</td><td>15f0462d8c4b80817f316fffc4330502ff1abd81f63474611cc6d5ac6ea5eff6</td></tr><tr><td>child_pid</td><td>20044</td></tr><tr><td>http_status</td><td>200</td></tr><tr><td>child_returncode_after_cleanup</td><td>1</td></tr><tr><td>child_stopped</td><td>True</td></tr><tr><td>finished_at_utc</td><td>2026-09-27T18:02:19.776641+00:00</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;started_at_utc&quot;: &quot;2026-09-27T18:02:18.091823+00:00&quot;,
+  &quot;cwd&quot;: &quot;C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\dist\\git-docs-20260927-review&quot;,
+  &quot;python&quot;: &quot;3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]&quot;,
+  &quot;scenario&quot;: &quot;WorkflowAgent(mode=ollama), BrokenLLM.structured raises TimeoutError; deterministic grounded renderer&quot;,
+  &quot;real_ollama_calls&quot;: 0,
+  &quot;port&quot;: 31642,
+  &quot;checks&quot;: {
+    &quot;http_200&quot;: true,
+    &quot;readiness_200&quot;: true,
+    &quot;recommendations_present&quot;: true,
+    &quot;all_explicit_constraints_satisfied&quot;: true,
+    &quot;catalog_evidence_matches_attributes&quot;: true,
+    &quot;rules_fallback_mode&quot;: true,
+    &quot;no_llm_degradation&quot;: true,
+    &quot;telemetry_fallback_mode&quot;: true,
+    &quot;telemetry_failure_reason&quot;: true,
+    &quot;telemetry_request_id&quot;: true,
+    &quot;telemetry_success&quot;: true
+  },
+  &quot;script_sha256&quot;: &quot;15f0462d8c4b80817f316fffc4330502ff1abd81f63474611cc6d5ac6ea5eff6&quot;,
+  &quot;child_pid&quot;: 20044,
+  &quot;health&quot;: {
+    &quot;status_code&quot;: 200,
+    &quot;body&quot;: {
+      &quot;status&quot;: &quot;ok&quot;,
+      &quot;version&quot;: &quot;0.2.0&quot;,
+      &quot;checks&quot;: {}
+    }
+  },
+  &quot;ready&quot;: {
+    &quot;status_code&quot;: 200,
+    &quot;body&quot;: {
+      &quot;status&quot;: &quot;ok&quot;,
+      &quot;version&quot;: &quot;0.2.0&quot;,
+      &quot;checks&quot;: {}
+    }
+  },
+  &quot;http_status&quot;: 200,
+  &quot;response&quot;: {
+    &quot;request_id&quot;: &quot;submission-controlled-failure&quot;,
+    &quot;provider&quot;: &quot;demo-memory&quot;,
+    &quot;session_id&quot;: &quot;f7829b91-2e86-42fd-b4df-03f28fcd6bcd&quot;,
+    &quot;state&quot;: &quot;recommend&quot;,
+    &quot;message&quot;: &quot;Подходит «Сериализатор в веб-сервисе». Жанр: python. Тон: лёгкий.\nТакже можно рассмотреть «Модуль без побочных эффектов». Жанр: python. Тон: нейтральный.\nТакже можно рассмотреть «Зимняя обёртка». Жанр: python. Тон: нейтральный.&quot;,
+    &quot;query&quot;: {
+      &quot;intent&quot;: &quot;discovery&quot;,
+      &quot;kind&quot;: &quot;course&quot;,
+      &quot;genre&quot;: &quot;python&quot;,
+      &quot;tone&quot;: null,
+      &quot;max_seasons&quot;: null,
+      &quot;max_minutes&quot;: null,
+      &quot;level&quot;: null,
+      &quot;practical&quot;: true,
+      &quot;seed_title&quot;: null
+    },
+    &quot;mode&quot;: &quot;rules_fallback&quot;,
+    &quot;latency_ms&quot;: 50.07,
+    &quot;llm_calls&quot;: 1,
+    &quot;llm_calls_total&quot;: 1,
+    &quot;llm_tokens&quot;: 0,
+    &quot;clarification_count&quot;: 0,
+    &quot;clarification_slot&quot;: null,
+    &quot;question_gain&quot;: null,
+    &quot;degradation&quot;: &quot;NO_LLM&quot;,
+    &quot;timings_ms&quot;: {
+      &quot;parse&quot;: 3.464,
+      &quot;retrieve&quot;: 42.885,
+      &quot;rank_explain&quot;: 0.234
+    },
+    &quot;llm_tokens_total&quot;: 0,
+    &quot;llm_usage&quot;: {},
+    &quot;action_reason&quot;: null,
+    &quot;preferences&quot;: {
+      &quot;kind&quot;: {
+        &quot;value&quot;: &quot;course&quot;,
+        &quot;source_message&quot;: &quot;Хочу курс Python с практикой.&quot;,
+        &quot;parser&quot;: &quot;rules_fallback&quot;,
+        &quot;scope&quot;: &quot;dialogue&quot;,
+        &quot;status&quot;: &quot;interpreted&quot;
+      },
+      &quot;genre&quot;: {
+        &quot;value&quot;: &quot;python&quot;,
+        &quot;source_message&quot;: &quot;Хочу курс Python с практикой.&quot;,
+        &quot;parser&quot;: &quot;rules_fallback&quot;,
+        &quot;scope&quot;: &quot;dialogue&quot;,
+        &quot;status&quot;: &quot;interpreted&quot;
+      },
+      &quot;practical&quot;: {
+        &quot;value&quot;: true,
+        &quot;source_message&quot;: &quot;Хочу курс Python с практикой.&quot;,
+        &quot;parser&quot;: &quot;rules_fallback&quot;,
+        &quot;scope&quot;: &quot;dialogue&quot;,
+        &quot;status&quot;: &quot;interpreted&quot;
+      }
+    },
+    &quot;telemetry&quot;: {
+      &quot;request_id&quot;: &quot;submission-controlled-failure&quot;,
+      &quot;mode&quot;: &quot;rules_fallback&quot;,
+      &quot;provider&quot;: &quot;demo-memory&quot;,
+      &quot;success&quot;: true,
+      &quot;llm_calls&quot;: 1,
+      &quot;tokens&quot;: 0,
+      &quot;fallback_reason&quot;: &quot;llm_failure:TimeoutError&quot;,
+      &quot;retry_rejection_reason&quot;: null,
+      &quot;latency_ms&quot;: 50.07
+    },
+    &quot;pending_preview&quot;: null
+  },
+  &quot;child_returncode_after_cleanup&quot;: 1,
+  &quot;child_stopped&quot;: true,
+  &quot;finished_at_utc&quot;: &quot;2026-09-27T18:02:19.776641+00:00&quot;,
+  &quot;files_sha256&quot;: {
+    &quot;smoke.py&quot;: &quot;15f0462d8c4b80817f316fffc4330502ff1abd81f63474611cc6d5ac6ea5eff6&quot;,
+    &quot;server.stdout.log&quot;: &quot;550d541266e62937863612c6075ba5daebd040751419445fe1db91d1d41e1015&quot;,
+    &quot;server.stderr.log&quot;: &quot;ccc61e5d065fbdc5d85ad4a7361eeeba8f736ec41d7bba71f19e19f7aa802d61&quot;
+  }
+}</pre></details><p><a href="evidence/evaluation-fallback.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-nli-final" class="receipt"><summary>Последний эксперимент NLI</summary><p>Источник: <code>artifacts/context-nli-final-2026-09-27/acceptance.json</code><br>SHA-256: <code>370f27bfb7ecf98cdf42288c0547c77bacfb9ba9d4587ca01875efaf5058eb79</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>decision</td><td>REJECT_FOR_PRODUCT_STOP_EXPERIMENTS</td></tr><tr><td>default_changed</td><td>False</td></tr><tr><td>product_dev_contract_run</td><td>False</td></tr><tr><td>data_status</td><td>Open synthetic V4 dev and previously inspected MASSIVE silver; exploratory, not independent.</td></tr><tr><td>new_false_support_rows</td><td>357</td></tr><tr><td>all_component_gates_passed</td><td>False</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;decision&quot;: &quot;REJECT_FOR_PRODUCT_STOP_EXPERIMENTS&quot;,
+  &quot;default_changed&quot;: false,
+  &quot;product_dev_contract_run&quot;: false,
+  &quot;data_status&quot;: &quot;Open synthetic V4 dev and previously inspected MASSIVE silver; exploratory, not independent.&quot;,
+  &quot;synthetic&quot;: {
+    &quot;baseline&quot;: {
+      &quot;support_recall&quot;: 0.38405797101449274,
+      &quot;support_denominator&quot;: 828,
+      &quot;non_support_false_support&quot;: 185,
+      &quot;non_support_denominator&quot;: 4140,
+      &quot;wrong_citation_false_support&quot;: 30,
+      &quot;wrong_citation_denominator&quot;: 2484
+    },
+    &quot;adapted&quot;: {
+      &quot;support_recall&quot;: 0.9782608695652174,
+      &quot;support_denominator&quot;: 828,
+      &quot;non_support_false_support&quot;: 381,
+      &quot;non_support_denominator&quot;: 4140,
+      &quot;wrong_citation_false_support&quot;: 94,
+      &quot;wrong_citation_denominator&quot;: 2484
+    }
+  },
+  &quot;external&quot;: {
+    &quot;baseline&quot;: {
+      &quot;groups&quot;: 985,
+      &quot;support_recall&quot;: 0.6456852791878173,
+      &quot;wrong_citation_false_support_rate&quot;: 0.7055837563451777,
+      &quot;both_exact_rate&quot;: 0.06700507614213198,
+      &quot;prediction_flip_rate&quot;: 0.20609137055837565,
+      &quot;counts&quot;: {
+        &quot;primary_support&quot;: 636,
+        &quot;wrong_citation_support&quot;: 695,
+        &quot;both_exact&quot;: 66,
+        &quot;changed&quot;: 203
+      }
+    },
+    &quot;adapted&quot;: {
+      &quot;groups&quot;: 985,
+      &quot;support_recall&quot;: 0.19390862944162437,
+      &quot;wrong_citation_false_support_rate&quot;: 0.008121827411167513,
+      &quot;both_exact_rate&quot;: 0.18781725888324874,
+      &quot;prediction_flip_rate&quot;: 0.1918781725888325,
+      &quot;counts&quot;: {
+        &quot;primary_support&quot;: 191,
+        &quot;wrong_citation_support&quot;: 8,
+        &quot;both_exact&quot;: 185,
+        &quot;changed&quot;: 189
+      }
+    }
+  },
+  &quot;new_false_support_rows&quot;: 357,
+  &quot;product_component_gate&quot;: {
+    &quot;support_recall_gte_0_70&quot;: true,
+    &quot;non_support_false_support_lte_0_10&quot;: true,
+    &quot;wrong_citation_false_support_lte_0_01&quot;: false,
+    &quot;false_support_not_increased&quot;: false,
+    &quot;no_new_false_support_rows&quot;: false
+  },
+  &quot;external_gate&quot;: {
+    &quot;both_exact_improved&quot;: true,
+    &quot;wrong_support_not_increased&quot;: true,
+    &quot;recall_drop_lte_0_02&quot;: false
+  },
+  &quot;all_component_gates_passed&quot;: false,
+  &quot;paired_source_bootstrap&quot;: {
+    &quot;seed&quot;: 42,
+    &quot;samples&quot;: 1000,
+    &quot;source_utterances&quot;: 422,
+    &quot;delta&quot;: {
+      &quot;both_exact&quot;: {
+        &quot;point&quot;: 0.12081218274111676
+      },
+      &quot;wrong_support&quot;: {
+        &quot;point&quot;: -0.6974619289340102
+      },
+      &quot;support_recall&quot;: {
+        &quot;point&quot;: -0.4517766497461929
+      }
+    }
+  },
+  &quot;parity&quot;: {
+    &quot;zero_init_max_abs_logit_delta&quot;: 0.0,
+    &quot;reload_max_abs_logit_delta&quot;: 0.0
+  },
+  &quot;training&quot;: {
+    &quot;seed&quot;: 42,
+    &quot;epochs&quot;: 1,
+    &quot;optimizer_steps&quot;: 488,
+    &quot;trainable_parameters&quot;: 2803971,
+    &quot;seconds&quot;: 182.40058360004332,
+    &quot;loss&quot;: 0.47238157623483296
+  },
+  &quot;runtime&quot;: {
+    &quot;gpu&quot;: &quot;NVIDIA GeForce RTX 5070 Ti&quot;,
+    &quot;vram_total_bytes&quot;: 17094475776,
+    &quot;vram_free_before_bytes&quot;: 15738077184,
+    &quot;peak_cuda_allocated_bytes&quot;: 2000420352,
+    &quot;torch&quot;: &quot;2.12.1+cu130&quot;,
+    &quot;transformers&quot;: &quot;4.57.6&quot;,
+    &quot;peft&quot;: &quot;0.18.1&quot;,
+    &quot;latency_single_pair_ms&quot;: {
+      &quot;count&quot;: 64,
+      &quot;p50&quot;: 29.40785003011115,
+      &quot;p95&quot;: 36.302269966108724
+    }
+  }
+}</pre></details><p><a href="evidence/nli-final.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-current-video" class="receipt"><summary>Демонстрация интерфейса</summary><p>Источник: <code>report/video.json</code><br>SHA-256: <code>9ea84ff949701b373e8afa0ba36dac06f1cd432ee5886d7516c779cbb793da49</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>frames</td><td>29</td></tr><tr><td>duration_seconds</td><td>172.21</td></tr><tr><td>requested_timeline_seconds</td><td>162.2</td></tr><tr><td>duration_source</td><td>ffmpeg encoded-media metadata</td></tr><tr><td>frames_directory</td><td>C:\Users\roev_\Documents\ChatGPT\МТС\artifacts\submission-final-2026-09-27\screencast</td></tr><tr><td>started_unix_ms</td><td>1790531849496</td></tr><tr><td>finished_unix_ms</td><td>1790532180205</td></tr><tr><td>method</td><td>Монтаж кадров реального интерфейса с явными паузами для чтения; без озвучки и подмены ответов.</td></tr><tr><td>max_gap_seconds</td><td>12.0</td></tr><tr><td>bytes</td><td>2116684</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;frames&quot;: 29,
+  &quot;duration_seconds&quot;: 172.21,
+  &quot;requested_timeline_seconds&quot;: 162.2,
+  &quot;duration_source&quot;: &quot;ffmpeg encoded-media metadata&quot;,
+  &quot;frames_directory&quot;: &quot;C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\artifacts\\submission-final-2026-09-27\\screencast&quot;,
+  &quot;started_unix_ms&quot;: 1790531849496,
+  &quot;finished_unix_ms&quot;: 1790532180205,
+  &quot;method&quot;: &quot;Монтаж кадров реального интерфейса с явными паузами для чтения; без озвучки и подмены ответов.&quot;,
+  &quot;max_gap_seconds&quot;: 12.0,
+  &quot;bytes&quot;: 2116684
+}</pre></details><p><a href="evidence/current-video.json">Полная запись измерения (JSON)</a></p><p><a href="demo.mp4">Открыть запись реального интерфейса</a></p></details></section>
+<section><h2>Воспроизведение</h2><pre>python -m pip install -r requirements-lock.txt
+python -m pip install --no-deps -e .
+ollama pull qwen3:8b
+docker compose up --build -d
+# UI http://localhost:8501; API http://localhost:8000/docs
+python -m scripts.run_demo_notebook --mode ollama --output report/demo-ollama-local.ipynb
+python -m scripts.build_final_report
+python -m scripts.prepare_git_snapshot --output dist/git-candidate-YYYYMMDD</pre>
+<p>README и runbook описывают режимы, проверки, ограничения и точные команды экспериментов.
+Встроенные JSON содержат измеренные значения и параметры; выбор источников — selection.json.
+Синтетический каталог воспроизводится генератором seed 42. Зависимости Jupyter нужны только для интерактивного
+редактирования notebook; последовательный запуск его Python-ячеек выполняет scripts.run_demo_notebook.</p></section>
+<footer>Отчёт собран 2026-09-27T18:03:52.004337+00:00 из сохранённых измерений. Это время генерации документа,
+не дата повторной проверки агента.</footer></body></html>

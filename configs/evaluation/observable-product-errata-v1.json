@@ -1,0 +1,20 @@
+{
+  "version": "product-expectation-errata-register-v1",
+  "status": "documented_future_annotations_not_applied_by_scorer",
+  "original_dataset_sha256": "4771b5468062bf3be662f9c67b8818146be40e9ee804ef9bfb9e7a97795c346f",
+  "entries": [
+    {
+      "kind": "negative_tone_does_not_assert_opposite",
+      "evidence": "Original text «Нужен фильм не мрачный.» and spoken.excluded_tones=[мрачный] do not assert tone=лёгкий. Neutral tone also satisfies the spoken condition.",
+      "affected_annotation": "expected_query.tone=лёгкий in the tone-negation dialogue, including its inherited follow-up",
+      "future_rule": "When positive spoken tone is absent, exclusions do not impose a positive tone. Apply uniformly to all explicitly annotated turns, not by case ID.",
+      "current_handling": "Keep original Query mismatch visible as a diagnostic; observable verdict uses unchanged dataset spoken exclusion. No legacy labels are rewritten."
+    },
+    {
+      "kind": "atomic_required_clarification",
+      "evidence": "Unsupported middle-level requests expect clarify but original expected_query requires new course/topic values to be active before the unresolved proposal commits.",
+      "future_rule": "New datasets must explicitly annotate commit_policy and expected active projection when testing atomic commitment. Mandatory unresolved and optional policy questions differ.",
+      "current_handling": "No automatic rule based on actual_state, Query or case ID. Active Query checks remain separate diagnostics; no new atomic verdict is inferred."
+    }
+  ]
+}

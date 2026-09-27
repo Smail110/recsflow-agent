@@ -1,0 +1,22 @@
+{
+  "metric_version": "observable-product-v1",
+  "dataset_path": "data/product_llm_first_dev.json",
+  "dataset_sha256": "4771b5468062bf3be662f9c67b8818146be40e9ee804ef9bfb9e7a97795c346f",
+  "catalog_sha256": "491ec666eb443d0881f38c92c5ba04a46b6d65bf9313c71bba32c4b93c7c6660",
+  "require_matching_run_configuration": true,
+  "rules": [
+    "All dataset dialogues and turns stay in the denominator; require matching IDs, turn indices and exact user text.",
+    "Expected state or explicitly annotated allowed_states; corresponding recommendation presence.",
+    "All shown IDs exist, are unique, satisfy dataset spoken constraints, exact IDs and forbidden IDs.",
+    "Active Query equality and forbidden fields are separate diagnostics, never observable-delivery ground truth.",
+    "Legacy saved score remains a separately named historical lane; no errata is applied implicitly.",
+    "Explanation template audit is separately reported and never substitutes for relevance or success."
+  ],
+  "limitations": [
+    "Post-hoc maintained version of supplemental observable-delivery-v1 on inspected synthetic DEV.",
+    "Measures compliance with stated preferences, not latent satisfaction or human usefulness.",
+    "Expected clarification necessity is a dataset annotation, not inferred by this scorer.",
+    "Repeated data do not establish independent generalization; no final holdout or BLIND access.",
+    "Saved report replay performs no inference and yields no fresh latency/load measurement."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": "redial-annotation-run-v1",
+  "input_file": "inputs.en.jsonl",
+  "base_url": "http://127.0.0.1:11434",
+  "timeout_s": 120,
+  "primary": {
+    "model": "llama3.1:8b",
+    "digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+    "options": {"temperature": 0, "seed": 20260923, "num_predict": 1600},
+    "think": null
+  },
+  "verifier": {
+    "model": "qwen3:8b",
+    "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+    "options": {"temperature": 0, "seed": 20260923, "num_predict": 1600},
+    "think": false
+  }
+}

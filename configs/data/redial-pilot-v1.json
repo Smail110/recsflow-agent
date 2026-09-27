@@ -1,0 +1,28 @@
+{
+  "schema_version": "redial-prefix-pilot-v1",
+  "purpose": "Inspection and annotation preparation only; no population benchmark or agent score",
+  "seed": 20260923,
+  "sample_size": 24,
+  "source": {
+    "name": "ReDial",
+    "revision": "27ae7ac0c212af62ca6b873cd5f08a469eda411e",
+    "url": "https://raw.githubusercontent.com/ReDialData/website/27ae7ac0c212af62ca6b873cd5f08a469eda411e/redial_dataset.zip",
+    "archive_sha256": "b48756681ec6f84e0af36979c5e9baa21ea8d9e7036b8764ea9b787bb0baf69b",
+    "archive_bytes": 5765261,
+    "train_member": "train_data.jsonl",
+    "train_sha256": "53dff9d8e3e175adf542635933ea1657d0108846ffb076cc54910e2497f4a89d",
+    "train_bytes": 28762643,
+    "train_rows": 10006,
+    "max_download_bytes": 8000000,
+    "max_train_bytes": 40000000,
+    "license": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "datasheet_url": "https://redialdata.github.io/website/datasheet",
+    "download_page": "https://redialdata.github.io/website/download",
+    "citation": "Li et al. (2018), Towards Deep Conversational Recommendations, NeurIPS 31."
+  },
+  "selection": "SHA256(seed:conversationId) order, greedy pairwise-disjoint initiator/respondent workers",
+  "prefix": "Before first respondent message containing a tagged movie ID; end at last preceding seeker message",
+  "labels": "Original post-dialogue questionnaires in a separate file, never agent inputs or prefix truth",
+  "split": "Single inspection cohort; exclude all conversations sharing any selected worker from a later evaluation"
+}

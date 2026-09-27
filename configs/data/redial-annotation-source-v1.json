@@ -1,0 +1,21 @@
+{
+  "schema_version": "redial-prefix-annotation-v1",
+  "seed": 20260923,
+  "source_config": "configs/data/redial-pilot-v1.json",
+  "source_config_sha256": "8f7848e45564394286d3a0446db981cc18ef2831c6b23daa91a6821f738355f7",
+  "splits": {
+    "calibration": 24,
+    "dev": 80,
+    "validation": 24
+  },
+  "selection": "SHA256(seed:conversationId) order; greedy pairwise-disjoint initiator/respondent workers, first24 match inspected pilot",
+  "prefix": "Before first respondent tagged-movie message; end at last preceding seeker message. Syntactic boundary, not guaranteed semantic first recommendation.",
+  "limitations": [
+    "Human English research dialogue source; later machine annotations are silver, not human gold.",
+    "Calibration includes the previously inspected24-prefixpilot. DEV and validation are open; no final holdout is created.",
+    "Direct worker overlap removed; common movies and indirect network connections remain.",
+    "Size128 selected for an executable annotation/coverage pilot, not population precision or a power calculation.",
+    "No automatic recommendation success metric without aligned catalog and independent relevance labels."
+  ],
+  "expected_inputs_sha256": "3053c9a960cb53f7b73d92b3f55c2b447c2d8c6de11d709c20cb20461442f3b9"
+}

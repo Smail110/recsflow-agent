@@ -1,0 +1,2 @@
+# Preserve checked bytes and hashes; accept CRLF without hiding other whitespace errors.
+* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

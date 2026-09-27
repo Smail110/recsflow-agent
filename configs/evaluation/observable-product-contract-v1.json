@@ -1,0 +1,22 @@
+{
+  "metric_version": "observable-product-v1",
+  "dataset_path": "data/product_contract_ru_v1.json",
+  "dataset_sha256": "c18bc46c5d8a3275f3763b5a9fcdc55d162253e7e78b9095b6b2833311581958",
+  "catalog_sha256": "5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258",
+  "require_matching_run_configuration": false,
+  "rules": [
+    "All 12 dialogues and 20 turns remain in the denominator; exact user text, case order and cohort hash are required.",
+    "Apply expected_state/recommendation_exists or allowed_states/presence_by_state uniformly.",
+    "Validate known unique IDs, frozen spoken constraints, exact IDs, forbidden IDs and disjoint_from_turns relations.",
+    "Runtime Query and expected_query remain separate diagnostics; commit_policy is explicit dataset metadata, not inferred truth.",
+    "This explicitly configured system comparison permits rules baseline versus workflow-v2 Ollama; report configurations and sources remain visible."
+  ],
+  "limitations": [
+    "AI-authored synthetic CONTRACT cohort, frozen before its first outputs; authored with knowledge of older failure categories.",
+    "Not human preference utility, production traffic or independent final holdout.",
+    "A rules-versus-LLM system comparison does not isolate a single causal variable.",
+    "Similar checks seed exclusion and spoken constraints, not latent semantic similarity quality.",
+    "Grounding audit covers supported recommendation claim templates, not all arbitrary natural-language semantics.",
+    "Saved report replay performs no new inference or latency measurement."
+  ]
+}
