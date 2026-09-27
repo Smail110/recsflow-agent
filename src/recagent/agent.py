@@ -24,7 +24,7 @@ from .planner import plan_action
 from .preferences import PreferenceModel
 from .providers import DemoProvider, RecommendationProvider, matches
 from .questions import choose_question
-from .response_generation import EvidenceResponseGenerator, GroundedOption, LLMGroundedResponseGenerator
+from .response_generation import EvidenceResponseGenerator, GroundedOption, LLMGroundedResponseGenerator, with_response_style
 
 
 class IdempotencyConflict(ValueError):
@@ -592,11 +592,13 @@ class Agent:
         options = [
             GroundedOption(id=rec.item.id, title=rec.item.title, claims=rec.claim_texts or [rec.explanation]) for rec in recommendations
         ]
-        generator = self.response_generator
+        style = {"tone": state["request"].explanation_tone, "length": state["request"].explanation_length}
+        fallback_generator = EvidenceResponseGenerator(**style)
+        generator = with_response_style(self.response_generator, **style)
         if getattr(generator, "requires_llm", False) and (
             session.calls >= self.max_calls or session.tokens + state.get("tokens", 0) >= self.max_tokens
         ):
-            generator = EvidenceResponseGenerator()
+            generator = fallback_generator
             state["warnings"].append("Бюджет LLM исчерпан: ответ собран напрямую из проверенного evidence.")
         try:
             if getattr(generator, "requires_llm", False):
@@ -621,7 +623,7 @@ class Agent:
             state["tokens"] = state.get("tokens", 0) + int(response_usage.get("input_tokens", 0) + response_usage.get("output_tokens", 0))
             state["llm_usage"] = self._merged_usage(state.get("llm_usage", {}), response_usage)
             state["warnings"].append(f"Генератор ответа недоступен ({type(exc).__name__}): использован grounded fallback.")
-            message, _ = EvidenceResponseGenerator().generate(
+            message, _ = fallback_generator.generate(
                 original_request=state["request"].message,
                 intent=state["query"].intent,
                 accepted_constraints=state["query"].model_dump(mode="json"),

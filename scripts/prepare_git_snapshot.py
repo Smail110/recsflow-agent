@@ -32,6 +32,7 @@ DOCS = {
     "docs/SUBMISSION-STATUS.md",
     "docs/ARCHITECTURE.md",
     "docs/EVALUATION.md",
+    "docs/RESEARCH-BASIS.md",
     "docs/DATA-PROVENANCE.md",
     "docs/REPRODUCE.md",
     "docs/runbook.md",
@@ -190,7 +191,7 @@ def build_snapshot(root: Path, destination: Path) -> dict:
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, check=True, capture_output=True, text=True).stdout.strip()
     manifest = {
         "schema_version": 1,
-        "purpose": "Локальный кандидат для будущей Git-публикации; commit и push не выполнялись",
+        "purpose": "Состав проверяемой поставки и SHA-256 файлов; manifest не включает собственный hash",
         "source_head": head,
         "source_state": "working_tree",
         "files_count": len(hashes),

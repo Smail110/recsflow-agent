@@ -1,58 +1,58 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-09-27T18:03:52.004337+00:00",
+  "generated_at_utc": "2026-09-27T19:09:43.934853+00:00",
   "sources": [
     {
       "label": "evaluation-final-20260927",
       "path": "report/evidence/evaluation-final-20260927.json",
-      "sha256": "16f1357eea037e660781d07bc01ccb48a7c8c634db3fd6a463ad015ee934bb3a",
+      "sha256": "801bdeb1d8e4416de67b1ede0f25b84dca853fc9050a8ae1798cac1361f267be",
       "bundled_path": "report/evidence/evaluation-final-20260927.json"
     },
     {
       "label": "evaluation-dev",
-      "path": "artifacts/submission-final-2026-09-27/dev.json",
-      "sha256": "8cbee87429e22c2771a3f12f392efd6d174dcfad871d481281e1f46981638a1d",
+      "path": "artifacts/compliance-closure-2026-09-27/dev.json",
+      "sha256": "879c803f63ab7b46f317d3510748559860064e6b810604b70d6565d3e966fce6",
       "bundled_path": "report/evidence/evaluation-dev.json"
     },
     {
       "label": "evaluation-contract",
-      "path": "artifacts/submission-final-2026-09-27/contract.evaluation.json",
-      "sha256": "092ef66017ea3f1279b95fc98869a83ccb027b3adbc91b6c90cba5dd10a64c27",
+      "path": "artifacts/compliance-closure-2026-09-27/contract.evaluation.json",
+      "sha256": "6ada3a4e88e236f21453a5f387c68a243c361edd29a820f739252a07dc477afb",
       "bundled_path": "report/evidence/evaluation-contract.json"
     },
     {
       "label": "evaluation-roles",
       "path": "report/evidence/evaluation-roles.json",
-      "sha256": "9162c633b4fe52e4caa16ac2242c7014e661252c52ffd8d7660f7f3184fa1d88",
+      "sha256": "97b21f517d1192142d36fa1a23a495c29839a258a7253d4ec0799d0615bf3ff4",
       "bundled_path": "report/evidence/evaluation-roles.json"
     },
     {
       "label": "evaluation-load-c1",
       "path": "report/evidence/evaluation-load-c1.json",
-      "sha256": "d6f6cc804f446b7ea741d292c6076f9fb27d191e11b0a577272111956b1b05e6",
+      "sha256": "1ddbeab132c29a005631a93ebf111778dfee1c9b1931ac475a4928a0d1b7518a",
       "bundled_path": "report/evidence/evaluation-load-c1.json"
     },
     {
       "label": "evaluation-load-c2",
       "path": "report/evidence/evaluation-load-c2.json",
-      "sha256": "ce3fa36a721e25ff11ed1de7ba5142366c55cc7a7c5669aedf228b27a7f23a66",
+      "sha256": "ae7c3337250d4eb51dd90e82658f3684127b02405c76cf61b7a67f5a40908e13",
       "bundled_path": "report/evidence/evaluation-load-c2.json"
     },
     {
       "label": "evaluation-load-c4",
       "path": "report/evidence/evaluation-load-c4.json",
-      "sha256": "c816b7edda23a79abba2a6707608240a3c5d63dd38e9be2c91d60e19519af995",
+      "sha256": "96a1a5e6d56b740d2eb8b7cf1a2bdb84ca4017e11b1e247b5852ef46420b571d",
       "bundled_path": "report/evidence/evaluation-load-c4.json"
     },
     {
       "label": "evaluation-fallback",
-      "path": "artifacts/submission-final-2026-09-27/fallback-process/receipt.json",
-      "sha256": "dd04ce2d372d9ecde5eeeee4da0978d780143295b99d148c391f0a58ab4b3675",
+      "path": "report/evidence/evaluation-fallback.json",
+      "sha256": "da4e8be7f865e7037d6bb3ad7b688012413ef6bcf34c5a4249b8842cc5556973",
       "bundled_path": "report/evidence/evaluation-fallback.json"
     },
     {
       "label": "nli-final",
-      "path": "artifacts/context-nli-final-2026-09-27/acceptance.json",
+      "path": "report/evidence/nli-final.json",
       "sha256": "370f27bfb7ecf98cdf42288c0547c77bacfb9ba9d4587ca01875efaf5058eb79",
       "bundled_path": "report/evidence/nli-final.json"
     },
@@ -61,7 +61,19 @@
       "path": "report/video.json",
       "sha256": "9ea84ff949701b373e8afa0ba36dac06f1cd432ee5886d7516c779cbb793da49",
       "bundled_path": "report/evidence/current-video.json"
+    },
+    {
+      "label": "compute-cost",
+      "path": "report/evidence/compute-cost.json",
+      "sha256": "38146aee181763b7cb714c67a59722cc35890b027a6830520d1d5f4d07131b20",
+      "bundled_path": "report/evidence/compute-cost.json"
+    },
+    {
+      "label": "resource-sample",
+      "path": "report/evidence/resource-sample.json",
+      "sha256": "56efafbc0b84e6fbf3be67e72698b49ca2071b6d54de83900c6bf18ad13a6faa",
+      "bundled_path": "report/evidence/resource-sample.json"
     }
   ],
-  "report_sha256": "485403298f48e818b5bc6436e24906597b24c3f38372de30229a23ba3929b60f"
+  "report_sha256": "228351d7d3738cc12f3120ad1d35c6cf9b8d39226916cf8af93c3c740b6f64d5"
 }

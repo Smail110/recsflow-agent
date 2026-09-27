@@ -31,33 +31,40 @@
       },
       "llm_tokens": {
         "available": true,
-        "total": 84855
+        "total": 84869
       }
     }
   },
   "engineering": {
-    "scope": "Отдельная копия выбранных исходников и зависимостей. Внешние корпуса и архивные результаты в неё не включены.",
-    "tests_passed": 1161,
+    "scope": "Отдельная копия выбранных исходников; ранее установленное окружение по неизменному lockfile, editable package переустановлен на новую копию. Внешние корпуса и архивный replay отсутствуют.",
+    "tests_passed": 1170,
     "tests_skipped": 8,
     "subtests_passed": 7,
-    "workspace_tests_passed": 1175,
     "ruff": "PASS: src scripts tests evals app.py",
     "diff_check": "PASS",
-    "clean_public_tree": "PASS: install, pip check, pytest, Ruff, OpenAPI, notebook rules/ollama, HTTP smoke, controlled fallback, Docker build/up/health/chat"
+    "clean_public_tree": "PASS: install, pip check, pytest, Ruff, OpenAPI, notebook rules/ollama, HTTP smoke, controlled fallback, Docker build/up/health/chat",
+    "response_style": "PASS: neutral/normal preserved; friendly/short applied to chat and controlled HTTP fallback; only verified claims"
   },
   "limitations": [
     "Small reused synthetic DEV and CONTRACT; not independent final evaluation.",
-    "Historical role and load measurements are separately dated.",
-    "Product NLI disabled."
+    "Current DEV, CONTRACT, roles and load measured on 27.09.2026; no causal quality or speedup claim for styling.",
+    "Product NLI disabled.",
+    "Actual infrastructure cost unknown; scenario hourly rates are illustrative."
   ],
   "sources": {
-    "artifacts/submission-final-2026-09-27/dev.json": "8cbee87429e22c2771a3f12f392efd6d174dcfad871d481281e1f46981638a1d",
-    "artifacts/submission-final-2026-09-27/contract.json": "dc35cbaee9d7df4b8e3eb209e54a75fc3e55b8b8c830cea6637d0335108e5ca1",
-    "artifacts/submission-final-2026-09-27/contract.evaluation.json": "092ef66017ea3f1279b95fc98869a83ccb027b3adbc91b6c90cba5dd10a64c27",
-    "artifacts/submission-final-2026-09-27/tests-workspace.xml": "fe2c043220ea4ea35cf48d5518bde235bd718a530caac3038c9e4f234af66777",
-    "artifacts/submission-final-2026-09-27/tests-clean.xml": "ab071746bb6dd4401dc6a39ebb6ed93a6800d5c4cabccf1d89f96a731cbad063",
-    "artifacts/submission-final-2026-09-27/docker-clean-chat.json": "4cb0ed0b6afbd46fb49381b80e95949d7683f4bb3f255a64b66fca211a11ec90",
-    "artifacts/submission-final-2026-09-27/http-clean.log": "2e96ca9bc0ca93217f448bd7b005aee6848f445c004ae22c2efd683f43014182",
-    "artifacts/submission-final-2026-09-27/notebook-clean.log": "10490c72e0ebde42fb3014b4a820b02bc1e7a0af216e00ab8bdb54086bfcf28b"
+    "artifacts/compliance-closure-2026-09-27/protocol.json": "6f5d84fdcbf884a7b336ddfc30c81dd579a354f052bc05e76d8dc8c360306f2b",
+    "artifacts/compliance-closure-2026-09-27/dev.json": "879c803f63ab7b46f317d3510748559860064e6b810604b70d6565d3e966fce6",
+    "artifacts/compliance-closure-2026-09-27/contract.json": "e4f263238c7c50463b27daaf2691e47d006d0943510cc390b93148981edfb547",
+    "artifacts/compliance-closure-2026-09-27/contract.evaluation.json": "6ada3a4e88e236f21453a5f387c68a243c361edd29a820f739252a07dc477afb",
+    "artifacts/compliance-closure-2026-09-27/roles.json": "b2e08fd8c2eadc50d915a01859ae9cf937197713d9e2a7a346ed59ef31b0a4a0",
+    "artifacts/compliance-closure-2026-09-27/load-c1.json": "1ddbeab132c29a005631a93ebf111778dfee1c9b1931ac475a4928a0d1b7518a",
+    "artifacts/compliance-closure-2026-09-27/load-c2.json": "ae7c3337250d4eb51dd90e82658f3684127b02405c76cf61b7a67f5a40908e13",
+    "artifacts/compliance-closure-2026-09-27/load-c4.json": "96a1a5e6d56b740d2eb8b7cf1a2bdb84ca4017e11b1e247b5852ef46420b571d",
+    "artifacts/compliance-closure-2026-09-27/tests-clean.xml": "bd6a8b727fa29447807e137ebd93d68bac60dfa66add25ab24d412a661a39c51",
+    "artifacts/compliance-closure-2026-09-27/checks.json": "91d93a874b7a3c7dd83b39c66453fb5d6240c1201ea41d82dc5116fee19c69cd",
+    "artifacts/compliance-closure-2026-09-27/styled-http.json": "f928f6b365ada6e45469c5fd70455fa14de8b2debf7fb4d8cb24d99da3fb0110",
+    "artifacts/compliance-closure-2026-09-27/fallback-process/receipt.json": "da4e8be7f865e7037d6bb3ad7b688012413ef6bcf34c5a4249b8842cc5556973",
+    "artifacts/compliance-closure-2026-09-27/role-replay-check.json": "45725258a48bc65e469847e6c054b71fc62275683ddde016d2fc22aa5ad64c41",
+    "artifacts/compliance-closure-2026-09-27/resource-sample.json": "56efafbc0b84e6fbf3be67e72698b49ca2071b6d54de83900c6bf18ad13a6faa"
   }
 }

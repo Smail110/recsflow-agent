@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-09-27T18:57:04.526909+00:00",
+  "scope": "Single host GPU and container snapshots during c1; not isolated Ollama process usage or peak measurements; host CPU/RAM sampled later during c4; CPU-only pytest and notebook checks also ran on the host during the load campaign; no other model inference was started by this task",
+  "unknown": [
+    "host RAM process attribution",
+    "integrated energy/cost",
+    "peak VRAM"
+  ],
+  "gpu": {
+    "command": [
+      "nvidia-smi",
+      "--query-gpu=name,driver_version,memory.total,memory.used,utilization.gpu,power.draw",
+      "--format=csv"
+    ],
+    "returncode": 0,
+    "stdout": "name, driver_version, memory.total [MiB], memory.used [MiB], utilization.gpu [%], power.draw [W]\nNVIDIA GeForce RTX 5070 Ti, 591.86, 16303 MiB, 8331 MiB, 89 %, 240.39 W\n",
+    "stderr": ""
+  },
+  "containers": {
+    "command": [
+      "docker",
+      "stats",
+      "--no-stream",
+      "--format",
+      "{{json .}}",
+      "recagent-compliance-fix-api-1",
+      "recagent-compliance-fix-platform-1",
+      "recagent-compliance-fix-demo-1"
+    ],
+    "returncode": 0,
+    "stdout": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"2.40%\",\"Container\":\"recagent-compliance-fix-api-1\",\"ID\":\"3da9d0c7a0bb\",\"MemPerc\":\"0.12%\",\"MemUsage\":\"79.91MiB / 62.66GiB\",\"Name\":\"recagent-compliance-fix-api-1\",\"NetIO\":\"266kB / 578kB\",\"PIDs\":\"3\"}\n{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.80%\",\"Container\":\"recagent-compliance-fix-platform-1\",\"ID\":\"cd957c11465a\",\"MemPerc\":\"0.07%\",\"MemUsage\":\"46.86MiB / 62.66GiB\",\"Name\":\"recagent-compliance-fix-platform-1\",\"NetIO\":\"33.7kB / 195kB\",\"PIDs\":\"2\"}\n{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.38%\",\"Container\":\"recagent-compliance-fix-demo-1\",\"ID\":\"b87efbc0dcc3\",\"MemPerc\":\"0.07%\",\"MemUsage\":\"45.14MiB / 62.66GiB\",\"Name\":\"recagent-compliance-fix-demo-1\",\"NetIO\":\"3.19kB / 2.03kB\",\"PIDs\":\"4\"}\n",
+    "stderr": ""
+  },
+  "host_sample_at_utc": "2026-09-27T19:03:14.397050+00:00",
+  "host_cpu": {
+    "Name": "12th Gen Intel(R) Core(TM) i7-12700K",
+    "NumberOfCores": 12,
+    "NumberOfLogicalProcessors": 20,
+    "LoadPercentage": 43
+  },
+  "host_memory_kib": {
+    "TotalVisibleMemorySize": 133939116,
+    "FreePhysicalMemory": 99354620
+  }
+}

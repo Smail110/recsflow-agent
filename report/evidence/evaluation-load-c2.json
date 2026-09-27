@@ -1,27 +1,27 @@
 {
-  "timestamp_utc": "2026-09-24T10:03:30.850416+00:00",
-  "target": "http://127.0.0.1:8000",
+  "timestamp_utc": "2026-09-27T19:02:03.984155+00:00",
+  "target": "http://127.0.0.1:20000",
   "requests": 50,
   "concurrency": 2,
-  "elapsed_seconds": 172.32949249999365,
-  "requests_per_second": 0.29014186297799166,
+  "elapsed_seconds": 167.42814690002706,
+  "requests_per_second": 0.2986355695010796,
   "successes": 50,
   "errors": 0,
   "http_successes": 50,
   "http_errors": 0,
   "recommendation_successes": 50,
-  "p50_ms": 6878.302700002678,
-  "p95_ms": 6940.130600007251,
-  "max_ms": 7127.978099975735,
+  "p50_ms": 6689.422100025695,
+  "p95_ms": 6766.097099985927,
+  "max_ms": 6848.922799981665,
   "agent_llm_calls": 100,
   "requests_with_llm_usage": 50,
-  "agent_tokens": 205925,
-  "observed_agent_tokens": 205925,
+  "agent_tokens": 206250,
+  "observed_agent_tokens": 206250,
   "mode_counts": {
     "ollama": 50
   },
-  "observed_inference_seconds": 158.3244407,
-  "inference_seconds": 158.3244407,
+  "observed_inference_seconds": 153.5160981,
+  "inference_seconds": 153.5160981,
   "monetary_cost": null,
   "observed_monetary_cost": null,
   "usage_coverage": {
@@ -53,30 +53,8 @@
   "fallback_requests": 0,
   "results": [
     {
-      "request_id": "load-c9d1d738ffce44f5ac23c5db692e962e",
-      "latency_ms": 6028.081199998269,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
-        "output_tokens": 291.0,
-        "inference_seconds": 3.5218337,
-        "input_tokens": 3821.0,
-        "total_seconds": 5.8930521
-      },
-      "timings_ms": {
-        "parse": 2643.299,
-        "retrieve": 13.993,
-        "rank_explain": 3281.062
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-29a21b94b47d466d897c0c966beabc1d",
-      "latency_ms": 7127.978099975735,
+      "request_id": "load-3086db0b7f414a738727af8d67d93888",
+      "latency_ms": 6848.922799981665,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -84,43 +62,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8628002,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.9909459
-      },
-      "timings_ms": {
-        "parse": 4693.0,
-        "retrieve": 10.546,
-        "rank_explain": 2331.258
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-e888bb37d3d34d70b28d4a6f72a6c852",
-      "latency_ms": 6869.627200008836,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4560503999999996,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7954451
+        "input_tokens": 3834.0,
+        "total_seconds": 6.725806,
+        "inference_seconds": 2.716919
       },
       "timings_ms": {
-        "parse": 3544.619,
-        "retrieve": 14.294,
-        "rank_explain": 3277.762
+        "parse": 4444.363,
+        "retrieve": 18.243,
+        "rank_explain": 2321.666
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-73aab1c4515f49e9b64ca0a2255fdc8e",
-      "latency_ms": 6864.115900010802,
+      "request_id": "load-35b97f036ad440578d1e0d15ac5a4b8c",
+      "latency_ms": 5749.639099987689,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -128,43 +84,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8691535,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7832714
-      },
-      "timings_ms": {
-        "parse": 4495.71,
-        "retrieve": 11.625,
-        "rank_explain": 2323.294
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-9012d9ba0c7a4c0d85f4a80051a693a6",
-      "latency_ms": 6852.847900008783,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4359186999999998,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7770627
+        "input_tokens": 3834.0,
+        "total_seconds": 5.6311042,
+        "inference_seconds": 3.4185681
       },
       "timings_ms": {
-        "parse": 3531.221,
-        "retrieve": 13.424,
-        "rank_explain": 3272.017
+        "parse": 2558.848,
+        "retrieve": 14.223,
+        "rank_explain": 3113.987
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-d7ec9e3815184ef7a47b6a9974f7797c",
-      "latency_ms": 6862.449100008234,
+      "request_id": "load-71a4788a89c14ba983124f59d02e0028",
+      "latency_ms": 6695.598800026346,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -172,43 +106,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8709599,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7794871
-      },
-      "timings_ms": {
-        "parse": 4477.606,
-        "retrieve": 11.975,
-        "rank_explain": 2337.24
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-fe4cf502f4914ba5ae55996799b2a578",
-      "latency_ms": 6865.316199982772,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.444604,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.743245
+        "input_tokens": 3834.0,
+        "total_seconds": 6.626125399999999,
+        "inference_seconds": 3.4154833
       },
       "timings_ms": {
-        "parse": 3539.097,
-        "retrieve": 11.246,
-        "rank_explain": 3282.309
+        "parse": 3534.141,
+        "retrieve": 14.733,
+        "rank_explain": 3127.826
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-bf171292f6404c69a77a7914f0e40f9f",
-      "latency_ms": 6863.644299999578,
+      "request_id": "load-97a8cf2b082e43888aeeba61d4ea0d62",
+      "latency_ms": 6683.488000009675,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -216,43 +128,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8676306,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.783760600000001
-      },
-      "timings_ms": {
-        "parse": 4477.415,
-        "retrieve": 13.112,
-        "rank_explain": 2336.607
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-cb8f5857363a4225937d0b18afa892d1",
-      "latency_ms": 6859.270799992373,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4520087999999998,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7847054
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6214517,
+        "inference_seconds": 2.7293722
       },
       "timings_ms": {
-        "parse": 3531.897,
-        "retrieve": 13.725,
-        "rank_explain": 3280.902
+        "parse": 4340.458,
+        "retrieve": 12.345,
+        "rank_explain": 2314.042
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-73e57192c4a4488db216cdb0959f6da1",
-      "latency_ms": 6860.809000005247,
+      "request_id": "load-2526a3d022064ac1b0b496d23e77025b",
+      "latency_ms": 6653.6033999873325,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -260,43 +150,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8812456,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7780083
-      },
-      "timings_ms": {
-        "parse": 4476.184,
-        "retrieve": 13.745,
-        "rank_explain": 2330.314
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-58bbfd5f115141ad95b4935cd4f7dc04",
-      "latency_ms": 6886.088400002336,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4432852,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8120382
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5836925,
+        "inference_seconds": 3.4059339
       },
       "timings_ms": {
-        "parse": 3545.7,
-        "retrieve": 11.883,
-        "rank_explain": 3296.592
+        "parse": 3515.596,
+        "retrieve": 14.608,
+        "rank_explain": 3104.389
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-b426f2c248714c09bda27f1b1eb95174",
-      "latency_ms": 6882.046699989587,
+      "request_id": "load-f935bc8c2ef546a0b3c3a548b9d5e0a0",
+      "latency_ms": 6680.283800000325,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -304,43 +172,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8606667999999997,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.798316
-      },
-      "timings_ms": {
-        "parse": 4492.326,
-        "retrieve": 14.003,
-        "rank_explain": 2339.356
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-37a2fbbbaa0d4a08ba918f3dbb376e45",
-      "latency_ms": 6885.205700004008,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4536846,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.808607
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6131695,
+        "inference_seconds": 2.724646
       },
       "timings_ms": {
-        "parse": 3542.293,
-        "retrieve": 13.668,
-        "rank_explain": 3296.843
+        "parse": 4317.625,
+        "retrieve": 12.164,
+        "rank_explain": 2332.431
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-2274a6e399e941a9856f6e465c0e1b88",
-      "latency_ms": 6897.616300004302,
+      "request_id": "load-8d9912e4c50f46ed96b95e285861791f",
+      "latency_ms": 6714.076300035231,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -348,43 +194,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8943016000000004,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8159863000000005
-      },
-      "timings_ms": {
-        "parse": 4498.302,
-        "retrieve": 13.067,
-        "rank_explain": 2348.837
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-124c5583a90f48eeba543a7f094cdb73",
-      "latency_ms": 6871.686200000113,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4437457,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.799932500000001
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6446545,
+        "inference_seconds": 3.4272362000000003
       },
       "timings_ms": {
-        "parse": 3553.287,
-        "retrieve": 11.625,
-        "rank_explain": 3274.491
+        "parse": 3558.911,
+        "retrieve": 12.263,
+        "rank_explain": 3121.441
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-de72fecbd5e944f7abe03039318a32ea",
-      "latency_ms": 6865.896199975396,
+      "request_id": "load-aa3f6de1c7004461adeac0683fd9fda7",
+      "latency_ms": 6705.080700048711,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -392,43 +216,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8721557,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7885155
-      },
-      "timings_ms": {
-        "parse": 4487.933,
-        "retrieve": 15.087,
-        "rank_explain": 2332.486
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-b01b58679ada4054840f0a62fc9aff24",
-      "latency_ms": 6891.8524000037,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4571227,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8015456
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6119768,
+        "inference_seconds": 2.7155265
       },
       "timings_ms": {
-        "parse": 3533.285,
-        "retrieve": 14.878,
-        "rank_explain": 3296.941
+        "parse": 4326.565,
+        "retrieve": 12.456,
+        "rank_explain": 2320.235
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-d35ad3275ad943658f0f4411a37cc26e",
-      "latency_ms": 6882.81390001066,
+      "request_id": "load-3e0b56c1942a42a3aea78d202b7ba327",
+      "latency_ms": 6766.097099985927,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -436,43 +238,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8759031,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7824302
-      },
-      "timings_ms": {
-        "parse": 4477.656,
-        "retrieve": 12.593,
-        "rank_explain": 2335.42
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-b52e96bb2de441fea770860214ba25ba",
-      "latency_ms": 6882.355399982771,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4478991,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8060685
+        "input_tokens": 3834.0,
+        "total_seconds": 6.681040100000001,
+        "inference_seconds": 3.4141574
       },
       "timings_ms": {
-        "parse": 3542.092,
-        "retrieve": 12.737,
-        "rank_explain": 3293.323
+        "parse": 3571.728,
+        "retrieve": 20.188,
+        "rank_explain": 3152.494
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-36581f3e3eaa44a2a8170387ea2653ce",
-      "latency_ms": 6892.276300000958,
+      "request_id": "load-7eca7fe5292746af98f53476aff461c3",
+      "latency_ms": 6773.894699988887,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -480,43 +260,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8844318,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.799091300000001
-      },
-      "timings_ms": {
-        "parse": 4491.416,
-        "retrieve": 16.922,
-        "rank_explain": 2342.247
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-64efc9f26c4941aba89781381b505a99",
-      "latency_ms": 6870.806399994763,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4534523999999998,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7927623
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6720041000000005,
+        "inference_seconds": 2.751101
       },
       "timings_ms": {
-        "parse": 3536.989,
-        "retrieve": 11.564,
-        "rank_explain": 3284.224
+        "parse": 4373.681,
+        "retrieve": 12.272,
+        "rank_explain": 2330.764
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-44b9f599cef14baab5d1f5130a781896",
-      "latency_ms": 6871.649800013984,
+      "request_id": "load-2fbb762536ce4dcb8a07bba0facf5821",
+      "latency_ms": 6713.609199970961,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -524,43 +282,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8652546,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7842951000000005
-      },
-      "timings_ms": {
-        "parse": 4472.888,
-        "retrieve": 12.694,
-        "rank_explain": 2343.232
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-f3aa2809386a4720ac740e06c94ee7c0",
-      "latency_ms": 6888.943400001153,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4511657000000002,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8113691
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6386286,
+        "inference_seconds": 3.4434265
       },
       "timings_ms": {
-        "parse": 3546.442,
-        "retrieve": 12.773,
-        "rank_explain": 3291.689
+        "parse": 3548.175,
+        "retrieve": 20.684,
+        "rank_explain": 3126.01
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-68aa20d03f024cd9a5de3b9183cd4c78",
-      "latency_ms": 6898.1184999865945,
+      "request_id": "load-8e9261c950e94dcf891b9805cf60f6de",
+      "latency_ms": 6699.315599980764,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -568,43 +304,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8827423000000003,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8136948
-      },
-      "timings_ms": {
-        "parse": 4491.229,
-        "retrieve": 11.749,
-        "rank_explain": 2352.221
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-866a56fb0c9d4cdfb745e5b74c3be26b",
-      "latency_ms": 6914.164899993921,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4534859,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8297925
+        "input_tokens": 3834.0,
+        "total_seconds": 6.588748,
+        "inference_seconds": 2.7297977
       },
       "timings_ms": {
-        "parse": 3546.654,
-        "retrieve": 11.891,
-        "rank_explain": 3312.88
+        "parse": 4341.394,
+        "retrieve": 13.525,
+        "rank_explain": 2326.514
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-2726539c08ee4b63bbe5343478ed71fe",
-      "latency_ms": 6911.623599997256,
+      "request_id": "load-f6484dd845a64ecb8ca38630835d91cd",
+      "latency_ms": 6643.770200025756,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -612,43 +326,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.9209323,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.835030400000001
-      },
-      "timings_ms": {
-        "parse": 4506.231,
-        "retrieve": 12.115,
-        "rank_explain": 2360.895
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-dc8985a3fb5c496a9889da28f494485f",
-      "latency_ms": 6940.130600007251,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4600117,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8449667000000005
+        "input_tokens": 3834.0,
+        "total_seconds": 6.575551300000001,
+        "inference_seconds": 3.3844193000000002
       },
       "timings_ms": {
-        "parse": 3552.791,
-        "retrieve": 11.179,
-        "rank_explain": 3316.439
+        "parse": 3522.807,
+        "retrieve": 12.432,
+        "rank_explain": 3089.462
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-66af9b088ef64915813b65252ad584c9",
-      "latency_ms": 6932.733599998755,
+      "request_id": "load-128c77677a394d37a93e0f9d7cb6625c",
+      "latency_ms": 6638.375099981204,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -656,43 +348,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8793831,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8474315
-      },
-      "timings_ms": {
-        "parse": 4532.543,
-        "retrieve": 11.459,
-        "rank_explain": 2350.085
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-d079befd0bc04aa59ce8cd4f0eda3c3b",
-      "latency_ms": 6892.359299992677,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4488261,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.806699200000001
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5659396999999995,
+        "inference_seconds": 2.7067233
       },
       "timings_ms": {
-        "parse": 3538.331,
-        "retrieve": 11.35,
-        "rank_explain": 3296.09
+        "parse": 4303.951,
+        "retrieve": 17.539,
+        "rank_explain": 2297.563
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-fb01e596e4b44a8f8cda9b521fe3dbd3",
-      "latency_ms": 6885.230700019747,
+      "request_id": "load-0f67e4cd9f5f4ab58664cc543e993974",
+      "latency_ms": 6674.46700000437,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -700,43 +370,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8840141,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.804656700000001
-      },
-      "timings_ms": {
-        "parse": 4500.001,
-        "retrieve": 14.645,
-        "rank_explain": 2335.653
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-435ad5588ed24e949006e59a1855838d",
-      "latency_ms": 6878.331699990667,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4612147999999996,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7861744
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5764251,
+        "inference_seconds": 3.3921758000000004
       },
       "timings_ms": {
-        "parse": 3528.091,
-        "retrieve": 13.943,
-        "rank_explain": 3285.024
+        "parse": 3520.367,
+        "retrieve": 27.539,
+        "rank_explain": 3107.401
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-260a36d71a86444c9c311a8bd21ea8e3",
-      "latency_ms": 6895.898299990222,
+      "request_id": "load-b2070e6205dd47c99e7424df307309d1",
+      "latency_ms": 6667.957999976352,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -744,43 +392,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8928768,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8159726
-      },
-      "timings_ms": {
-        "parse": 4489.358,
-        "retrieve": 15.004,
-        "rank_explain": 2357.914
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-9f00fd1f7dcb44da858313d6e609cae3",
-      "latency_ms": 6932.055699988268,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4748624999999995,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8505158999999995
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5723645,
+        "inference_seconds": 2.7127497
       },
       "timings_ms": {
-        "parse": 3563.756,
-        "retrieve": 10.71,
-        "rank_explain": 3313.027
+        "parse": 4314.658,
+        "retrieve": 12.507,
+        "rank_explain": 2298.253
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-067c5aacfbd2408f849d2cf6f3ec2648",
-      "latency_ms": 6905.328199994983,
+      "request_id": "load-9ca2110c9c864b2d9def0d2fa114c91a",
+      "latency_ms": 6685.785299981944,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -788,43 +414,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8884646,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8245515999999995
-      },
-      "timings_ms": {
-        "parse": 4516.229,
-        "retrieve": 13.949,
-        "rank_explain": 2338.813
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-b9b7a51b38ad4c4ca2be3c4ca32dbc63",
-      "latency_ms": 6931.176099984441,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4761849,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8595634
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6126616,
+        "inference_seconds": 3.4032338
       },
       "timings_ms": {
-        "parse": 3549.617,
-        "retrieve": 11.261,
-        "rank_explain": 3335.436
+        "parse": 3522.475,
+        "retrieve": 12.872,
+        "rank_explain": 3131.056
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-3bc18876464049268937a952b44e06fb",
-      "latency_ms": 6954.832000017632,
+      "request_id": "load-43f30a7ac24343189fe62fdd19e3088c",
+      "latency_ms": 6698.315099987667,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -832,43 +436,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.9007145,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8586038
-      },
-      "timings_ms": {
-        "parse": 4527.461,
-        "retrieve": 20.212,
-        "rank_explain": 2370.733
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-2b5b24719cfd4b5fb8bd9dfbafb315f9",
-      "latency_ms": 6856.674799986649,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4523314000000003,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7806062
+        "input_tokens": 3834.0,
+        "total_seconds": 6.633029800000001,
+        "inference_seconds": 2.7400278
       },
       "timings_ms": {
-        "parse": 3552.561,
-        "retrieve": 12.835,
-        "rank_explain": 3256.946
+        "parse": 4345.867,
+        "retrieve": 12.478,
+        "rank_explain": 2323.069
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-898cca732447496cbc24de047414e79e",
-      "latency_ms": 6838.2207000104245,
+      "request_id": "load-e6e61630999f47439a34b11d49098178",
+      "latency_ms": 6686.364700028207,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -876,43 +458,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.853973,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7631726
-      },
-      "timings_ms": {
-        "parse": 4468.773,
-        "retrieve": 12.216,
-        "rank_explain": 2323.334
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-cf0c333392734cb188db1ecc7700ec01",
-      "latency_ms": 6875.33720000647,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.445836,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7808084
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5943778,
+        "inference_seconds": 3.4234173
       },
       "timings_ms": {
-        "parse": 3502.808,
-        "retrieve": 15.488,
-        "rank_explain": 3302.361
+        "parse": 3509.656,
+        "retrieve": 14.363,
+        "rank_explain": 3123.781
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-e4fa775e8c794aafa0842fc2bf14fd6c",
-      "latency_ms": 6877.93689998216,
+      "request_id": "load-f6e52e3fcd464a29bfa522d09a7e51a9",
+      "latency_ms": 6701.387399982195,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -920,43 +480,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8758664,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7996201
-      },
-      "timings_ms": {
-        "parse": 4493.613,
-        "retrieve": 12.229,
-        "rank_explain": 2336.389
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-ca9e8aa692c24f4f8dba191e8b2062ad",
-      "latency_ms": 6846.73190000467,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4367602,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7610736
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6347708,
+        "inference_seconds": 2.7432153
       },
       "timings_ms": {
-        "parse": 3516.512,
-        "retrieve": 11.958,
-        "rank_explain": 3272.186
+        "parse": 4330.142,
+        "retrieve": 12.175,
+        "rank_explain": 2337.923
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-9a714e0bcdb8492b96f2b1724ceee6c8",
-      "latency_ms": 6856.136000016704,
+      "request_id": "load-b7e505557ea545db95916d9ca61f099f",
+      "latency_ms": 6757.4241000111215,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -964,43 +502,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8648454,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7824059000000005
-      },
-      "timings_ms": {
-        "parse": 4469.208,
-        "retrieve": 10.62,
-        "rank_explain": 2344.867
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-75ff668e7ddc4878ba6de574dfb2cd8a",
-      "latency_ms": 6927.865999983624,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4712564,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.8432162000000005
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6969455,
+        "inference_seconds": 3.449444
       },
       "timings_ms": {
-        "parse": 3563.899,
-        "retrieve": 14.568,
-        "rank_explain": 3308.765
+        "parse": 3594.618,
+        "retrieve": 11.292,
+        "rank_explain": 3133.676
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-efd93cc041104006b254883565f7d00f",
-      "latency_ms": 6917.964899999788,
+      "request_id": "load-9674c2394f284e99907fa4cc5bbdc26f",
+      "latency_ms": 6736.762399959844,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -1008,43 +524,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8807126,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.820145699999999
-      },
-      "timings_ms": {
-        "parse": 4512.906,
-        "retrieve": 12.045,
-        "rank_explain": 2343.184
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-9f8facc6c49f413fb27da77896907073",
-      "latency_ms": 6870.632399979513,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4353308,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7941781
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6472093999999995,
+        "inference_seconds": 2.7432998
       },
       "timings_ms": {
-        "parse": 3535.066,
-        "retrieve": 13.956,
-        "rank_explain": 3288.465
+        "parse": 4378.609,
+        "retrieve": 12.834,
+        "rank_explain": 2304.984
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-9650c645c63846f5a8f3a71befd1dece",
-      "latency_ms": 6878.302700002678,
+      "request_id": "load-da4c215fc57a473ab721c249c872f269",
+      "latency_ms": 6689.748700009659,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -1052,43 +546,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8917631999999998,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.785260900000001
-      },
-      "timings_ms": {
-        "parse": 4484.116,
-        "retrieve": 11.687,
-        "rank_explain": 2330.979
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-350346ae99e848929841420173b94eda",
-      "latency_ms": 6860.627999994904,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4547479,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7876317
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6226976,
+        "inference_seconds": 3.4208448000000002
       },
       "timings_ms": {
-        "parse": 3538.043,
-        "retrieve": 13.266,
-        "rank_explain": 3277.043
+        "parse": 3534.996,
+        "retrieve": 12.586,
+        "rank_explain": 3122.619
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-ca7798b9e07f451191893cce5f1732f5",
-      "latency_ms": 6847.749800013844,
+      "request_id": "load-ed069332241c4099bee76fd11946487a",
+      "latency_ms": 6714.49310000753,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -1096,43 +568,21 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.857681,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7686265
-      },
-      "timings_ms": {
-        "parse": 4471.804,
-        "retrieve": 14.802,
-        "rank_explain": 2327.571
-      },
-      "degradation": "FULL"
-    },
-    {
-      "request_id": "load-bd0b715eba3f4e10963b8ca9f4ba03f3",
-      "latency_ms": 6853.184199979296,
-      "http_ok": true,
-      "ok": true,
-      "mode": "ollama",
-      "provider": "recsflow-http",
-      "llm_calls": 2,
-      "llm_tokens": 4112,
-      "llm_usage": {
         "output_tokens": 291.0,
-        "inference_seconds": 3.4426862000000003,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7739496
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6196042,
+        "inference_seconds": 2.7401527999999997
       },
       "timings_ms": {
-        "parse": 3529.998,
-        "retrieve": 12.874,
-        "rank_explain": 3275.246
+        "parse": 4331.043,
+        "retrieve": 15.367,
+        "rank_explain": 2323.141
       },
       "degradation": "FULL"
     },
     {
-      "request_id": "load-0dd5a9651c354e339a172d3fc17bb646",
-      "latency_ms": 6854.710000014165,
+      "request_id": "load-6933b221874f42f8a7b91635d5808f4d",
+      "latency_ms": 6712.574200006202,
       "http_ok": true,
       "ok": true,
       "mode": "ollama",
@@ -1140,15 +590,565 @@
       "llm_calls": 2,
       "llm_tokens": 4125,
       "llm_usage": {
-        "output_tokens": 304.0,
-        "inference_seconds": 2.8716622000000003,
-        "input_tokens": 3821.0,
-        "total_seconds": 6.7825592
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6458291,
+        "inference_seconds": 3.4201606
       },
       "timings_ms": {
-        "parse": 4489.711,
-        "retrieve": 11.817,
-        "rank_explain": 2322.18
+        "parse": 3551.199,
+        "retrieve": 13.062,
+        "rank_explain": 3128.316
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-dd6c75000a4149e8baffb9012f2ed3c5",
+      "latency_ms": 6702.4911000044085,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.637536000000001,
+        "inference_seconds": 2.7430784
+      },
+      "timings_ms": {
+        "parse": 4349.358,
+        "retrieve": 15.285,
+        "rank_explain": 2321.236
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-6c6a2b2981c24bd8b77bbba2cb9d18f9",
+      "latency_ms": 6689.422100025695,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6146951000000005,
+        "inference_seconds": 3.4049180999999997
+      },
+      "timings_ms": {
+        "parse": 3556.293,
+        "retrieve": 14.195,
+        "rank_explain": 3100.942
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-faf8dc874040444b913bf435a4c12b01",
+      "latency_ms": 6667.644899978768,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6034165,
+        "inference_seconds": 2.7266653
+      },
+      "timings_ms": {
+        "parse": 4347.106,
+        "retrieve": 14.02,
+        "rank_explain": 2289.353
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-de058b704164464f916279763b2a1a28",
+      "latency_ms": 6653.966799960472,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.575060799999999,
+        "inference_seconds": 3.4105986
+      },
+      "timings_ms": {
+        "parse": 3484.563,
+        "retrieve": 11.829,
+        "rank_explain": 3120.688
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-00513a2b38844a559cd2c9fd5e69388a",
+      "latency_ms": 6663.543100003153,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5947942,
+        "inference_seconds": 2.7284286
+      },
+      "timings_ms": {
+        "parse": 4324.673,
+        "retrieve": 12.319,
+        "rank_explain": 2307.297
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-8a0acca2ec8142af9de10aa49f231f35",
+      "latency_ms": 6630.747099989094,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.563997199999999,
+        "inference_seconds": 3.3946218999999997
+      },
+      "timings_ms": {
+        "parse": 3501.434,
+        "retrieve": 14.787,
+        "rank_explain": 3098.518
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-fc8a469e7aea4c37b0b6303d51c947b3",
+      "latency_ms": 6631.721499958076,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5420909,
+        "inference_seconds": 2.7307389
+      },
+      "timings_ms": {
+        "parse": 4280.358,
+        "retrieve": 12.745,
+        "rank_explain": 2300.158
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-672227bab78847f3817ef92e7fa29895",
+      "latency_ms": 6705.976199998986,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6433536,
+        "inference_seconds": 3.4241389
+      },
+      "timings_ms": {
+        "parse": 3543.034,
+        "retrieve": 12.16,
+        "rank_explain": 3133.383
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-cbd8c8f7d5cd475c95d4674d55b830e4",
+      "latency_ms": 6706.891399982851,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6400835,
+        "inference_seconds": 2.72046
+      },
+      "timings_ms": {
+        "parse": 4356.714,
+        "retrieve": 15.81,
+        "rank_explain": 2317.112
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-c0acd65fe6c74fd2a72c6536540be2d4",
+      "latency_ms": 6666.582699981518,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5774817,
+        "inference_seconds": 3.4129667
+      },
+      "timings_ms": {
+        "parse": 3488.472,
+        "retrieve": 11.57,
+        "rank_explain": 3125.893
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-89f9cb19730d46ada2638e0956cb70bf",
+      "latency_ms": 6681.202900013886,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5922177,
+        "inference_seconds": 2.7209516
+      },
+      "timings_ms": {
+        "parse": 4291.908,
+        "retrieve": 13.556,
+        "rank_explain": 2337.081
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-91f1ec8c787645a9bd5da553bf931d72",
+      "latency_ms": 6719.744799949694,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6278914,
+        "inference_seconds": 3.4236645
+      },
+      "timings_ms": {
+        "parse": 3540.339,
+        "retrieve": 11.386,
+        "rank_explain": 3128.276
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-ed5721a3bfea453d8fd9587c6d9a3565",
+      "latency_ms": 6696.724599984009,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6245467,
+        "inference_seconds": 2.7308719
+      },
+      "timings_ms": {
+        "parse": 4360.599,
+        "retrieve": 16.617,
+        "rank_explain": 2301.454
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-2cb54cfec07143d29320b07b7aa65de4",
+      "latency_ms": 6658.3239999599755,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5724108999999995,
+        "inference_seconds": 3.393899
+      },
+      "timings_ms": {
+        "parse": 3485.342,
+        "retrieve": 11.252,
+        "rank_explain": 3122.059
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-090684fec607484185d774c6b69987ea",
+      "latency_ms": 6663.047100009862,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5884512,
+        "inference_seconds": 2.7136476
+      },
+      "timings_ms": {
+        "parse": 4328.936,
+        "retrieve": 15.199,
+        "rank_explain": 2302.137
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-dbdfe70380884aca9e6a9c63add0b58e",
+      "latency_ms": 6685.187599970959,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5952368,
+        "inference_seconds": 3.3814273
+      },
+      "timings_ms": {
+        "parse": 3494.556,
+        "retrieve": 10.995,
+        "rank_explain": 3138.738
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-b8cad5e07d744c239ee2f01bc86d17a1",
+      "latency_ms": 6695.275100006256,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6121419999999995,
+        "inference_seconds": 2.7218961
+      },
+      "timings_ms": {
+        "parse": 4329.636,
+        "retrieve": 13.398,
+        "rank_explain": 2325.063
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-cc2a011e03f744f790f9e1c29a89720f",
+      "latency_ms": 6651.33149997564,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.581164599999999,
+        "inference_seconds": 3.3790185999999998
+      },
+      "timings_ms": {
+        "parse": 3527.306,
+        "retrieve": 13.49,
+        "rank_explain": 3094.653
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-1eef4c7bf50c4b11a778b959ac725490",
+      "latency_ms": 6637.292100000195,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5630997,
+        "inference_seconds": 2.7120518
+      },
+      "timings_ms": {
+        "parse": 4302.161,
+        "retrieve": 19.157,
+        "rank_explain": 2298.44
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-94c37ecd20b74e68901e3be732afe22c",
+      "latency_ms": 6701.632599986624,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6210553999999995,
+        "inference_seconds": 3.4127742
+      },
+      "timings_ms": {
+        "parse": 3522.721,
+        "retrieve": 11.96,
+        "rank_explain": 3129.514
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-c5fe59d519e748128f17042874f87882",
+      "latency_ms": 6709.506399987731,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6371156000000004,
+        "inference_seconds": 2.7438042
+      },
+      "timings_ms": {
+        "parse": 4362.413,
+        "retrieve": 16.758,
+        "rank_explain": 2310.086
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-c7d4d25d4a764b5c94657b1aa83d27c6",
+      "latency_ms": 6672.169400029816,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6102571,
+        "inference_seconds": 3.3858386000000005
+      },
+      "timings_ms": {
+        "parse": 3520.437,
+        "retrieve": 11.676,
+        "rank_explain": 3121.839
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-6cc394514bb34fb59c2bbf59678c8e1e",
+      "latency_ms": 6677.252799971029,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.5814616,
+        "inference_seconds": 2.7246428
+      },
+      "timings_ms": {
+        "parse": 4298.573,
+        "retrieve": 11.462,
+        "rank_explain": 2323.999
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-c0e9a2cf4777485d93e08e8500e05489",
+      "latency_ms": 6762.320699985139,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6754894,
+        "inference_seconds": 3.4411837
+      },
+      "timings_ms": {
+        "parse": 3545.467,
+        "retrieve": 12.74,
+        "rank_explain": 3163.319
+      },
+      "degradation": "FULL"
+    },
+    {
+      "request_id": "load-65e241107b7d4392a0ae40aba8399c5b",
+      "latency_ms": 6744.762799993623,
+      "http_ok": true,
+      "ok": true,
+      "mode": "ollama",
+      "provider": "recsflow-http",
+      "llm_calls": 2,
+      "llm_tokens": 4125,
+      "llm_usage": {
+        "output_tokens": 291.0,
+        "input_tokens": 3834.0,
+        "total_seconds": 6.6675156,
+        "inference_seconds": 2.7617787
+      },
+      "timings_ms": {
+        "parse": 4402.31,
+        "retrieve": 14.332,
+        "rank_explain": 2305.099
       },
       "degradation": "FULL"
     }

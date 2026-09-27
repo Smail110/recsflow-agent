@@ -4987,19 +4987,19 @@
     ],
     "protocol_sha256": "c730996205cc3ae669fd31bfd727920bd74bab7ca336ba7d086e31eae86a2d97"
   },
-  "protocol_manifest_path": "artifacts\\prototype-product-2026-09-23\\roles-final-record.protocol.json",
+  "protocol_manifest_path": "artifacts\\compliance-closure-2026-09-27\\roles.protocol.json",
   "protocol_manifest_file_sha256": "b2da047f0008bb1118ef1218e2b59181fe7fce4320a14d6a2f80f45835dcb5ad",
   "result": {
     "protocol_version": "llm-clarification-v0.7",
     "max_clarifications": 3,
     "metrics": {
       "success_rate": 0.25,
-      "mean_clarifications": 1.375,
-      "text_claims": 119,
+      "mean_clarifications": 0.75,
+      "text_claims": 149,
       "unsupported_text_claims": 0,
       "unsupported_text_claim_rate": 0.0,
-      "agent_latency_p50_ms": 1938.89869999839,
-      "agent_latency_p95_ms": 3840.480999991996,
+      "agent_latency_p50_ms": 2234.7683000261895,
+      "agent_latency_p95_ms": 4168.222400010563,
       "judge_grounded_rate": 1.0,
       "judge_completed_cases": 8,
       "claim_metric_scope": "Independent conservative catalog/history audit of supported explanation templates; advisory judge is separate."
@@ -5059,7 +5059,7 @@
           "public_constraint_violations": [],
           "evidence_indices": [],
           "insufficient_evidence": false,
-          "rationale": "Пользователь запросил рекомендации по сериалам жанра «детектив». Система уточнила, что подразумевается сериал, и предоставила рекомендации на основе жанра «детектив». Все рекомендации основаны на публичных данных из каталога, включая жанр, тон, количество сезонов, серий и продолжительность. Нет нарушений публичных ограничений, так как рекомендации соответствуют предоставленным данным и не содержат скрытых предпочтений."
+          "rationale": "Пользователь запросил рекомендации по сериалам жанра детектив. Система правильно идентифицировала жанр и предложила несколько вариантов, соответствующих критерию. Все рекомендации основаны на публичных данных, предоставленных в каталоге. Нет нарушений публичных ограничений, так как рекомендации соответствуют заявленному жанру и не включают скрытые предпочтения или фильтры. Рекомендации основаны на явно указанных характеристиках (жанр, тон, количество сезонов, серий, продолжительность серии)."
         },
         "judge_state_agrees_oracle": true,
         "judge_public_constraint_agrees": true,
@@ -5082,23 +5082,6 @@
             "user": "Сериал",
             "semantic_patch": {
               "kind": "series"
-            }
-          },
-          {
-            "assistant": {
-              "state": "clarify",
-              "message": "Уточните «жанр или тема»: детектив, комедия, драма, фантастика, приключения, машинное обучение, python.",
-              "clarification_slot": "genre",
-              "clarification_slots": [
-                "genre"
-              ],
-              "recommendations": []
-            }
-          },
-          {
-            "user": "детектив",
-            "semantic_patch": {
-              "genre": "детектив"
             }
           },
           {
@@ -5325,48 +5308,43 @@
         },
         "roles": {
           "simulator": {
-            "attempted": 2,
-            "completed": 2,
-            "tokens": 1962
+            "attempted": 1,
+            "completed": 1,
+            "tokens": 931
           },
           "semantic_validator": {
-            "attempted": 2,
-            "completed": 2,
-            "tokens": 2000
+            "attempted": 1,
+            "completed": 1,
+            "tokens": 994
           },
           "judge": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 3562
+            "tokens": 3508
           }
         },
         "role_request_sha256": {
           "simulator": [
-            "1358c5b2e18bd9a07cf9484cbd6493735f547306167921a66df001617d4c2e02",
-            "4264c26b722098ff05f1b4753719e03d8c4e0b735af3e74c26cfee2377bd2e45"
+            "12d9211256dd8d9922e832de2e891bd5f6046a0d2f0d16f021e439c94221e1d9"
           ],
           "semantic_validator": [
-            "ff39e28587e8c5d7400d057f3d3b7e4d4c8df862f7bf4455be02708ac47a0b3b",
-            "c9721b68a770551dd58fc701276bc5ef6ddadecaafb0e6a1003a36b9fffce3be"
+            "87ae02d2c610bc619e0186ac8721b936f2b99d5cf969145ffdcbbedb64c93667"
           ],
           "judge": [
-            "5898f24dfb9e1c61d5475e8fb45cced3f8e4c92d12469819a75947c13feba371"
+            "c0760ae8af7b8926ce374eef69560e89e49443653a276288afdb07d257ab4f09"
           ]
         },
         "role_errors": {},
         "observed_latency_ms": {
-          "agent_initial": 1533.5560999810696,
-          "simulator_0": 491.85759999090806,
-          "semantic_validator_0": 760.9401000081562,
-          "agent_followup_0": 3059.4085000047926,
-          "simulator_1": 547.2592000151053,
-          "semantic_validator_1": 740.2036999992561,
-          "agent_followup_1": 2515.6169999972917,
-          "judge": 2305.1504000031855
+          "agent_initial": 1623.8799000275321,
+          "simulator_0": 593.5862999758683,
+          "semantic_validator_0": 862.6330000115559,
+          "agent_followup_0": 1420.3616000013426,
+          "judge": 2807.5662999763153
         },
         "clarification_counts": {
-          "agent_reported": 2,
-          "protocol": 2
+          "agent_reported": 1,
+          "protocol": 1
         }
       },
       {
@@ -5416,7 +5394,7 @@
           "public_constraint_violations": [],
           "evidence_indices": [],
           "insufficient_evidence": false,
-          "rationale": "Рекомендации основаны на явных фрагментах доказательств, соответствующих запросу пользователя: жанр «машинное обучение», уровень «продвинутый». Все рекомендованные курсы соответствуют этим критериям. Нет нарушений публичных ограничений, поскольку все фильтры и параметры заданы явно и соблюдены. Нет скрытых предпочтений, только публичные данные."
+          "rationale": "Рекомендации основаны на явных публичных данных: жанр «машинное обучение», уровень «продвинутый». Все рекомендованные курсы соответствуют этим критериям. Нет нарушений публичных ограничений, так как все фильтры и параметры заданы в явном виде и соблюдены. Нет скрытых предпочтений или неявных ограничений, которые могли бы повлиять на выбор."
         },
         "judge_state_agrees_oracle": true,
         "judge_public_constraint_agrees": true,
@@ -5646,7 +5624,7 @@
           "judge": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 3477
+            "tokens": 3479
           }
         },
         "role_request_sha256": {
@@ -5658,8 +5636,8 @@
         },
         "role_errors": {},
         "observed_latency_ms": {
-          "agent_initial": 3025.572300015483,
-          "judge": 2173.292199993739
+          "agent_initial": 3353.7684999755584,
+          "judge": 2537.7366000320762
         },
         "clarification_counts": {
           "agent_reported": 0,
@@ -5713,7 +5691,7 @@
           "public_constraint_violations": [],
           "evidence_indices": [],
           "insufficient_evidence": false,
-          "rationale": "В диалоге пользователь запросил курс по теме «python» с практическими заданиями. Система уточнила формат (курс) и предоставила рекомендации, основываясь на публичных фильтрах: жанр «python», наличие практического задания. Все рекомендации соответствуют указанным критериям. Нет нарушений публичных ограничений."
+          "rationale": "В диалоге пользователь запросил курс по теме «python» с практическими заданиями. Система правильно идентифицировала тип запроса и предложила соответствующие курсы, учитывая жанр, тон, уровень и наличие практических заданий. Все предложенные курсы соответствуют публичным ограничениям: жанр «python», наличие практического задания, и отсутствие запрещённых жанров или тонов. Нет нарушений публичных ограничений."
         },
         "judge_state_agrees_oracle": true,
         "judge_public_constraint_agrees": true,
@@ -5724,7 +5702,7 @@
           {
             "assistant": {
               "state": "clarify",
-              "message": "Уточните «формат»: сериал, фильм, курс.",
+              "message": "Что подобрать: фильм, сериал или курс?",
               "clarification_slot": "kind",
               "clarification_slots": [
                 "kind"
@@ -5971,37 +5949,37 @@
           "simulator": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 930
+            "tokens": 928
           },
           "semantic_validator": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 989
+            "tokens": 990
           },
           "judge": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 3572
+            "tokens": 3597
           }
         },
         "role_request_sha256": {
           "simulator": [
-            "7c2c612678337da15957fc9fa6df8ced36dcceac8de92acfa21b922af1966d72"
+            "4c90c10b208bb40fdf5ba932f8705156c5afa0ed1c1b94609ea6fc9a9acb884b"
           ],
           "semantic_validator": [
-            "64fe2dcad7a893eca2d5bd95f5673f6674fd725165c29e49dcb94e498c6c47b1"
+            "d8b44343cbb697244bdfde4dd218db96a3ae21b849444251fdac9163c3d9b6d4"
           ],
           "judge": [
-            "50f41fb3ce6004f774166b7d1aad3ea8a0b191b51716aada32491edb461d6cb0"
+            "14d436122d90ea033e8d0fc62ca1cbb2bf491b3868a3deb313433c22f203b547"
           ]
         },
         "role_errors": {},
         "observed_latency_ms": {
-          "agent_initial": 3840.480999991996,
-          "simulator_0": 507.9359000083059,
-          "semantic_validator_0": 815.3884999919683,
-          "agent_followup_0": 2648.510899976827,
-          "judge": 2098.931699991226
+          "agent_initial": 4168.222400010563,
+          "simulator_0": 548.9658000296913,
+          "semantic_validator_0": 905.2988000330515,
+          "agent_followup_0": 2744.340200035367,
+          "judge": 2602.445299969986
         },
         "clarification_counts": {
           "agent_reported": 1,
@@ -6050,7 +6028,7 @@
           "public_constraint_violations": [],
           "evidence_indices": [],
           "insufficient_evidence": false,
-          "rationale": "Диалог показывает, что пользователь ищет сериалы в жанре детектив. Система правильно идентифицировала жанр и предложила рекомендации на основе доступных данных. Все публичные данные соответствуют требованиям, и нет нарушений. Рекомендации основаны на явных характеристиках сериалов, указанных в каталоге."
+          "rationale": "Публичные ограничения, такие как выбор жанра (детектив) и типа (сериал), были соблюдены. В диалоге пользователь запросил рекомендации по жанру детектив, а ассистент предоставил соответствующие рекомендации с указанием жанра, тона, количества сезонов и серий. Нарушений публичных ограничений не выявлено. Рекомендации основаны на публичных данных, предоставленных в каталоге."
         },
         "judge_state_agrees_oracle": true,
         "judge_public_constraint_agrees": true,
@@ -6073,23 +6051,6 @@
             "user": "Сериал",
             "semantic_patch": {
               "kind": "series"
-            }
-          },
-          {
-            "assistant": {
-              "state": "clarify",
-              "message": "Уточните «жанр или тема»: детектив, комедия, драма, фантастика, приключения, машинное обучение, python.",
-              "clarification_slot": "genre",
-              "clarification_slots": [
-                "genre"
-              ],
-              "recommendations": []
-            }
-          },
-          {
-            "user": "детектив",
-            "semantic_patch": {
-              "genre": "детектив"
             }
           },
           {
@@ -6316,48 +6277,43 @@
         },
         "roles": {
           "simulator": {
-            "attempted": 2,
-            "completed": 2,
-            "tokens": 1950
+            "attempted": 1,
+            "completed": 1,
+            "tokens": 925
           },
           "semantic_validator": {
-            "attempted": 2,
-            "completed": 2,
-            "tokens": 2000
+            "attempted": 1,
+            "completed": 1,
+            "tokens": 994
           },
           "judge": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 3521
+            "tokens": 3471
           }
         },
         "role_request_sha256": {
           "simulator": [
-            "fe3809572307484b56f3311df5e5ee619b20e90338517db6434a80214aa51763",
-            "b9d522169b2b8c89d01c5bac2288ebb299397422b90ec3926327fa1eba9bd8f5"
+            "34a49b69ab2afc89f9185ec2d4d9ebd6bcd455ac63aae3f3fe9178e662551b49"
           ],
           "semantic_validator": [
-            "ff39e28587e8c5d7400d057f3d3b7e4d4c8df862f7bf4455be02708ac47a0b3b",
-            "c9721b68a770551dd58fc701276bc5ef6ddadecaafb0e6a1003a36b9fffce3be"
+            "87ae02d2c610bc619e0186ac8721b936f2b99d5cf969145ffdcbbedb64c93667"
           ],
           "judge": [
-            "919391dad0d30f1afff58b0ffcfb83c3a4a0e196f0c775f680d22ce97976ae3e"
+            "a2c7185eb16cd5ce5c13f2bb9c3507529b09b1dd9fa14e83526d22ca84c10954"
           ]
         },
         "role_errors": {},
         "observed_latency_ms": {
-          "agent_initial": 1246.673199988436,
-          "simulator_0": 512.1122999989893,
-          "semantic_validator_0": 56.17510000593029,
-          "agent_followup_0": 65.02149999141693,
-          "simulator_1": 391.07630000216886,
-          "semantic_validator_1": 40.89639999438077,
-          "agent_followup_1": 130.6864000216592,
-          "judge": 1962.6461000007112
+          "agent_initial": 1426.8221000093035,
+          "simulator_0": 576.503699994646,
+          "semantic_validator_0": 22.64169999398291,
+          "agent_followup_0": 75.43120003538206,
+          "judge": 2510.488100000657
         },
         "clarification_counts": {
-          "agent_reported": 2,
-          "protocol": 2
+          "agent_reported": 1,
+          "protocol": 1
         }
       },
       {
@@ -6658,8 +6614,8 @@
         },
         "role_errors": {},
         "observed_latency_ms": {
-          "agent_initial": 3589.5453999983147,
-          "judge": 1904.120100021828
+          "agent_initial": 3937.3913999879733,
+          "judge": 2043.5041000018828
         },
         "clarification_counts": {
           "agent_reported": 0,
@@ -6669,7 +6625,7 @@
       {
         "case_id": "v2-exclusion_genre-dev-0001",
         "explanation_audit": {
-          "text_claims": 0,
+          "text_claims": 15,
           "unsupported_claim_count": 0,
           "unsupported_claims": []
         },
@@ -6678,35 +6634,45 @@
         "core_success": false,
         "protocol_complete": true,
         "failures": [
-          "short_or_duplicate_slate",
-          "state_mismatch:no_results",
-          "empty_recommendation"
+          "unacceptable_item_shown"
         ],
         "oracle": {
           "success": false,
           "expected": "recommend",
-          "shown": [],
-          "hits": [],
-          "misses": [],
-          "failures": [
-            "state_mismatch:no_results",
-            "empty_recommendation"
+          "shown": [
+            "it-00119",
+            "it-01612",
+            "it-01798",
+            "it-02051",
+            "it-02868"
           ],
-          "hit_rate": null,
-          "mean_utility": null,
-          "best_utility": null
+          "hits": [
+            "it-00119",
+            "it-01612",
+            "it-01798",
+            "it-02868"
+          ],
+          "misses": [
+            "it-02051"
+          ],
+          "failures": [
+            "unacceptable_item_shown"
+          ],
+          "hit_rate": 0.8,
+          "mean_utility": 0.787037,
+          "best_utility": 0.855791
         },
         "judge": {
-          "predicted_state": "no_results",
+          "predicted_state": "recommend",
           "grounded": true,
           "public_constraints_satisfied": true,
           "public_constraint_violations": [],
           "evidence_indices": [],
           "insufficient_evidence": false,
-          "rationale": "Пользователь запросил фильм в жанре драма, исключая жанр приключения. В диалоге уточняется значение жанра, но после нескольких попыток система достигает лимита уточнений и переходит в состояние 'no_results'. Публичные ограничения (жанр драма, исключение жанра приключения) соблюдены. Нарушений публичных ограничений не наблюдается."
+          "rationale": "В диалоге пользователь запросил подбор фильма жанра драма с исключением жанра приключения. Система корректно отфильтровала варианты, исключив жанр приключения, и предоставила рекомендации только для жанра драма. Все показанные объекты соответствуют запросу, и нет нарушений публичных ограничений. Рекомендации основаны на публичных данных, предоставленных в каталоге."
         },
-        "judge_state_agrees_oracle": false,
-        "judge_public_constraint_agrees": false,
+        "judge_state_agrees_oracle": true,
+        "judge_public_constraint_agrees": true,
         "dialogue": [
           {
             "user": "Пожалуйста: Подберите вариант: формат — фильм, жанр — драма; исключите жанр приключения."
@@ -6714,7 +6680,7 @@
           {
             "assistant": {
               "state": "clarify",
-              "message": "Уточните «жанр или тема»: детектив, комедия, драма, фантастика, приключения, машинное обучение, python.",
+              "message": "Какой жанр или тему вы предпочитаете?",
               "clarification_slot": "genre",
               "clarification_slots": [
                 "genre"
@@ -6730,47 +6696,147 @@
           },
           {
             "assistant": {
-              "state": "clarify",
-              "message": "Не могу однозначно применить «исключите жанр приключения» к полю «жанр или тема». Уточните значение: детектив, комедия, драма, фантастика, приключения, машинное обучение, python.",
-              "clarification_slot": "genre",
-              "clarification_slots": [
-                "genre"
-              ],
-              "recommendations": []
-            }
-          },
-          {
-            "user": "драма",
-            "semantic_patch": {
-              "genre": "драма"
-            }
-          },
-          {
-            "assistant": {
-              "state": "clarify",
-              "message": "Не могу однозначно применить «исключите жанр приключения» к полю «жанр или тема». Уточните значение: детектив, комедия, драма, фантастика, приключения, машинное обучение, python.",
-              "clarification_slot": "genre",
-              "clarification_slots": [
-                "genre"
-              ],
-              "recommendations": []
-            }
-          },
-          {
-            "user": "драма",
-            "semantic_patch": {
-              "genre": "драма"
-            }
-          },
-          {
-            "assistant": {
-              "state": "no_results",
-              "message": "Достигнут лимит уточнений. Сформулируйте запрос целиком или начните заново.",
-              "clarification_slot": "genre",
-              "clarification_slots": [
-                "genre"
-              ],
-              "recommendations": []
+              "state": "recommend",
+              "message": "Подходит «Исповедь в полумраке прихожей». Жанр: драма. Тон: мрачный. Фильм: 148 мин.\nТакже можно рассмотреть «Старая свеча». Жанр: драма. Тон: мрачный. Фильм: 117 мин.\nТакже можно рассмотреть «Зимний черновик». Жанр: драма. Тон: нейтральный. Фильм: 133 мин.",
+              "clarification_slot": null,
+              "clarification_slots": [],
+              "recommendations": [
+                {
+                  "item_id": "it-00119",
+                  "explanation": "Жанр: драма. Тон: мрачный. Фильм: 148 мин.",
+                  "evidence": [
+                    {
+                      "item_id": "it-00119",
+                      "field": "genre",
+                      "value": "драма",
+                      "relation": "request",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-00119",
+                      "field": "tone",
+                      "value": "мрачный",
+                      "relation": "catalog",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-00119",
+                      "field": "minutes",
+                      "value": 148,
+                      "relation": "catalog",
+                      "source_item_id": null
+                    }
+                  ]
+                },
+                {
+                  "item_id": "it-01612",
+                  "explanation": "Жанр: драма. Тон: нейтральный. Фильм: 102 мин.",
+                  "evidence": [
+                    {
+                      "item_id": "it-01612",
+                      "field": "genre",
+                      "value": "драма",
+                      "relation": "request",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-01612",
+                      "field": "tone",
+                      "value": "нейтральный",
+                      "relation": "catalog",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-01612",
+                      "field": "minutes",
+                      "value": 102,
+                      "relation": "catalog",
+                      "source_item_id": null
+                    }
+                  ]
+                },
+                {
+                  "item_id": "it-01798",
+                  "explanation": "Жанр: драма. Тон: нейтральный. Фильм: 133 мин.",
+                  "evidence": [
+                    {
+                      "item_id": "it-01798",
+                      "field": "genre",
+                      "value": "драма",
+                      "relation": "request",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-01798",
+                      "field": "tone",
+                      "value": "нейтральный",
+                      "relation": "catalog",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-01798",
+                      "field": "minutes",
+                      "value": 133,
+                      "relation": "catalog",
+                      "source_item_id": null
+                    }
+                  ]
+                },
+                {
+                  "item_id": "it-02051",
+                  "explanation": "Жанр: драма. Тон: лёгкий. Фильм: 113 мин.",
+                  "evidence": [
+                    {
+                      "item_id": "it-02051",
+                      "field": "genre",
+                      "value": "драма",
+                      "relation": "request",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-02051",
+                      "field": "tone",
+                      "value": "лёгкий",
+                      "relation": "catalog",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-02051",
+                      "field": "minutes",
+                      "value": 113,
+                      "relation": "catalog",
+                      "source_item_id": null
+                    }
+                  ]
+                },
+                {
+                  "item_id": "it-02868",
+                  "explanation": "Жанр: драма. Тон: мрачный. Фильм: 117 мин.",
+                  "evidence": [
+                    {
+                      "item_id": "it-02868",
+                      "field": "genre",
+                      "value": "драма",
+                      "relation": "request",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-02868",
+                      "field": "tone",
+                      "value": "мрачный",
+                      "relation": "catalog",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-02868",
+                      "field": "minutes",
+                      "value": 117,
+                      "relation": "catalog",
+                      "source_item_id": null
+                    }
+                  ]
+                }
+              ]
             }
           }
         ],
@@ -6791,59 +6857,49 @@
         },
         "roles": {
           "simulator": {
-            "attempted": 3,
-            "completed": 3,
-            "tokens": 3352
+            "attempted": 1,
+            "completed": 1,
+            "tokens": 949
           },
           "semantic_validator": {
-            "attempted": 3,
-            "completed": 3,
-            "tokens": 3098
+            "attempted": 1,
+            "completed": 1,
+            "tokens": 992
           },
           "judge": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 918
+            "tokens": 2847
           }
         },
         "role_request_sha256": {
           "simulator": [
-            "a5e5197f12fafe6bc99c03c34e684a8fcdfe23edec641f56720a61c4c7c87678",
-            "41e05e030873d7a3c6c40a24dd14cec55491b9e429df63cd94c0c32f132221b5",
-            "bcf3d7d778532ad12b5f8b4ed3e8008b58c996a7c75a2bca61b5efbab0fdfb2d"
+            "4844f7b03c849d31dd7656fcd8663c59f1b406ec36fd221efd752e5ed2d2ac4c"
           ],
           "semantic_validator": [
-            "059f62f23ff4d25236b5688e2da154a39e768355e699235e7284cc4811da39fd",
-            "a7db5803e7b959faca9bfb2e3375c5a3796f9c7320436db02e97003e62390a05",
-            "a7db5803e7b959faca9bfb2e3375c5a3796f9c7320436db02e97003e62390a05"
+            "54d0b0dcfb419252f2e77777076da45eaced7c391da276060dd94ac7b18f6aa3"
           ],
           "judge": [
-            "141637f3ad42412e5c8dcf9a8ac980c93ce287f5b6693d89cf3e605811f5b1cc"
+            "0e2257577c76ec242eb132e8336c4a934f71e6365ccd7062b9b7a1452f904c4e"
           ]
         },
         "role_errors": {},
         "observed_latency_ms": {
-          "agent_initial": 1938.89869999839,
-          "simulator_0": 498.2693000056315,
-          "semantic_validator_0": 819.1061000106856,
-          "agent_followup_0": 1302.1355000091717,
-          "simulator_1": 554.1816000186373,
-          "semantic_validator_1": 740.0900000066031,
-          "agent_followup_1": 1314.9703999806661,
-          "simulator_2": 584.3836000130977,
-          "semantic_validator_2": 14.857700007269159,
-          "agent_followup_2": 19.959700002800673,
-          "judge": 1665.4672999866307
+          "agent_initial": 2234.7683000261895,
+          "simulator_0": 578.2789000077173,
+          "semantic_validator_0": 773.0943000060506,
+          "agent_followup_0": 2879.7827000380494,
+          "judge": 2257.916299975477
         },
         "clarification_counts": {
-          "agent_reported": 3,
-          "protocol": 3
+          "agent_reported": 1,
+          "protocol": 1
         }
       },
       {
         "case_id": "v2-mood_evening-dev-0001",
         "explanation_audit": {
-          "text_claims": 0,
+          "text_claims": 15,
           "unsupported_claim_count": 0,
           "unsupported_claims": []
         },
@@ -6852,36 +6908,44 @@
         "core_success": false,
         "protocol_complete": true,
         "failures": [
-          "unsupported_clarification_slot",
-          "short_or_duplicate_slate",
-          "state_mismatch:clarify",
-          "empty_recommendation"
+          "unacceptable_item_shown"
         ],
         "oracle": {
           "success": false,
           "expected": "recommend",
-          "shown": [],
-          "hits": [],
-          "misses": [],
-          "failures": [
-            "state_mismatch:clarify",
-            "empty_recommendation"
+          "shown": [
+            "it-01237",
+            "it-01376",
+            "it-02051",
+            "it-02629",
+            "it-00535"
           ],
-          "hit_rate": null,
-          "mean_utility": null,
-          "best_utility": null
+          "hits": [],
+          "misses": [
+            "it-01237",
+            "it-01376",
+            "it-02051",
+            "it-02629",
+            "it-00535"
+          ],
+          "failures": [
+            "unacceptable_item_shown"
+          ],
+          "hit_rate": 0.0,
+          "mean_utility": 0.5394,
+          "best_utility": 0.566655
         },
         "judge": {
-          "predicted_state": "clarify",
+          "predicted_state": "recommend",
           "grounded": true,
           "public_constraints_satisfied": true,
           "public_constraint_violations": [],
           "evidence_indices": [],
           "insufficient_evidence": false,
-          "rationale": "Пользователь запросил подбор фильма с тоном «лёгкий», но система требует дополнительной информации для уточнения запроса. В диалоге отсутствует уточнение о конкретном фильме или жанре, что необходимо для генерации рекомендаций. Система находится в состоянии уточнения, и нет нарушений публичных ограничений."
+          "rationale": "В диалоге пользователь запросил фильмы с тоном «лёгкий». Ассистент уточнил, что подбирается фильм, и дал рекомендации на основе публичных данных: жанр, тон и продолжительность. Все рекомендации соответствуют запросу, и не наблюдается нарушений публичных ограничений. Рекомендации основаны на явно указанных фильтрах (жанр, тон) и не содержат скрытых предпочтений."
         },
-        "judge_state_agrees_oracle": false,
-        "judge_public_constraint_agrees": false,
+        "judge_state_agrees_oracle": true,
+        "judge_public_constraint_agrees": true,
         "dialogue": [
           {
             "user": "Пожалуйста: Подберите что-нибудь с тоном «лёгкий»."
@@ -6905,13 +6969,147 @@
           },
           {
             "assistant": {
-              "state": "clarify",
-              "message": "Назовите объект, который нужно найти или для которого подобрать похожие варианты.",
-              "clarification_slot": "seed_title",
-              "clarification_slots": [
-                "seed_title"
-              ],
-              "recommendations": []
+              "state": "recommend",
+              "message": "Подходит «Лотерея без приглашения». Жанр: комедия. Тон: лёгкий. Фильм: 95 мин.\nТакже можно рассмотреть «Переписка в порядке исключения». Жанр: комедия. Тон: лёгкий. Фильм: 102 мин.\nТакже можно рассмотреть «Репетиция напоследок». Жанр: комедия. Тон: лёгкий. Фильм: 116 мин.",
+              "clarification_slot": null,
+              "clarification_slots": [],
+              "recommendations": [
+                {
+                  "item_id": "it-01237",
+                  "explanation": "Жанр: приключения. Тон: лёгкий. Фильм: 123 мин.",
+                  "evidence": [
+                    {
+                      "item_id": "it-01237",
+                      "field": "genre",
+                      "value": "приключения",
+                      "relation": "catalog",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-01237",
+                      "field": "tone",
+                      "value": "лёгкий",
+                      "relation": "request",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-01237",
+                      "field": "minutes",
+                      "value": 123,
+                      "relation": "catalog",
+                      "source_item_id": null
+                    }
+                  ]
+                },
+                {
+                  "item_id": "it-01376",
+                  "explanation": "Жанр: комедия. Тон: лёгкий. Фильм: 95 мин.",
+                  "evidence": [
+                    {
+                      "item_id": "it-01376",
+                      "field": "genre",
+                      "value": "комедия",
+                      "relation": "catalog",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-01376",
+                      "field": "tone",
+                      "value": "лёгкий",
+                      "relation": "request",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-01376",
+                      "field": "minutes",
+                      "value": 95,
+                      "relation": "catalog",
+                      "source_item_id": null
+                    }
+                  ]
+                },
+                {
+                  "item_id": "it-02051",
+                  "explanation": "Жанр: драма. Тон: лёгкий. Фильм: 113 мин.",
+                  "evidence": [
+                    {
+                      "item_id": "it-02051",
+                      "field": "genre",
+                      "value": "драма",
+                      "relation": "catalog",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-02051",
+                      "field": "tone",
+                      "value": "лёгкий",
+                      "relation": "request",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-02051",
+                      "field": "minutes",
+                      "value": 113,
+                      "relation": "catalog",
+                      "source_item_id": null
+                    }
+                  ]
+                },
+                {
+                  "item_id": "it-02629",
+                  "explanation": "Жанр: комедия. Тон: лёгкий. Фильм: 116 мин.",
+                  "evidence": [
+                    {
+                      "item_id": "it-02629",
+                      "field": "genre",
+                      "value": "комедия",
+                      "relation": "catalog",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-02629",
+                      "field": "tone",
+                      "value": "лёгкий",
+                      "relation": "request",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-02629",
+                      "field": "minutes",
+                      "value": 116,
+                      "relation": "catalog",
+                      "source_item_id": null
+                    }
+                  ]
+                },
+                {
+                  "item_id": "it-00535",
+                  "explanation": "Жанр: комедия. Тон: лёгкий. Фильм: 102 мин.",
+                  "evidence": [
+                    {
+                      "item_id": "it-00535",
+                      "field": "genre",
+                      "value": "комедия",
+                      "relation": "catalog",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-00535",
+                      "field": "tone",
+                      "value": "лёгкий",
+                      "relation": "request",
+                      "source_item_id": null
+                    },
+                    {
+                      "item_id": "it-00535",
+                      "field": "minutes",
+                      "value": 102,
+                      "relation": "catalog",
+                      "source_item_id": null
+                    }
+                  ]
+                }
+              ]
             }
           }
         ],
@@ -6932,41 +7130,41 @@
           "simulator": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 927
+            "tokens": 931
           },
           "semantic_validator": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 993
+            "tokens": 997
           },
           "judge": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 642
+            "tokens": 2838
           }
         },
         "role_request_sha256": {
           "simulator": [
-            "e078f6ad038c390d8f276bcb4317b30d1b5c37ea306a1f0ade2cefee0e604c5b"
+            "793fb1e3ef3c0fa217825d561ab06bdc5f38e0bbdc7dbfa692318360af03231f"
           ],
           "semantic_validator": [
-            "6ab1bbe5c9bf2c2dc53702d5a3ddb56220099fc490b20078a7c7937a80890561"
+            "b4058e3c57ef262a484329785ba272e1866680f1828e20a60537c6397aaef946"
           ],
           "judge": [
-            "8fd2db2f59ece15507284600aeff1bbe39cda56074ec2c32e0af0abe3563f5fa"
+            "7f9458e232f179d2da22b0b7101fc72c3ec0bdbed667809853e766b394a08356"
           ]
         },
         "role_errors": {},
         "observed_latency_ms": {
-          "agent_initial": 1276.7401000019163,
-          "simulator_0": 519.4619999965653,
-          "semantic_validator_0": 764.1654000035487,
-          "agent_followup_0": 2929.9807000206783,
-          "judge": 1472.5504000089131
+          "agent_initial": 1437.8488999791443,
+          "simulator_0": 589.1544999903999,
+          "semantic_validator_0": 842.5107000512071,
+          "agent_followup_0": 1329.011099995114,
+          "judge": 2403.603499988094
         },
         "clarification_counts": {
-          "agent_reported": 2,
-          "protocol": 2
+          "agent_reported": 1,
+          "protocol": 1
         }
       },
       {
@@ -7007,7 +7205,7 @@
           "public_constraint_violations": [],
           "evidence_indices": [],
           "insufficient_evidence": false,
-          "rationale": "Ассистент запросил уточнение значения поля «seed_title», что указывает на необходимость дополнительной информации для продолжения поиска. Публичные ограничения не нарушены, так как пользователь предоставил точное название «Тихое прощание», и нет указаний на нарушение каких-либо общедоступных правил или ограничений."
+          "rationale": "Ассистент запросил у пользователя уточнение, на какое название ориентироваться, что указывает на необходимость уточнения запроса. Публичные ограничения не нарушены, так как пользователь предоставил точное название «Тихое прощание», но ассистент требует дополнительного уточнения для корректного поиска."
         },
         "judge_state_agrees_oracle": false,
         "judge_public_constraint_agrees": false,
@@ -7018,7 +7216,7 @@
           {
             "assistant": {
               "state": "clarify",
-              "message": "Уточните «seed_title». Назовите желаемое значение.",
+              "message": "На какое название ориентироваться?",
               "clarification_slot": "seed_title",
               "clarification_slots": [
                 "seed_title"
@@ -7054,20 +7252,20 @@
           "judge": {
             "attempted": 1,
             "completed": 1,
-            "tokens": 579
+            "tokens": 572
           }
         },
         "role_request_sha256": {
           "simulator": [],
           "semantic_validator": [],
           "judge": [
-            "5c1c4d23b9b62f633869c48b3dd64f696c30831a4457cbb148cba12c681073f4"
+            "9288811a796bb2606c0ce6d81f79d824e0e2ba20e3853d0bc490761cf1a14792"
           ]
         },
         "role_errors": {},
         "observed_latency_ms": {
-          "agent_initial": 2808.961700007785,
-          "judge": 1362.2657000087202
+          "agent_initial": 3059.546999982558,
+          "judge": 1639.2745000193827
         },
         "clarification_counts": {
           "agent_reported": 1,
@@ -7075,7 +7273,7 @@
         }
       }
     ],
-    "replay_sha256": "66285ab08826bc6b5e4248eca9b7cda77b53a4234c3e833434161a03e8fb3fdf",
+    "replay_sha256": "504f4c08e38f527f50d8e33b7d20384f7d30fd2b89899b7677cbd08d632d6de6",
     "latency_note": "observed_latency_ms измеряется локально и намеренно исключён из replay_sha256"
   },
   "status": "complete",
@@ -7089,33 +7287,25 @@
   },
   "agent_transport": {
     "request_sha256": [
-      "bc80e095fb8210f1a50659b8e7ba875b6f29b383ae1dbdcbfbe976e1898ab030",
-      "b6bb2cd3327fffb2b5d82e3f548d90b54057ead64420b7855effa6e5b016741e",
-      "214da692d6d0114cc161d28babc5b6454530a0c3f6c08dd33a9a83406216aa02",
-      "3a2820511415cb5de69e30717a709883d7b71228d29454d3ae90521eb452a335",
-      "15a5799f09fcbb4ee4aca874c381f0ac32b170ebc3dd87cd055b154801cadeed",
-      "d767b11afb10eaf82be449a99a53067cc0691ed5f62a8a5d33b98b2af093168f",
+      "e76834a41937cd9d0482f133d703816b7915c8d4686d4d6a60fe53737ba59993",
+      "1d87898c4c568ea4fee16a5ee8d954a404dcfad5271078c8d4ce0d65354ef898",
+      "960ce598ebca4f0d535eabcb077ab9dfbc35075f62e94beddee18176bdc1f9cb",
       "85a10200bcad40596731239c6e1c560e47a177e2c9b74d0bdb18ba8701f7564a",
-      "fd8ff2cb0ae5416238412507c6c1d73229d30fde685493c931d6a5cfdaa36944",
-      "bbcccbbf3fcb49f0aa6f9520bbddd5b76af95f9f56a2113c797be00f7304dccf",
-      "49fe81ca956f517d23146fd1d726870507e1e7afe90ad339a7a9b80d20259795",
+      "20286df3735fb9f4c18fb5914f8fbcff2ab773072228c1ff5d9983b5e72e4fb0",
+      "8112a5e92e8b3a4ecd0e84bc3cb82fc33d4d193eccbe5a2da4aed7d02d342e29",
+      "f70115488d9d21acc018333ac8555137d97eb33d18d948a80ab043083100d53d",
       "bd46843332be5e4639dbf298bfd50069190ceec5a1f56d0403e6ebb268947ba5",
-      "3f2e8520cdab4a921f022cfc899665cecbc710fa9e5f0c329d942ca16f2eacae",
-      "b6bb2cd3327fffb2b5d82e3f548d90b54057ead64420b7855effa6e5b016741e",
-      "214da692d6d0114cc161d28babc5b6454530a0c3f6c08dd33a9a83406216aa02",
-      "3a2820511415cb5de69e30717a709883d7b71228d29454d3ae90521eb452a335",
-      "15a5799f09fcbb4ee4aca874c381f0ac32b170ebc3dd87cd055b154801cadeed",
-      "20db88002d08cbada7ee816e7a96a0ee7d23a36d99da94e989ebc196dba6b83d",
+      "16a308f7d00f1f7e6e985cdc1c79759934a2820d3c74796b8d853f33699a1bc1",
+      "1d87898c4c568ea4fee16a5ee8d954a404dcfad5271078c8d4ce0d65354ef898",
+      "8fc7e98ea90ee14331132361f1db4248d0ab283db87ae4da42614a7b42aa5ca5",
       "7f54f908d27b085df297e75e83ea50eb6fb8a8c8cc2507bb478d14ece3edada9",
-      "18322cc617b383d365b0312c5e151da91c186409166e46eb3a81cdb132a051d9",
-      "59e42033682043725ea1830479a301afe6b3bd8b0c284761d97f00e1886f5d0d",
-      "f35df8f3307e8240d286031a84423707c597d9c5ac78a7e7bf973f0f4d8eff2c",
-      "f35df8f3307e8240d286031a84423707c597d9c5ac78a7e7bf973f0f4d8eff2c",
-      "20606c98d4155a0f8c2a726e447d65ec8090029d06e344335f32c88804bfc226",
-      "a764370082e8d1bd4528aeaa9a056bf29850c7756aa2c910c1c82c3f1c4668c0",
-      "05c0c683c15c77f277eccb2ce683910e63fa9da3f83f4023dcf6892efe830e99",
-      "e8044bff7fd8f34f02bca25bbb22d7ff4cd6785097a9e7f62b068f2dd344925b",
-      "f64514e7b8447b05fcafeccbb98682666919923061837cdd1ba9154ae92b047a"
+      "d045f55b38bc04cd60aca790f8268a9e9ef08fe02bff852da655752f2f346bb6",
+      "0773cdca5746314b06460dbe1df29e446a35a28d8a8c93801308e18915460721",
+      "2f48a6d76ceaa0c75b5dd8e4e37eaa594069a8aed4ccf62519f80d1bdfa4f70e",
+      "be8c44f10766b378262cfa2994eebf091ff8178bc43f4e0ad0eeccf89b1df319",
+      "53dad4d7f325ea4f0a0dfd4c396ff3ba43ab6137eba3b24b1561909a8294afe1",
+      "9531d08c5224684d71863dc8e331de7d8865a8fa428a2213017502c09900aad9",
+      "19ae087f447c3b7163ed82c64a6ea14df8b325419f812a7660dc4e4052e56879"
     ],
     "errors": [],
     "note": "Transport errors can trigger product fallback; an incomplete cache is never a successful replay."
@@ -7141,7 +7331,7 @@
         "role": "simulator",
         "model": "qwen3:8b",
         "base_url": "http://127.0.0.1:11434",
-        "timeout_s": 90.0,
+        "timeout_s": 45.0,
         "seed": 42,
         "temperature": 0.0,
         "num_predict": 700,
@@ -7152,7 +7342,7 @@
         "role": "semantic_validator",
         "model": "qwen3:8b",
         "base_url": "http://127.0.0.1:11434",
-        "timeout_s": 90.0,
+        "timeout_s": 45.0,
         "seed": 42,
         "temperature": 0.0,
         "num_predict": 700,
@@ -7163,7 +7353,7 @@
         "role": "judge",
         "model": "qwen3:8b",
         "base_url": "http://127.0.0.1:11434",
-        "timeout_s": 90.0,
+        "timeout_s": 45.0,
         "seed": 42,
         "temperature": 0.0,
         "num_predict": 700,
@@ -7174,7 +7364,7 @@
         "role": "agent",
         "model": "qwen3:8b",
         "base_url": "http://127.0.0.1:11434",
-        "timeout_s": 90.0,
+        "timeout_s": 45.0,
         "seed": 42,
         "temperature": 0.0,
         "num_predict": 700,
@@ -7198,40 +7388,38 @@
       "ollama",
       "--agent-model",
       "qwen3:8b",
+      "--agent-digest",
+      "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+      "--simulator-model",
+      "qwen3:8b",
+      "--simulator-digest",
+      "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+      "--semantic-validator-model",
+      "qwen3:8b",
+      "--semantic-validator-digest",
+      "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+      "--judge-model",
+      "qwen3:8b",
+      "--judge-digest",
+      "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+      "--limit",
+      "8",
       "--question-policy",
       "adaptive",
       "--max-clarifications",
       "3",
-      "--limit",
-      "8",
-      "--simulator-model",
-      "qwen3:8b",
-      "--semantic-validator-model",
-      "qwen3:8b",
-      "--judge-model",
-      "qwen3:8b",
-      "--timeout-s",
-      "90",
       "--seed",
       "42",
       "--temperature",
       "0",
       "--num-predict",
       "700",
-      "--cache-dir",
-      "artifacts/prototype-product-2026-09-23/roles-final-cache",
       "--cache-mode",
       "record",
-      "--agent-digest",
-      "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
-      "--simulator-digest",
-      "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
-      "--semantic-validator-digest",
-      "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
-      "--judge-digest",
-      "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+      "--cache-dir",
+      "artifacts\\compliance-closure-2026-09-27\\roles-cache",
       "--output",
-      "artifacts/prototype-product-2026-09-23/roles-final-record.json"
+      "artifacts\\compliance-closure-2026-09-27\\roles.json"
     ],
     "cwd": "C:\\Users\\roev_\\Documents\\ChatGPT\\МТС",
     "environment": {
@@ -7335,82 +7523,86 @@
         "pyproject.toml": "d45e09ba2b00e46429249e68b9be164560fa6166072bbaf6c24b33eddb3c88f2",
         "requirements.txt": "a9ea9263f4bf13bee34c308d5c004cba0683fe68f190a4806b0a001de9036a7c",
         "requirements-lock.txt": "0a439c7a16303932d7077c4ebc4b0931d8412df69a76481aa5996927f2c7a88d",
-        "requirements-hf.txt": "18754e546e93c325124b21c018d273931457a5727745205bcd41f984489460c9"
+        "requirements-hf.txt": "02340e548cf7cd81bbcc4c5c6ca785a90d1790cb195330e8d2e6d4653247158c"
       },
       "git": {
         "available": true,
         "commit": "5d09189c3945dbc19687d3498e732a9338d5fbe9",
         "branch": "codex/experiment-compound-questions",
         "dirty": true,
-        "porcelain_sha256": "35a047aee82d027805fd72f2938041a8a7793541502e529e5e1d60f1e18515cd"
+        "porcelain_sha256": "cfda1cb12f41d0805fd5c6b36165903b6c80fd02e13de74f8147624ba4f909f9"
       }
     },
     "source_file_sha256": {
-      "evals/__init__.py": "9fdb76665d70b85203dc2c93f23b82e10ba849f8213e6f41d10cdaffad7bb286",
-      "evals/adversarial_ru.py": "e215c18a6ae2984832a4bfe4b8ee7a240976fd990fc0104b58fca9e480c68817",
+      "evals/__init__.py": "a2023449080bd3755aff5812e323e1b02daa5c2a396a8aff08e231e8d43998a5",
+      "evals/adversarial_ru.py": "e95415f466ae25f9ca9df3444616c6317e189edeea1dc2fec4f305e3b9d682d3",
       "evals/dataset_v2.py": "47f38bcb27377a0a27d2e2f0776a2f4a6c348d4dee3147aee466a0183711c9fd",
       "evals/explanations.py": "8c35acc8049e295afe37cc9a1f839067b199abb67e11048521740c83791479a1",
-      "evals/llm_protocol.py": "f9135540a2e2a14999076b34aa733ae5adfc4fd7c906f63df0f2036d867e498e",
-      "evals/llm_replay.py": "c6212c78007aa5335fc343b805ef503cea6e0835d9d28b15ff50aa8eb571dca2",
-      "evals/metrics.py": "14a3b5c044569599f087e698b50573edfb8193e5b07a8a96aad8771a34246a9e",
+      "evals/llm_protocol.py": "653b74c6a73464c5842f8d7164fca6621ea45522adb0fbe3721030ded2fd50a3",
+      "evals/llm_replay.py": "449113a6b3c6aef7a931e2d4e2570614569eaa7bd059121a630866a27b112521",
+      "evals/metrics.py": "d6bd0bdcdffd836d201f2a73af8ca7cfd98a080a6e0f64158c941c2a39157c85",
       "evals/observable_product.py": "eb9f90b6650a858db79eeebdbcb88cdb35e5563b19e767bb867ecaa522b6171c",
-      "evals/oracle.py": "9c3303fb4819c297bd89b39bc312f2d7aeb77cbff845e8d7b3812f6c85372ee7",
+      "evals/oracle.py": "807d6417f81d7eda292d85bf909a192f75b44c6b616bfedb02f36e2f3b06594c",
       "evals/redial_annotation.py": "04fcb6b3dd7c9169b97a0273b2ae819172bf510064d616d1267e4057614ff548",
-      "evals/scenarios.py": "158b77e992ce59fa694543981ee4484d84b88cfce1db7ba62bab27932df423f7",
+      "evals/scenarios.py": "5434caac43543ccfa51be188026b735594e5b26e89ae05dae82d8c537c28e271",
       "evals/simulator.py": "8b40c36099b4b3ccf15b6e0e1c91684729c5a515aad4bf83590a588f99e39ff1",
       "pyproject.toml": "d45e09ba2b00e46429249e68b9be164560fa6166072bbaf6c24b33eddb3c88f2",
-      "requirements-hf.txt": "18754e546e93c325124b21c018d273931457a5727745205bcd41f984489460c9",
+      "requirements-hf.txt": "02340e548cf7cd81bbcc4c5c6ca785a90d1790cb195330e8d2e6d4653247158c",
       "requirements-lock.txt": "0a439c7a16303932d7077c4ebc4b0931d8412df69a76481aa5996927f2c7a88d",
       "requirements.txt": "a9ea9263f4bf13bee34c308d5c004cba0683fe68f190a4806b0a001de9036a7c",
-      "scripts/evaluate_llm_protocol.py": "eae7479013647fcebef7c06b47d43758b76a3a8c072195c4341fa179072d6aee",
-      "src/recagent/__init__.py": "298e8ee79d1d48a9d3756d46d06f9de9fcca9b5d9fd02b6cb3988e150c095b3d",
-      "src/recagent/agent.py": "12842e81417d68cc82381be913b169e7de86cf42b269e69bc81e0a0889c48be6",
-      "src/recagent/api/__init__.py": "15dc2f7115d5a9e8615fd6918a694a878187d4c9201bd69500cd17392b5d0763",
-      "src/recagent/api/app.py": "f470c51d970530f33addd65d484265a0925b4d5498b1673ebd4867b1a44dafd8",
-      "src/recagent/api/errors.py": "a5da8e7048fbba53419beb22bc64741cf768084b46f7591a57a45c987ed204dc",
-      "src/recagent/api/health.py": "7fedd8e04368f329eb506b0e01fc866541ca973ad742adc941a9dfee9187e120",
-      "src/recagent/api/middleware.py": "e054c0e0ed95f9057f58f698ae3591e9b24c3f3319aedd16917f3d14c77bb8b3",
+      "scripts/evaluate_llm_protocol.py": "b6b7856ef57701b4f3e2e83a75680256973dee99bd5116ddc6015e3676f737e5",
+      "src/recagent/__init__.py": "9a42e6cbf31a77e27b112de66cf1dd5fbca3ab3e0070be1870d872fea5e2b81a",
+      "src/recagent/agent.py": "a0d6280a9af78559b007b9d374fe0befce50ebfeb3a6341ca5a2f5cc5ce83351",
+      "src/recagent/api/__init__.py": "48bd944f889c3f40ab9feb8723d855ae14318d1f46c2ac635d56ddc778641a47",
+      "src/recagent/api/app.py": "3f2febe97e790ab21a6225eb9070a3dad28c2e20a38f075b94a82894f624eaf2",
+      "src/recagent/api/errors.py": "52c4e22569f6f9c8a1708356cdb720b9d1afc27e39791cf4bcd2ae69939a2712",
+      "src/recagent/api/health.py": "7113fc48695f61b790147a625b7c7d3702592e66bbc08d4950b6ade91b1149e8",
+      "src/recagent/api/middleware.py": "4c33bd07ac70c1b2318850812013f037e4990144cf6ff28c6198ffb731b0d8cd",
       "src/recagent/catalog/__init__.py": "8c961f7843ed74f38696c6efd7149250aae5dde16a4853e534849d221fc3737b",
       "src/recagent/catalog/calibration.py": "9d1980b260d24194118f9741ff462e9e5d7480aacffaf7d5e680efd00ed68b27",
       "src/recagent/catalog/generator.py": "67ec895d813f9aadde9ff98baf1aa5419fb26e01a059956237197faef8ef2709",
       "src/recagent/catalog/users.py": "ee3fb319a96ffb67414d36eb4e8f3f9affc0c56964a4ba9aff90733e3d386472",
       "src/recagent/catalog/words.py": "b94e664d5231b0846b65141dff3faf97d0983d42faf1c78272b07797aaa47db8",
       "src/recagent/config/__init__.py": "bb9254bbf848fe4f9c8c856ae0676ab3d785c3e4d511a8fa8e3da6913a8d0619",
-      "src/recagent/config/settings.py": "3143261f48f06c3cbc811b0daefa588e6b032035c73ee369c37835fc1d72394e",
+      "src/recagent/config/settings.py": "12a6376d4903cf3e49c06694e61853311940ef6182b8338c5eb0b2110fd74ce2",
+      "src/recagent/context_nli.py": "d3517ad41c0f4b8bf3b1590ef610ae420e1ff8faad00df80aacd5149490a890c",
       "src/recagent/contracts.py": "573be4a6f631ed1ebd8e5c9b904f235d652827f3b9217baaa76993a3603c923b",
       "src/recagent/domains/__init__.py": "728b61363d2e2cb1c9ca719decc2f88ef27453dfb7c2e7ffc7a28635fbcb8e19",
       "src/recagent/domains/base.py": "319e4dc72903bcd35aac9f7385664b4c646b1aa54379f42904aa3f54be20cd3b",
-      "src/recagent/domains/demo.py": "310faebb68763f9c4c027635aa98ed0c825014925911b788815af37e63e30f96",
-      "src/recagent/factory.py": "161806ae599357b534071a3330dc9d97fe82ecf033449d4e95e060804fd75753",
-      "src/recagent/filtering.py": "0fe5e6f9662ad295df1ff0ce4ec4be7564c5206bc0d10aa70d958cd89901c8b6",
-      "src/recagent/generic_workflow.py": "f37e9feadf9801e331a0d5a2c729b364d66945566eb66701ce44d1944898d4c1",
-      "src/recagent/grounding.py": "366e3719f7d9cec1f3d911258d9577fa0a562a7887310cf53aa6568b6b2d48aa",
-      "src/recagent/interpretation.py": "328ced9293e085298ae2c2a86af82a3ae61df7f277508c9ae36f788f77adceae",
-      "src/recagent/mock_platform.py": "ae0d9625f6ce12606e5f6ba138aa0d8b14d3e21c5847bc888be134e1b9d08a75",
-      "src/recagent/models.py": "26e5559ac4ac973576f8e28de120700e5c620b005a2adee573ffaaf1b53bd064",
-      "src/recagent/observability/__init__.py": "a75f9c3102c8d03f244e7f66add788711d3cb15919adc9ce1d3c31f8bf187491",
-      "src/recagent/observability/logging.py": "193d96ddba038fa120a35ec1582fc2ab0f47386ef08bc45d7f64f263631546d7",
-      "src/recagent/onboarding.py": "c28b4fa24726f5b5964f74aabfe8c8e7242bb48392e5369d9d9388297edc2f30",
-      "src/recagent/parsing.py": "850fdea4a4b202a25280cfa074e96d94381c7ce3fe0ec334a35ba7e0bba2a540",
-      "src/recagent/pending_preview.py": "821600ce00f43a0917498a22cc5b4608ca87939a6a38059219cd6696e0bca078",
-      "src/recagent/planner.py": "36f7600948f7aa52ee681adc2e8c8b713bd6b3fe8b4a184e3d40ece51d901706",
+      "src/recagent/domains/demo.py": "44db291deba9ce29d85d2e7b67c938b910dccf4506cdb843e7a1cb0774b9372a",
+      "src/recagent/factory.py": "f98bb2b41001886c8c7ccafdff3cef32fc0889f50abc173c6774967780209da7",
+      "src/recagent/filtering.py": "b99a77f0eef9f9427f011ce39e438a0ba05b32a6b010e533887771c5c6fdbd3c",
+      "src/recagent/generic_workflow.py": "475e7310afe086b1b5618e5dea24d6ddc740152266ac3d5342cb36c72a875d98",
+      "src/recagent/grounding.py": "ef48b1a11ef1ace00dca39e6ec1129ce61bcc3c76c5e130f4feb02f4c8e9a972",
+      "src/recagent/interpretation.py": "9d2349a8f9ce3f360e9891d68c85e7aaa6e28f5ff0f4db8410603a8dd7c8ed81",
+      "src/recagent/mock_platform.py": "12789320aedce97f180ae70cc414d1842d44f4bfa5352e6df5729142b8356630",
+      "src/recagent/models.py": "27a21ae38da2f7836370edd0bf8b6e51bd4b628419507ecb30b22b0db48d2b00",
+      "src/recagent/nli_resolver.py": "f582eb6d711d0e03a3765fc20df24945b95f7ab73f2acb7cf97427f02a3f5e07",
+      "src/recagent/observability/__init__.py": "955820f9b1b5189f823f361855d6218d38b3b9e32e3592ae8f406feb22a2660c",
+      "src/recagent/observability/catalog_gaps.py": "6560ab69f9d1bbfbe833121d50668174a1840c3e26b2404c849817b4914c1bc0",
+      "src/recagent/observability/logging.py": "18d9153ab41c6c47d605e80ba98f1f8e8a82c7f247794c71c8abb0e0bfe06917",
+      "src/recagent/onboarding.py": "e10920821256a8477be465346bdc7f737342cddc38bda9f0eb370c9ecd86394f",
+      "src/recagent/parsing.py": "4a1880af0491277b3c48033e5d84fc6de08494b4b86f44e26be1131a7907d4ee",
+      "src/recagent/pending_preview.py": "4e9d0cea7a6939730439c47982fa642031151f7da62255b30045ca95670bfe6e",
+      "src/recagent/planner.py": "eb25518b92dc89cdadf5bba2bfc7558ba7c2d6e2fe3ffff05c4fd9aef2be36db",
       "src/recagent/platform_contract.py": "f98e6f1ab4c7a34f7c0913ca7fe860f303930dd2f7de554aa223d33b1585d047",
-      "src/recagent/preferences.py": "df9591dee6b19d59698cf368c00409c5b373a292fe9d37b2c582c34340648422",
+      "src/recagent/preferences.py": "1b53a3fb8a1f81311905ed1afa4bc3bdefd220765436cc34ec057b3866a23321",
       "src/recagent/providers.py": "006610d144daa3a48bc391c7f25d18adfe2661fbdb8bef03d4b779ec4405821a",
       "src/recagent/query_compilation.py": "1958294d4640bedcd5b47ca2b4101a59e403902f8833aab0ff8ba4892e0b501a",
-      "src/recagent/questions.py": "6da3a36eed9eec8a70769a87d55a4b9bebd0a62e6725f4a50dfdb1e4a17585a2",
-      "src/recagent/ranking.py": "b7611bb129c47c5ec91254eea5d2b3e3f51a668df75225c219e31350f9228355",
+      "src/recagent/questions.py": "e53f821c1ef655ff581bbaf6ebf49e0ef96672fe3c9afe0050b02c5d0e9c80ed",
+      "src/recagent/ranking.py": "f64545614a14f571ccb04126305810abc9654ec5414e07b1155ef914e721f25d",
       "src/recagent/recsflow.py": "16498a139d71c24f5f5c9da24a197838876bf2b9793be61fee94662219b8f669",
-      "src/recagent/request_mapping.py": "5830db335555096d93e6593afe51aed7f218aeadf1815144387d6978f8fc54ae",
-      "src/recagent/resilience/__init__.py": "7bc1aee0eb6c2e5fbf1da721c96c57368a504d5cb14332ea142098366042c35a",
-      "src/recagent/resilience/degradation.py": "c5f8f24cd956517faa93198b178e69b576e120033db656a75daa79749b00ecc6",
-      "src/recagent/resolution.py": "26cef8b2a2046e5a8b0b3254cfb404f3b6e5be0f4257840a8766ffa6363ef115",
-      "src/recagent/response_generation.py": "b34a776444a6222bfd362d354e1c2a8b837aa76680bccf9b98af85a68d153419",
-      "src/recagent/retrieval.py": "10ccd7a4d25472ed3b61701c1427f955763a025f0e811936f62528aed832063b",
-      "src/recagent/semantic.py": "340ef7e5e5acf62f735fe2fbd45adee2033ec1f708e0367115c5091214734faf",
-      "src/recagent/state.py": "d3784f88065336f78873c41131c6addb1310af9063ff66435e33552ef11129f1",
-      "src/recagent/validation.py": "fda9c951db44e7df08c6cc74166437f36bfa213c7cbd71909f32d945a902eef0",
-      "src/recagent/workflow.py": "de8ba2de5bc28055811df5b6151be247f751daea433c3c05dfa65c5879cd6601",
+      "src/recagent/request_mapping.py": "7df2db308fcced5ec55d0391b76f781a66d05b7becb7e800b3382057690df3a7",
+      "src/recagent/resilience/__init__.py": "85a8e1ab0d0951dde0465fbb001986d4882d1d307d9d861e6259abd3921b1208",
+      "src/recagent/resilience/degradation.py": "2a18213a66cd7932d65dfcb46eadbdcc0aae6ebf77abc8fe37a938f022fab4b7",
+      "src/recagent/resolution.py": "571ef4ad176019701e3fd10b082de84e686732620b5fdfceccf4e7a8ca20d58d",
+      "src/recagent/response_generation.py": "e6765c920c3280ab27907191c843912343e1693bc7e3f6a9d2f08318c6397912",
+      "src/recagent/retrieval.py": "91ea772f5d8242d92a1b4453a7f4f37697d696df3944aca18ad9d2dd854781ff",
+      "src/recagent/semantic.py": "fb7a97679d7665252dc4e26f0e9da77e594c4962e03019f15de88f283c21f872",
+      "src/recagent/semantic_policy.py": "08e918db2c13151c94053ee11b1271009071eba9548637016731c650ad6c1f4d",
+      "src/recagent/state.py": "39eb2fc9c94afca294efbaf0892c7c2a32be570c8f6173dd3dbd915e20d3c6a7",
+      "src/recagent/validation.py": "67e7438467a50da7beb237baecda6884b669c50554c67283df313852ca33b347",
+      "src/recagent/workflow.py": "7c12087e3c075a2284f5ed0ac7cb2af2397c1cccbede906c24565258954593b0",
       "configs\\workflow-v2.yaml": "d026305c81a6b4ecdb1123eee1b0ad1aa7665ca8ecbde9981d80ecfb16979e07"
     }
   },
@@ -7485,57 +7677,53 @@
     }
   },
   "cache_entry_sha256": {
-    "agent/entries/074ff088829ef5449a43a5983d0a2bef92c9d5667471b474e79695f3a896b221.json": "93991d78f6f5f3a2b27b055c1c252ad823719983daa0486663f91c0af696d83b",
-    "agent/entries/09c381e8426c6eba0135904b47e401af1dbaac4eec7467fcfa61cb33723c75c0.json": "ceadf8c329e1ddefdb8182d421035ddb49d4868238977121f6d692d5355bc013",
-    "agent/entries/132807e1d82e19206cf8b201b7aded44155834d1873eb96cc52454c84b492fd5.json": "72502c00cf8f4a93dc6e99984ec5af0cc38dcdfb07dc6654ca4b5393798f2de8",
-    "agent/entries/15cc01842e44563236168c2c03078e4c8be1590c7b8e4b137d40da101e88f15f.json": "01812c5616c698117e3f2400444315991550a67821bd0c2abcb615b02717c052",
-    "agent/entries/539bcf6286fea31dc67e3859925a36445a6fdbffecd2dfb13121f72e36f9ce2b.json": "3a8207e178a4d7e9534d90457a792c5e5115a3307b2067134dd928c599f0da88",
-    "agent/entries/5efd58da02dad6e58990c6efbe72f4b4956ab48294334b9b205c5e78963cc4ac.json": "354ed2a5d138a0dcbc70abe6ccbd90eb31a68cd8f483703fce18d8e867f1c927",
-    "agent/entries/624cc46917356cabcd13194b373a852b423e4578594c82f60f745951d83cdd4b.json": "f46cc575003ef4143cae1b3addd6ce3e11707f34843f008a1f541110a29175ed",
-    "agent/entries/8c409e699f5f44329ce11f759bf7e12c21d01f730ea5e77484cf7af610084c94.json": "1eabb126baa05b6963959100e89344f35da5accff2d3779c80a02762632c43e0",
-    "agent/entries/9196ca82bdb23db8f5cb6b43f204d5bdcc684298ea12c08d5ae4072bf1ac4071.json": "dad79767bcca86398ec4276c8343828463e8d0409ed69df3484129a2bcf26b7c",
-    "agent/entries/968622668598d16af0e3a0681c2acbce3947fb933d069beedb122ffb6f6ac11a.json": "d6ecd7bd15e36274df73a12463e70efd30f913e133e3610749a38efb846dcbb2",
-    "agent/entries/a40959444728897d34e7984220a2331fcbee2969ca8b7bb035f2e057dcfff105.json": "e39192a509e20fe2c84826a44fb907d03f1c4d5156c89477756bbe80cbdf3e28",
-    "agent/entries/ab37e04803952ef070317f27a4512046eea0a5ecc557645a5d68d85125dc06be.json": "02cea9ec3ecfd2251a892fbfd169e1b8e8b7a54c7c662a3e5264cac7984ac3d3",
-    "agent/entries/b6918a07327d4c1f36892d340444a395b415a2f55d8b5be5eafbe9ea49bc00cc.json": "5b347913d7866c39b4c2467e9b100be9fb3b3166cb571891923d3c3bb944c80c",
-    "agent/entries/c5cbc4e3e18c4f8337dd6d8671b0d610d2a4dd55d1739baf56afa159c49e5d1d.json": "0e2b339088a6000c54227ffebeed1de41810c3eafd5b49d1a81df97de8d8342e",
-    "agent/entries/cee1398cebde08d7a09a694306fdff2696fbae541e56a3fea1ac9f898942af9f.json": "942c374a885ad0267aa510a713e185fae8530b7513af7d11e1fb5573b258d61c",
-    "agent/entries/d4a1d42356471add04dc655a5a2fbebb78b4bca935827bac03b0ca8ac300c0f5.json": "a5ac46bf20fa0c384aaf5b47235c717dea835f3aecd1f855b7784644674a2074",
-    "agent/entries/dd91f0e2673dddc0cefd55e3e9ae9c58c7c63331c19536c1bd3941f9b195d850.json": "acc7c89abfef35000171c63f4cd9dc6e69251ea77ecfa02010cbf84fab5c3c3f",
-    "agent/entries/e00e2b950f15e6a855598719673fbf309f9dbc4b93547dd9e94163e08ffed6fe.json": "5ff1bcd66a2a7426bd2b8dcb250d276fa60d9c4066f3e8556921d3053aba42ea",
-    "agent/entries/e71892c010921da1240f567c826a34bd0e069d04c63341be21203ffc511082e7.json": "18b0a5c5b0860a851ebb6e216c53c949ec31f9dc6cf4c5cb4f6937484e238d80",
-    "agent/entries/ebda89cd2d3e116072f9a9195f479a868d63b403b8201d03c2db269a52b5b8ff.json": "d8ff6fdc76a35054b2c1ac9bdbe189fdfcd4c7ba95db982e1ce07ea3932aae11",
-    "agent/entries/eea7e7ddcf3022fda89b069648707acc5ac2088e52be57221cc169cc398f82a2.json": "16ef85ce66fbaa323cada6d09e45a14a92e8afbcc2ff9ec9e38822aff6b44238",
-    "agent/entries/ff22bc387847cc6635a340aec5d6ef1ddb634677789dbbcf4d17af68f54b699f.json": "c2350f3b9654638c41800e8b22d2193cd125cd349f7802b0f30ef1c5842f2871",
-    "judge/entries/06d66fae866ff7969341ae907a4f48e808afccc5ac637f45d3ebdf96df2fbf0e.json": "f802d5ed9c05ab926987984e564aceb23ed477ac61b7b8ecff9f8f3045b6cb27",
-    "judge/entries/7a825a0f19842acce6ed7b64ef3649c22e11d4e033dca6527ea4a9a5c20fb41e.json": "933bc379c1920269aa4f5877b0fe2a33b9cfd0cb54619c8d562eb6a8d10bc453",
-    "judge/entries/9feb7c1e93c9b04462c264d598ecb632867329f495f345ec8e805fc0861be3b4.json": "d9d7020039f9ad5b82d6aade4641ad9084869aa83c08e97d697f67776649fad6",
-    "judge/entries/a5cba51083d4e95c9dbe84b3da6f4bd905cbacf66e8b74514ece5346dd806d8b.json": "63c6e359d386d27a807de576ca2744f005a824dbd83b2fb212628257948869cf",
-    "judge/entries/ae560b3a5c8a52e0e918940a286533a55beecec3871b7d4e73a990de372d1465.json": "c066e1bfc798541476d3e86514f19dbf327cb36ab258dc694ed995ae8739e3a5",
-    "judge/entries/b5b0e5102822fecae48beeb6571e861516ff2e5b2be9abce4899779b8b397bfb.json": "74a7db7f05e579f620e79185ff0a965b37321aae442543363b0cb5992c3a4c31",
-    "judge/entries/d96eea3e6c0783a63eaf27d601d4ce1004edbebc6389d96617f80ed30322a6ea.json": "74d0e639d14b6deb2eaf05b4ddd57296f357b0c5f2f91c444238cbf451d36087",
-    "judge/entries/f3fcd0d717297249181de70d1f61ae484bb392900459b7a5d4b546bf8d3fc9da.json": "88a00c58e945696698829fe7b81795c107b890f24ef3b286fbdc3dcff66fe3b1",
-    "semantic_validator/entries/041280aa759a8d9407b220cd5fb327e4e7eba81ca136a92f87d6c067e8096d3b.json": "1929d6dcbf2f06218229235670b1636d0ea8dbc6fd44e820a51124ccdca02c0d",
-    "semantic_validator/entries/1fffdb6abc151d4219cb056118d2381016b8300b1d6ee86550bcc04e51ab2a94.json": "57ea019d3fd8bcba2171503b0a643c1852334e65d4787fbce8f5e51e48da32ad",
-    "semantic_validator/entries/7fdb3455417442745dc5284dbace537fe97a9a12bb81ca5e7851409f55aa69c3.json": "fdfbc99a694f71f1dd63486477dd216f7de5daa348727dfc655e6a782cacc3c5",
-    "semantic_validator/entries/9260131270389080fb7866540b678b9b04a5dca2539d3183ae7d3c47de8341d6.json": "941dcf9ebb7ca08e2aa4a00adb50bdc6a3355ee19f92309d3bd9419a6fcf6f12",
-    "semantic_validator/entries/c7501c1045ced563eb9824224b22a0b715901d2cd0ed069ca1eebbc0104e98c0.json": "ee5a845cf00b2c08d44c0fd0cbb2d6da33de647786a5f1443f6ee62534c5a143",
-    "semantic_validator/entries/eaae8efdeaa995f0a77224f37050554de98551c71ca93a549d22a1529cb11689.json": "863f6850763b967f9ebb29f35ed643630beaf5f086c9028f63b1682227134fd8",
-    "simulator/entries/0a93f0a7702df1d41ec23fb80958349ab29cf874a973d38d5fd44f48f55d1f7c.json": "d9f3f5f348a71799837d47e683a9c230ca8d149b8a1afc4f556fe714be7ec8a0",
-    "simulator/entries/2212f879a468c58657564fa464fb7bae8bfa0df01f48a9d76712fecab783d564.json": "39f10f4c38d16f4d76bba361ed9f351c43c26897f3d7640d52d85558aedf4119",
-    "simulator/entries/249fc79ba9233e4091c5d3f1c822e99a830464407139a7109a4116cf4a648590.json": "b608c24ce00df42f74c7e60788547255afb1206a6d54ff6d9e8a9078ed16a2a2",
-    "simulator/entries/5e3605a67ecfb7555218b2cb817700dbde8c7781458c31ceb5ff55060f81396b.json": "5d29e415963ee5c6a4756866718e2b1869a6e062d3bae1023e0eb843c2dede31",
-    "simulator/entries/7e3821f5d0a9acfcdab21a09626d13089795f148e72a08a26fcc5d280ae45391.json": "eca29b30d23a3ce359f26e7bdcfd747987b62ea07bdf8fe8627ac5e0753d3e55",
-    "simulator/entries/a4da30d5dc5f79cde5ecc07e89224470c1b6f099940baa08653d80766631905f.json": "de02e17e95151c67eacf33de775d8942f5c306244659f8d95751b543584d3ccf",
-    "simulator/entries/aff198a8877f3a9d77e8784cca23454a73aea464632bbfc02d9b170d8a2434ee.json": "798ddcbccbe4a60f13c22e0fd585ff5a32a0505c033bac79572bf2089c889ba5",
-    "simulator/entries/b67c2f65e24ef8ba599ca36e688f3aeade3c2b9d3f83c7e32a2d5a91c792c754.json": "5c3fa4db46147c4ab708a64f605abee5dbb767ea4226c9166b51064177fc3ae6",
-    "simulator/entries/be45a2822c2047cf2ced1cc66e1ababada9919b5789b0b779d88c0a5104e70d3.json": "38b7a3aea4bd9b54a3393ad0c042371456b10cb8b9cd7b8a987f5509ae2b5c7e"
+    "agent/entries/0c8281230220f8842ca3b6e17e38534a223e563a586b775e235b2bb7028497f1.json": "f0aea9aba68d6f412daa5b3b7a4a672cdd7150350092ab7241e49378e171637e",
+    "agent/entries/13887ae8470fcf91894275938057010b4aabe8f52570200800778457b3fff53c.json": "f3a0e7ba8b57e706a53c4953c8d9bf120e8af538681045a3a2612b2be7519695",
+    "agent/entries/1ef900c54f4818e84636c39b20ed70aa63a7b8fee04d61ecbcb17225fa75efb8.json": "0708ac89c6fc295f67884579082703caae999eb05c42fa1a93f580091e84f974",
+    "agent/entries/2d586b141cd0c55aec8de984f190bf69908f5536bbfefbfa607ce70531f515ff.json": "b9ce7b3b685bfc9f6c1ecd26c8a0a343aa4432faf37fc4b40caa70834ed75b0b",
+    "agent/entries/31333bd4c1d01d36faf0dca17c074c48fcc0ea07c3c2c35e4bc7a92fdc4621c6.json": "b5a270616fe2f6a3b8b12ada42198850a4c953435d1747c4fa3790dbd97dc09d",
+    "agent/entries/511c491ffc24a6769a525db4e4bbe9665cdfbc0a76e599436ba2104ee99ce5a3.json": "539b13b672f15a07c3a22755b331083c0092f98aefef53d98d18673219800b66",
+    "agent/entries/539bcf6286fea31dc67e3859925a36445a6fdbffecd2dfb13121f72e36f9ce2b.json": "878b589cc94b55d80cd9c32fca15ccc42e827fae16614f6e975ad96d3377a494",
+    "agent/entries/53f6f3f7a2118d757a0c2568622c1d83c4ebaf46c43d191dd82b2368ccabf5db.json": "0b752451711aa25d4c5b1a345d392f10b7bd02cd990a466874986feb652dbe54",
+    "agent/entries/615c81cb5901e0ca66faca954df5cda84e0950078e65966e7742f4fe13e872d9.json": "e2228b886fa5b0d3dcc837d1ab2f3796d81a40595186f1e999af4a8d6dfbb982",
+    "agent/entries/737282561adc4e181a3ec3d1e5dad498edc652cd0ceb89c753876e54ef683236.json": "99e631109e4a54f9797c97834d5dc5b5fd4fd27d6b0a663fb7e1f27fa1a9a76b",
+    "agent/entries/85f8b58df39e770d814c1431b47029ee28e5a17feb66365ee93af2a79cea301e.json": "8592a21ef1688d5e25bd3f21a230735c57a7c61dc1c9d9e38bb7a6fb92fa8dfc",
+    "agent/entries/9196ca82bdb23db8f5cb6b43f204d5bdcc684298ea12c08d5ae4072bf1ac4071.json": "0884ab06495aac6a255e0384870ef45fc89827a15f0bb26a8083417872c276fc",
+    "agent/entries/b6bae4c8fd9a72a8f38ccb3965b9f8363b58fe96a04ba247611e14fe4f41003f.json": "9c3ccd6d778cd8d539341ea93ccd818579daaedcb61e6725c953b4e7c197a8fd",
+    "agent/entries/cde83a483775a518905ea9640833f21ab9599c7bf7e36203cc558ce50384c66b.json": "3d43a79784580cb2d7172d16508f61632a6d474fdd7e5cd8337536b5aaa7cf79",
+    "agent/entries/cfb5b846df2f0f0f3afb27a78c17bed2cc3c8a086082666a0f2efd03acbe899e.json": "2b3edef5098d591daaa3f12ff9185e4c6174b92d141affcbfaee707be02c08fe",
+    "agent/entries/de826e7e9f198da7b4c581cdb9770c22f0571db4cee38b6bfc7980d06eb30780.json": "a092f3a29ae0a4855309b36729bb640d1501b4ddb1ce987b8d5cc17b6d2189bd",
+    "agent/entries/e71892c010921da1240f567c826a34bd0e069d04c63341be21203ffc511082e7.json": "85e134379502b7a894b1377933feacc1cff82457c34277fedf4fbc9acaeae885",
+    "agent/entries/ee21874db872edfbb4ea91327d2b8dffbd44a8908b1b64bdd40d801deb068ac7.json": "af4457ad35311b047a4a3dcf95d45c4e581fa70daaae2ee313da45ea2519fe41",
+    "judge/entries/06d66fae866ff7969341ae907a4f48e808afccc5ac637f45d3ebdf96df2fbf0e.json": "db40fee0cd4e25da397fdd747aec6b9476334ef2ed89413195588924f517123e",
+    "judge/entries/08e5e6de29ca53e046273a271b00a0cc8d3d8c1059b991a95bc0def80242c3ce.json": "596107369f6bc689f0de7061340dfac857f3f1478fcf4bdcbac570e81e955149",
+    "judge/entries/4f27b8958a3dbe43d25d5d67bd6fe0fde78c714569c2eee702884dc76d610b5d.json": "c52260503ee0d8f1e216b0da81107561865403a22889ec21a0bac15e08c79e66",
+    "judge/entries/72dede9f8f1685d47666a9a7a8eaf95fe7496d928fa0085339ca647b65709f30.json": "856ee64eb5b2a70bd78dddf5e2eb04e17a949429db2cc348dfa4dc38d1bc3602",
+    "judge/entries/759537b488dbf76aad7368e347e8294104f9b9c521ae08b72f7e4025b9c509c3.json": "01ffd508b708915c853159de4eba4c115324a658fe6265c2bf017a55d8de6ccd",
+    "judge/entries/7fe875b5a0852245c17021700ca7914810c9258212b5d10f9df08f2fb5c824b5.json": "256358d7f872aae223ce2a54bb3b4e9ba616ee8749522ef9f6edc530826fcee7",
+    "judge/entries/98776803ad0ca22168c4bd4f4634ab6045e1b7611f5cfb9ed7adcd0ef58aa04f.json": "2c4513f20bb3c17263b344777a29249b177ca6ea4139544ac43ca30db43e3264",
+    "judge/entries/ae560b3a5c8a52e0e918940a286533a55beecec3871b7d4e73a990de372d1465.json": "f76d9b22f2268d3a3687d0cb8c4e86bf8887aaa4be1852446cb5312c24750082",
+    "semantic_validator/entries/054e6405f099597d5dea5c5e5d5c120d185337854d14e6c80f387234cee5b79e.json": "5aad71a90bacaa349c1a660eb3175064ee2c37f9bf08e841cb1881fddee0f0c7",
+    "semantic_validator/entries/0a57a9b518547385178ae81aa70cc5fc65eb25b1c3304aca86b5a637fa0fdbe1.json": "c05214c9ad51e11676fd070ace5639c993cabae9798d101876e9023602e2ed6a",
+    "semantic_validator/entries/45718b5ec59566108992066475a5bb3d4cbd8df09dd7f99277e3d817662390af.json": "bb49c2634e7341b2d07303e4f31ce29a6f92340963c61a8eeabd349acd0b6b88",
+    "semantic_validator/entries/c58172265a33349feab91cf1a6832fb4b46bc3d45740b1aaf57a778bae82a12e.json": "a16f397a0643b547035663769f1c56d015f30305e293e0b649de8fce680be0a9",
+    "simulator/entries/40935f5a9b865a3362b30873b53182db9b142aa175cbc24e558ca0370307ab8b.json": "5c20a3b0f6fc7a8c0f86310b593bbb7440b65df6eb0c6c3d4f82b41169787f01",
+    "simulator/entries/470cb6399fb799df5bc91396b9068fa6acbcb9b77fc2b92695c533aa7d972593.json": "3a355ad2aaaf02c6fc929fde86e3baef9599882ed1af5030ef62eacc8a5d07c3",
+    "simulator/entries/8c4fe95bc837ee4a9138ba992d5d3e568562f82574cdcd04d6635e31dc570797.json": "ae009037dfee70badeb5851a9660caa6e6012e03bec854559ce94ccc10711c61",
+    "simulator/entries/aa1cfe8be07aecc09df20665dfae4ec115a72b1e17b292368be6d2d2bb4e875c.json": "d370ac499a8e99ccbdbae3f8d03054221589aed1a9a867faf6b641e86f7d5e1e",
+    "simulator/entries/d3713f617e9bccda7b042093a18f3176f30301e98a04da433367bef94c83f9ca.json": "4e40cf5db369fbf3353f58dca8ef1a392b2c6c256b603093e9688bce58760fe2"
   },
-  "report_sha256_input": "eff89ae9948892f81a7dcb41b52b118e9090ca69b22c03d9d2f27a7a2818d2f2",
+  "report_sha256_input": "c2e7d4cf645729ae963c4689189ade972d6638fffb58d8b690bf63f34c13165a",
   "limitations": [
     "Только синтетический публичный v2 dev; это не blind holdout и не оценка трафика.",
     "Когорта recommend-episode прежняя; число фактических уточнений ограничено заранее. Это не проверка всех сценариев и смены предпочтений.",
     "Детерминированная стратифицированная когорта — protocol smoke, она не статистически репрезентативна.",
     "Judge advisory и не может изменить детерминированный verdict oracle."
-  ]
+  ],
+  "measurement_date": "27.09.2026",
+  "measurement_provenance": {
+    "raw_receipt_sha256": "b2e08fd8c2eadc50d915a01859ae9cf937197713d9e2a7a346ed59ef31b0a4a0",
+    "started_at_utc": "2026-09-27T19:04:55.504118+00:00",
+    "addition": "Date and raw receipt hash added for presentation; metrics and role outputs unchanged"
+  }
 }

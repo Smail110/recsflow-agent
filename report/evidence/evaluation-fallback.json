@@ -1,22 +1,23 @@
 {
   "status": "PASS",
-  "started_at_utc": "2026-09-27T18:02:18.091823+00:00",
+  "started_at_utc": "2026-09-27T19:01:38.841067+00:00",
   "command": [
-    "C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\dist\\git-docs-20260927-review\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\.venv\\Scripts\\python.exe",
     "-u",
     "-X",
     "utf8",
-    "C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\artifacts\\submission-final-2026-09-27\\fallback-process\\smoke.py",
+    "C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\artifacts\\compliance-closure-2026-09-27\\fallback-process\\smoke.py",
     "--serve",
-    "31642"
+    "1311"
   ],
-  "cwd": "C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\dist\\git-docs-20260927-review",
+  "cwd": "C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\dist\\compliance-source-20260927",
   "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
   "scenario": "WorkflowAgent(mode=ollama), BrokenLLM.structured raises TimeoutError; deterministic grounded renderer",
   "real_ollama_calls": 0,
-  "port": 31642,
+  "port": 1311,
   "checks": {
     "http_200": true,
+    "friendly_short_message": true,
     "readiness_200": true,
     "recommendations_present": true,
     "all_explicit_constraints_satisfied": true,
@@ -28,8 +29,8 @@
     "telemetry_request_id": true,
     "telemetry_success": true
   },
-  "script_sha256": "15f0462d8c4b80817f316fffc4330502ff1abd81f63474611cc6d5ac6ea5eff6",
-  "child_pid": 20044,
+  "script_sha256": "36870a33e28ed6f9a0440963bbcc440ea44145be376dd992378bb9ae2b5a22e9",
+  "child_pid": 13444,
   "health": {
     "status_code": 200,
     "body": {
@@ -50,9 +51,9 @@
   "response": {
     "request_id": "submission-controlled-failure",
     "provider": "demo-memory",
-    "session_id": "f7829b91-2e86-42fd-b4df-03f28fcd6bcd",
+    "session_id": "76829fb9-2cbf-4f2b-b3e4-a5366cfde01a",
     "state": "recommend",
-    "message": "Подходит «Сериализатор в веб-сервисе». Жанр: python. Тон: лёгкий.\nТакже можно рассмотреть «Модуль без побочных эффектов». Жанр: python. Тон: нейтральный.\nТакже можно рассмотреть «Зимняя обёртка». Жанр: python. Тон: нейтральный.",
+    "message": "Предлагаю посмотреть «Сериализатор в веб-сервисе». Жанр: python.\nЕщё один вариант — «Модуль без побочных эффектов». Жанр: python.",
     "query": {
       "intent": "discovery",
       "kind": "course",
@@ -85,7 +86,7 @@
           "synthetic": true
         },
         "score": 1.0,
-        "explanation": "Жанр: python. Тон: лёгкий. Курс целиком: 167 мин. Уровень: начальный. Есть практические задания.",
+        "explanation": "Вот что о нём известно: Жанр: python. Тон: лёгкий. Курс целиком: 167 мин.",
         "evidence": [
           {
             "item_id": "it-01593",
@@ -107,28 +108,12 @@
             "value": 167,
             "relation": "catalog",
             "source_item_id": null
-          },
-          {
-            "item_id": "it-01593",
-            "field": "level",
-            "value": "начальный",
-            "relation": "catalog",
-            "source_item_id": null
-          },
-          {
-            "item_id": "it-01593",
-            "field": "practical",
-            "value": true,
-            "relation": "request",
-            "source_item_id": null
           }
         ],
         "claim_texts": [
           "Жанр: python.",
           "Тон: лёгкий.",
-          "Курс целиком: 167 мин.",
-          "Уровень: начальный.",
-          "Есть практические задания."
+          "Курс целиком: 167 мин."
         ]
       },
       {
@@ -150,7 +135,7 @@
           "synthetic": true
         },
         "score": 0.5,
-        "explanation": "Жанр: python. Тон: нейтральный. Курс целиком: 143 мин. Уровень: средний. Есть практические задания.",
+        "explanation": "Вот что о нём известно: Жанр: python. Тон: нейтральный. Курс целиком: 143 мин.",
         "evidence": [
           {
             "item_id": "it-02997",
@@ -172,28 +157,12 @@
             "value": 143,
             "relation": "catalog",
             "source_item_id": null
-          },
-          {
-            "item_id": "it-02997",
-            "field": "level",
-            "value": "средний",
-            "relation": "catalog",
-            "source_item_id": null
-          },
-          {
-            "item_id": "it-02997",
-            "field": "practical",
-            "value": true,
-            "relation": "request",
-            "source_item_id": null
           }
         ],
         "claim_texts": [
           "Жанр: python.",
           "Тон: нейтральный.",
-          "Курс целиком: 143 мин.",
-          "Уровень: средний.",
-          "Есть практические задания."
+          "Курс целиком: 143 мин."
         ]
       },
       {
@@ -215,7 +184,7 @@
           "synthetic": true
         },
         "score": 0.3333,
-        "explanation": "Жанр: python. Тон: нейтральный. Курс целиком: 100 мин. Уровень: средний. Есть практические задания.",
+        "explanation": "Вот что о нём известно: Жанр: python. Тон: нейтральный. Курс целиком: 100 мин.",
         "evidence": [
           {
             "item_id": "it-00458",
@@ -237,28 +206,12 @@
             "value": 100,
             "relation": "catalog",
             "source_item_id": null
-          },
-          {
-            "item_id": "it-00458",
-            "field": "level",
-            "value": "средний",
-            "relation": "catalog",
-            "source_item_id": null
-          },
-          {
-            "item_id": "it-00458",
-            "field": "practical",
-            "value": true,
-            "relation": "request",
-            "source_item_id": null
           }
         ],
         "claim_texts": [
           "Жанр: python.",
           "Тон: нейтральный.",
-          "Курс целиком: 100 мин.",
-          "Уровень: средний.",
-          "Есть практические задания."
+          "Курс целиком: 100 мин."
         ]
       },
       {
@@ -280,7 +233,7 @@
           "synthetic": true
         },
         "score": 0.25,
-        "explanation": "Жанр: python. Тон: мрачный. Курс целиком: 322 мин. Уровень: начальный. Есть практические задания.",
+        "explanation": "Вот что о нём известно: Жанр: python. Тон: мрачный. Курс целиком: 322 мин.",
         "evidence": [
           {
             "item_id": "it-02154",
@@ -302,28 +255,12 @@
             "value": 322,
             "relation": "catalog",
             "source_item_id": null
-          },
-          {
-            "item_id": "it-02154",
-            "field": "level",
-            "value": "начальный",
-            "relation": "catalog",
-            "source_item_id": null
-          },
-          {
-            "item_id": "it-02154",
-            "field": "practical",
-            "value": true,
-            "relation": "request",
-            "source_item_id": null
           }
         ],
         "claim_texts": [
           "Жанр: python.",
           "Тон: мрачный.",
-          "Курс целиком: 322 мин.",
-          "Уровень: начальный.",
-          "Есть практические задания."
+          "Курс целиком: 322 мин."
         ]
       },
       {
@@ -345,7 +282,7 @@
           "synthetic": true
         },
         "score": 0.2,
-        "explanation": "Жанр: python. Тон: лёгкий. Курс целиком: 220 мин. Уровень: продвинутый. Есть практические задания.",
+        "explanation": "Вот что о нём известно: Жанр: python. Тон: лёгкий. Курс целиком: 220 мин.",
         "evidence": [
           {
             "item_id": "it-01572",
@@ -367,28 +304,12 @@
             "value": 220,
             "relation": "catalog",
             "source_item_id": null
-          },
-          {
-            "item_id": "it-01572",
-            "field": "level",
-            "value": "продвинутый",
-            "relation": "catalog",
-            "source_item_id": null
-          },
-          {
-            "item_id": "it-01572",
-            "field": "practical",
-            "value": true,
-            "relation": "request",
-            "source_item_id": null
           }
         ],
         "claim_texts": [
           "Жанр: python.",
           "Тон: лёгкий.",
-          "Курс целиком: 220 мин.",
-          "Уровень: продвинутый.",
-          "Есть практические задания."
+          "Курс целиком: 220 мин."
         ]
       }
     ],
@@ -413,7 +334,7 @@
       "LLM недоступна или вернула неверную структуру (TimeoutError): разбор по правилам."
     ],
     "mode": "rules_fallback",
-    "latency_ms": 50.07,
+    "latency_ms": 64.78,
     "llm_calls": 1,
     "llm_calls_total": 1,
     "llm_tokens": 0,
@@ -423,9 +344,9 @@
     "degradation": "NO_LLM",
     "platform_ids": [],
     "timings_ms": {
-      "parse": 3.464,
-      "retrieve": 42.885,
-      "rank_explain": 0.234
+      "parse": 3.525,
+      "retrieve": 53.781,
+      "rank_explain": 0.426
     },
     "llm_tokens_total": 0,
     "llm_usage": {},
@@ -463,16 +384,16 @@
       "tokens": 0,
       "fallback_reason": "llm_failure:TimeoutError",
       "retry_rejection_reason": null,
-      "latency_ms": 50.07
+      "latency_ms": 64.78
     },
     "pending_preview": null
   },
   "child_returncode_after_cleanup": 1,
   "child_stopped": true,
-  "finished_at_utc": "2026-09-27T18:02:19.776641+00:00",
+  "finished_at_utc": "2026-09-27T19:01:40.569776+00:00",
   "files_sha256": {
-    "smoke.py": "15f0462d8c4b80817f316fffc4330502ff1abd81f63474611cc6d5ac6ea5eff6",
-    "server.stdout.log": "550d541266e62937863612c6075ba5daebd040751419445fe1db91d1d41e1015",
-    "server.stderr.log": "ccc61e5d065fbdc5d85ad4a7361eeeba8f736ec41d7bba71f19e19f7aa802d61"
+    "smoke.py": "36870a33e28ed6f9a0440963bbcc440ea44145be376dd992378bb9ae2b5a22e9",
+    "server.stdout.log": "bf68bdb6fc114ce3c4c6f2dd07dfc3c59c0a946b7b58ffc565cf3f610f5655e4",
+    "server.stderr.log": "b8d184c166f9c60d48779e5b64595e8c55534aeb531a6078e1fa5d84e51447be"
   }
 }

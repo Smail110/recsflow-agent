@@ -2,7 +2,7 @@
   "schema_version": 1,
   "label": "after",
   "complete": true,
-  "created_at_utc": "2026-09-27T17:45:43.522422+00:00",
+  "created_at_utc": "2026-09-27T19:07:09.332449+00:00",
   "cohort": {
     "path": "C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\data\\product_llm_first_dev.json",
     "sha256": "4771b5468062bf3be662f9c67b8818146be40e9ee804ef9bfb9e7a97795c346f",
@@ -50,7 +50,7 @@
     "commit": "5d09189c3945dbc19687d3498e732a9338d5fbe9",
     "dirty": true,
     "files_sha256": {
-      "src/recagent/agent.py": "e6a114565df960b318ed7ff2de3babe7a0adaf8b3e481cb4f2b915b4ded58e1b",
+      "src/recagent/agent.py": "a0d6280a9af78559b007b9d374fe0befce50ebfeb3a6341ca5a2f5cc5ce83351",
       "src/recagent/contracts.py": "573be4a6f631ed1ebd8e5c9b904f235d652827f3b9217baaa76993a3603c923b",
       "src/recagent/config/settings.py": "12a6376d4903cf3e49c06694e61853311940ef6182b8338c5eb0b2110fd74ce2",
       "src/recagent/domains/__init__.py": "728b61363d2e2cb1c9ca719decc2f88ef27453dfb7c2e7ffc7a28635fbcb8e19",
@@ -65,12 +65,12 @@
       "src/recagent/query_compilation.py": "1958294d4640bedcd5b47ca2b4101a59e403902f8833aab0ff8ba4892e0b501a",
       "src/recagent/providers.py": "006610d144daa3a48bc391c7f25d18adfe2661fbdb8bef03d4b779ec4405821a",
       "src/recagent/request_mapping.py": "7df2db308fcced5ec55d0391b76f781a66d05b7becb7e800b3382057690df3a7",
-      "src/recagent/response_generation.py": "3a3162d870f6df2f1ee40d0c4e0d6c1cedbe4b8cc2af257871ce2568328df7e3",
+      "src/recagent/response_generation.py": "e6765c920c3280ab27907191c843912343e1693bc7e3f6a9d2f08318c6397912",
       "src/recagent/ranking.py": "f64545614a14f571ccb04126305810abc9654ec5414e07b1155ef914e721f25d",
       "scripts/evaluate_llm_first_product.py": "921bfb232ddc8d4fb2f702e3c2132d3dc478df966209b5253a42fe706441960d",
       "src/recagent/state.py": "39eb2fc9c94afca294efbaf0892c7c2a32be570c8f6173dd3dbd915e20d3c6a7",
       "src/recagent/validation.py": "67e7438467a50da7beb237baecda6884b669c50554c67283df313852ca33b347",
-      "src/recagent/workflow.py": "d5dce5594732db3361a742cf68445c938122f75d395a28a4d20e4a64d2393ff5"
+      "src/recagent/workflow.py": "7c12087e3c075a2284f5ed0ac7cb2af2397c1cccbede906c24565258954593b0"
     }
   },
   "environment": {
@@ -342,7 +342,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 5199.78,
+          "latency_ms": 2924.44,
           "llm_calls": 2,
           "llm_tokens": 3986,
           "clarification_count": 0,
@@ -730,7 +730,7 @@
                 "clarification_required": false
               },
               "tokens": 3095,
-              "elapsed_ms": 3818.844
+              "elapsed_ms": 1509.28
             },
             {
               "role": "response_planning",
@@ -837,7 +837,7 @@
                 ]
               },
               "tokens": 891,
-              "elapsed_ms": 1320.898
+              "elapsed_ms": 1347.428
             }
           ],
           "raw_extraction": {
@@ -1120,7 +1120,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 2767.7,
+          "latency_ms": 2842.31,
           "llm_calls": 2,
           "llm_tokens": 3977,
           "clarification_count": 0,
@@ -1508,7 +1508,7 @@
                 "clarification_required": false
               },
               "tokens": 3088,
-              "elapsed_ms": 1398.527
+              "elapsed_ms": 1440.349
             },
             {
               "role": "response_planning",
@@ -1615,7 +1615,7 @@
                 ]
               },
               "tokens": 889,
-              "elapsed_ms": 1286.984
+              "elapsed_ms": 1313.867
             }
           ],
           "raw_extraction": {
@@ -1914,7 +1914,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 3201.1,
+          "latency_ms": 3229.85,
           "llm_calls": 2,
           "llm_tokens": 4027,
           "clarification_count": 0,
@@ -2308,7 +2308,7 @@
                 "clarification_required": false
               },
               "tokens": 3129,
-              "elapsed_ms": 1798.732
+              "elapsed_ms": 1851.465
             },
             {
               "role": "response_planning",
@@ -2417,7 +2417,7 @@
                 ]
               },
               "tokens": 898,
-              "elapsed_ms": 1337.011
+              "elapsed_ms": 1323.737
             }
           ],
           "raw_extraction": {
@@ -2469,7 +2469,7 @@
           "spoken_constraint_violations": [],
           "recommendation_evidence": [],
           "recommendation_exists": false,
-          "latency_ms": 1491.47,
+          "latency_ms": 1486.85,
           "llm_calls": 1,
           "llm_tokens": 3091,
           "clarification_count": 1,
@@ -2857,7 +2857,7 @@
                 "clarification_required": false
               },
               "tokens": 3091,
-              "elapsed_ms": 1483.624
+              "elapsed_ms": 1479.158
             }
           ],
           "raw_extraction": {
@@ -3139,9 +3139,9 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 3323.63,
+          "latency_ms": 3482.91,
           "llm_calls": 2,
-          "llm_tokens": 4258,
+          "llm_tokens": 4259,
           "clarification_count": 1,
           "clarification_slot": null,
           "message": "Подходит «Сериализатор в веб-сервисе». Жанр: python. Уровень: начальный. Есть практические задания.\nТакже можно рассмотреть «Адаптер в проекте». Жанр: python. Уровень: начальный. Есть практические задания.",
@@ -3520,7 +3520,7 @@
                       "field": "kind",
                       "operator": "eq",
                       "value": "course",
-                      "source_turn": "a98e286b-863a-41ef-9ac6-759b5e8678cf:1"
+                      "source_turn": "19a4624b-35dc-4b64-b630-8f639996f431:1"
                     }
                   ],
                   "blockers": [
@@ -3561,8 +3561,8 @@
                 "issues": [],
                 "clarification_required": false
               },
-              "tokens": 3367,
-              "elapsed_ms": 2000.327
+              "tokens": 3368,
+              "elapsed_ms": 2106.553
             },
             {
               "role": "response_planning",
@@ -3670,7 +3670,7 @@
                 ]
               },
               "tokens": 891,
-              "elapsed_ms": 1267.879
+              "elapsed_ms": 1318.605
             }
           ],
           "raw_extraction": {
@@ -3777,7 +3777,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 2145.36,
+          "latency_ms": 2202.71,
           "llm_calls": 2,
           "llm_tokens": 3652,
           "clarification_count": 0,
@@ -4165,7 +4165,7 @@
                 "clarification_required": false
               },
               "tokens": 3099,
-              "elapsed_ms": 1485.639
+              "elapsed_ms": 1512.123
             },
             {
               "role": "response_planning",
@@ -4214,7 +4214,7 @@
                 ]
               },
               "tokens": 553,
-              "elapsed_ms": 613.908
+              "elapsed_ms": 637.626
             }
           ],
           "raw_extraction": {
@@ -4553,7 +4553,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 2899.53,
+          "latency_ms": 2994.54,
           "llm_calls": 2,
           "llm_tokens": 4116,
           "clarification_count": 0,
@@ -4941,7 +4941,7 @@
                 "clarification_required": false
               },
               "tokens": 3110,
-              "elapsed_ms": 1557.453
+              "elapsed_ms": 1577.875
             },
             {
               "role": "response_planning",
@@ -5055,7 +5055,7 @@
                 ]
               },
               "tokens": 1006,
-              "elapsed_ms": 1291.693
+              "elapsed_ms": 1365.52
             }
           ],
           "raw_extraction": {
@@ -5355,7 +5355,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 3061.64,
+          "latency_ms": 3135.78,
           "llm_calls": 2,
           "llm_tokens": 4027,
           "clarification_count": 0,
@@ -5749,7 +5749,7 @@
                 "clarification_required": false
               },
               "tokens": 3135,
-              "elapsed_ms": 1802.467
+              "elapsed_ms": 1843.485
             },
             {
               "role": "response_planning",
@@ -5855,7 +5855,7 @@
                 ]
               },
               "tokens": 892,
-              "elapsed_ms": 1205.948
+              "elapsed_ms": 1235.595
             }
           ],
           "raw_extraction": {
@@ -6156,7 +6156,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 3487.04,
+          "latency_ms": 3676.75,
           "llm_calls": 2,
           "llm_tokens": 4128,
           "clarification_count": 0,
@@ -6556,7 +6556,7 @@
                 "clarification_required": false
               },
               "tokens": 3187,
-              "elapsed_ms": 2169.074
+              "elapsed_ms": 2284.408
             },
             {
               "role": "response_planning",
@@ -6665,7 +6665,7 @@
                 ]
               },
               "tokens": 941,
-              "elapsed_ms": 1264.831
+              "elapsed_ms": 1337.249
             }
           ],
           "raw_extraction": {
@@ -6958,7 +6958,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 3441.04,
+          "latency_ms": 3567.09,
           "llm_calls": 2,
           "llm_tokens": 4058,
           "clarification_count": 0,
@@ -7358,7 +7358,7 @@
                 "clarification_required": false
               },
               "tokens": 3164,
-              "elapsed_ms": 2058.825
+              "elapsed_ms": 2205.392
             },
             {
               "role": "response_planning",
@@ -7466,7 +7466,7 @@
                 ]
               },
               "tokens": 894,
-              "elapsed_ms": 1325.599
+              "elapsed_ms": 1304.788
             }
           ],
           "raw_extraction": {
@@ -7520,7 +7520,7 @@
           "spoken_constraint_violations": [],
           "recommendation_evidence": [],
           "recommendation_exists": false,
-          "latency_ms": 4386.65,
+          "latency_ms": 4630.34,
           "llm_calls": 2,
           "llm_tokens": 6798,
           "clarification_count": 1,
@@ -7920,7 +7920,7 @@
                 "clarification_required": false
               },
               "tokens": 3185,
-              "elapsed_ms": 2220.591
+              "elapsed_ms": 2315.689
             },
             {
               "role": "interpretation",
@@ -8344,7 +8344,7 @@
                 "clarification_required": false
               },
               "tokens": 3613,
-              "elapsed_ms": 2146.446
+              "elapsed_ms": 2292.586
             }
           ],
           "raw_extraction": {
@@ -8617,7 +8617,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 2915.77,
+          "latency_ms": 3047.73,
           "llm_calls": 2,
           "llm_tokens": 3987,
           "clarification_count": 0,
@@ -9011,7 +9011,7 @@
                 "clarification_required": false
               },
               "tokens": 3127,
-              "elapsed_ms": 1611.576
+              "elapsed_ms": 1672.512
             },
             {
               "role": "response_planning",
@@ -9115,7 +9115,7 @@
                 ]
               },
               "tokens": 860,
-              "elapsed_ms": 1252.619
+              "elapsed_ms": 1317.353
             }
           ],
           "raw_extraction": {
@@ -9168,7 +9168,7 @@
           "spoken_constraint_violations": [],
           "recommendation_evidence": [],
           "recommendation_exists": false,
-          "latency_ms": 2487.37,
+          "latency_ms": 2513.83,
           "llm_calls": 1,
           "llm_tokens": 3201,
           "clarification_count": 1,
@@ -9568,7 +9568,7 @@
                 "clarification_required": false
               },
               "tokens": 3201,
-              "elapsed_ms": 2468.295
+              "elapsed_ms": 2498.254
             }
           ],
           "raw_extraction": {
@@ -9853,7 +9853,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 2536.02,
+          "latency_ms": 2679.95,
           "llm_calls": 2,
           "llm_tokens": 4230,
           "clarification_count": 1,
@@ -10234,13 +10234,13 @@
                       "field": "kind",
                       "operator": "eq",
                       "value": "course",
-                      "source_turn": "9ff3b5b0-03ab-4183-a80a-0b374f271e24:1"
+                      "source_turn": "594fd18f-6955-43f4-a2e7-051bb1c828f1:1"
                     },
                     {
                       "field": "genre",
                       "operator": "eq",
                       "value": "python",
-                      "source_turn": "9ff3b5b0-03ab-4183-a80a-0b374f271e24:1"
+                      "source_turn": "594fd18f-6955-43f4-a2e7-051bb1c828f1:1"
                     }
                   ],
                   "blockers": [
@@ -10270,7 +10270,7 @@
                 "clarification_required": false
               },
               "tokens": 3341,
-              "elapsed_ms": 1214.13
+              "elapsed_ms": 1283.058
             },
             {
               "role": "response_planning",
@@ -10378,7 +10378,7 @@
                 ]
               },
               "tokens": 889,
-              "elapsed_ms": 1272.542
+              "elapsed_ms": 1340.675
             }
           ],
           "raw_extraction": {
@@ -10680,7 +10680,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 3619.07,
+          "latency_ms": 3814.24,
           "llm_calls": 2,
           "llm_tokens": 4090,
           "clarification_count": 0,
@@ -11080,7 +11080,7 @@
                 "clarification_required": false
               },
               "tokens": 3191,
-              "elapsed_ms": 2284.955
+              "elapsed_ms": 2414.073
             },
             {
               "role": "response_planning",
@@ -11189,7 +11189,7 @@
                 ]
               },
               "tokens": 899,
-              "elapsed_ms": 1281.312
+              "elapsed_ms": 1326.72
             }
           ],
           "raw_extraction": {
@@ -11466,7 +11466,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 3425.06,
+          "latency_ms": 3664.24,
           "llm_calls": 2,
           "llm_tokens": 4075,
           "clarification_count": 0,
@@ -11866,7 +11866,7 @@
                 "clarification_required": false
               },
               "tokens": 3173,
-              "elapsed_ms": 2110.81
+              "elapsed_ms": 2265.077
             },
             {
               "role": "response_planning",
@@ -11972,7 +11972,7 @@
                 ]
               },
               "tokens": 902,
-              "elapsed_ms": 1258.407
+              "elapsed_ms": 1336.236
             }
           ],
           "raw_extraction": {
@@ -12022,7 +12022,7 @@
           "spoken_constraint_violations": [],
           "recommendation_evidence": [],
           "recommendation_exists": false,
-          "latency_ms": 1775.04,
+          "latency_ms": 1853.92,
           "llm_calls": 1,
           "llm_tokens": 3139,
           "clarification_count": 1,
@@ -12416,7 +12416,7 @@
                 "clarification_required": false
               },
               "tokens": 3139,
-              "elapsed_ms": 1762.612
+              "elapsed_ms": 1842.761
             }
           ],
           "raw_extraction": {
@@ -12457,9 +12457,9 @@
           "spoken_constraint_violations": [],
           "recommendation_evidence": [],
           "recommendation_exists": false,
-          "latency_ms": 4187.84,
+          "latency_ms": 4097.09,
           "llm_calls": 2,
-          "llm_tokens": 7186,
+          "llm_tokens": 7149,
           "clarification_count": 2,
           "clarification_slot": "genre",
           "message": "Какой жанр или тему вы предпочитаете?",
@@ -12838,7 +12838,7 @@
                       "field": "kind",
                       "operator": "eq",
                       "value": "film",
-                      "source_turn": "d9401310-b00c-48a0-94e8-825ee78a0b80:1"
+                      "source_turn": "d3f5b89d-698d-47d1-a7ac-927fa30707a6:1"
                     }
                   ],
                   "blockers": [
@@ -12875,8 +12875,8 @@
                 ],
                 "clarification_required": true
               },
-              "tokens": 3352,
-              "elapsed_ms": 1754.953
+              "tokens": 3351,
+              "elapsed_ms": 1907.62
             },
             {
               "role": "interpretation",
@@ -13243,7 +13243,7 @@
                       "field": "kind",
                       "operator": "eq",
                       "value": "film",
-                      "source_turn": "d9401310-b00c-48a0-94e8-825ee78a0b80:1"
+                      "source_turn": "d3f5b89d-698d-47d1-a7ac-927fa30707a6:1"
                     }
                   ],
                   "blockers": [
@@ -13298,12 +13298,6 @@
                 "intent": "discovery",
                 "updates": [
                   {
-                    "field": "kind",
-                    "operation": "set",
-                    "value": "film",
-                    "source_text": "фильм"
-                  },
-                  {
                     "field": "genre",
                     "operation": "exclude",
                     "value": "комедия",
@@ -13322,8 +13316,8 @@
                 ],
                 "clarification_required": true
               },
-              "tokens": 3834,
-              "elapsed_ms": 2419.621
+              "tokens": 3798,
+              "elapsed_ms": 2174.197
             }
           ],
           "raw_extraction": {
@@ -13331,8 +13325,7 @@
             "validated_outputs": 2,
             "errors": 0,
             "update_fields": {
-              "genre": 2,
-              "kind": 1
+              "genre": 2
             },
             "issue_count": 2,
             "clarification_required": 2
@@ -13386,7 +13379,7 @@
           "spoken_constraint_violations": [],
           "recommendation_evidence": [],
           "recommendation_exists": false,
-          "latency_ms": 2165.09,
+          "latency_ms": 2280.67,
           "llm_calls": 1,
           "llm_tokens": 3184,
           "clarification_count": 0,
@@ -13786,7 +13779,7 @@
                 "clarification_required": false
               },
               "tokens": 3184,
-              "elapsed_ms": 2115.984
+              "elapsed_ms": 2222.374
             }
           ],
           "raw_extraction": {
@@ -14006,7 +13999,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 2855.83,
+          "latency_ms": 3076.47,
           "llm_calls": 2,
           "llm_tokens": 3959,
           "clarification_count": 0,
@@ -14400,7 +14393,7 @@
                 "clarification_required": false
               },
               "tokens": 3135,
-              "elapsed_ms": 1575.745
+              "elapsed_ms": 1708.129
             },
             {
               "role": "response_planning",
@@ -14499,7 +14492,7 @@
                 ]
               },
               "tokens": 824,
-              "elapsed_ms": 1231.556
+              "elapsed_ms": 1317.408
             }
           ],
           "raw_extraction": {
@@ -14771,9 +14764,9 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 4840.81,
+          "latency_ms": 4979.56,
           "llm_calls": 3,
-          "llm_tokens": 7750,
+          "llm_tokens": 7758,
           "clarification_count": 0,
           "clarification_slot": null,
           "message": "Подходит «Сериализатор в веб-сервисе». Жанр: python. Тон: лёгкий. Курс целиком: 167 мин.\nТакже можно рассмотреть «Модуль без побочных эффектов». Жанр: python. Курс целиком: 143 мин. Уровень: средний.\nТакже можно рассмотреть «Зимняя обёртка». Жанр: python. Уровень: средний. Есть практические задания.",
@@ -14800,13 +14793,13 @@
                       "field": "kind",
                       "operator": "eq",
                       "value": "film",
-                      "source_turn": "4adf8d89-0372-4c57-931f-945207fc475c:1"
+                      "source_turn": "2613724a-62f6-4ff0-8c44-24240a6b6721:1"
                     },
                     {
                       "field": "genre",
                       "operator": "eq",
                       "value": "комедия",
-                      "source_turn": "4adf8d89-0372-4c57-931f-945207fc475c:1"
+                      "source_turn": "2613724a-62f6-4ff0-8c44-24240a6b6721:1"
                     }
                   ]
                 },
@@ -15177,8 +15170,8 @@
                 "issues": [],
                 "clarification_required": false
               },
-              "tokens": 3242,
-              "elapsed_ms": 1751.299
+              "tokens": 3246,
+              "elapsed_ms": 1806.454
             },
             {
               "role": "interpretation",
@@ -15193,13 +15186,13 @@
                       "field": "kind",
                       "operator": "eq",
                       "value": "film",
-                      "source_turn": "4adf8d89-0372-4c57-931f-945207fc475c:1"
+                      "source_turn": "2613724a-62f6-4ff0-8c44-24240a6b6721:1"
                     },
                     {
                       "field": "genre",
                       "operator": "eq",
                       "value": "комедия",
-                      "source_turn": "4adf8d89-0372-4c57-931f-945207fc475c:1"
+                      "source_turn": "2613724a-62f6-4ff0-8c44-24240a6b6721:1"
                     }
                   ]
                 },
@@ -15598,8 +15591,8 @@
                 "issues": [],
                 "clarification_required": false
               },
-              "tokens": 3619,
-              "elapsed_ms": 1713.146
+              "tokens": 3623,
+              "elapsed_ms": 1799.605
             },
             {
               "role": "response_planning",
@@ -15706,7 +15699,7 @@
                 ]
               },
               "tokens": 889,
-              "elapsed_ms": 1315.098
+              "elapsed_ms": 1306.896
             }
           ],
           "raw_extraction": {
@@ -15926,7 +15919,7 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 3669.85,
+          "latency_ms": 3807.34,
           "llm_calls": 3,
           "llm_tokens": 5169,
           "clarification_count": 0,
@@ -16314,7 +16307,7 @@
                 "clarification_required": false
               },
               "tokens": 3099,
-              "elapsed_ms": 1482.107
+              "elapsed_ms": 1554.79
             },
             {
               "role": "interpretation",
@@ -16393,7 +16386,7 @@
                 "issues": []
               },
               "tokens": 1251,
-              "elapsed_ms": 894.129
+              "elapsed_ms": 902.248
             },
             {
               "role": "response_planning",
@@ -16492,7 +16485,7 @@
                 ]
               },
               "tokens": 819,
-              "elapsed_ms": 1236.738
+              "elapsed_ms": 1291.966
             }
           ],
           "raw_extraction": {
@@ -16705,9 +16698,9 @@
             }
           ],
           "recommendation_exists": true,
-          "latency_ms": 2652.92,
+          "latency_ms": 2790.56,
           "llm_calls": 2,
-          "llm_tokens": 4009,
+          "llm_tokens": 4011,
           "clarification_count": 0,
           "clarification_slot": null,
           "message": "Подходит «Тайна в тихом омуте». Жанр: детектив. Тон: лёгкий.\nТакже можно рассмотреть «Долгий мотив». Жанр: детектив. Фильм: 92 мин.\nТакже можно рассмотреть «Кабинет без обратного следа». Жанр: детектив. Фильм: 119 мин.",
@@ -16734,13 +16727,13 @@
                       "field": "tone",
                       "operator": "neq",
                       "value": "мрачный",
-                      "source_turn": "cb617a14-8818-4cf5-b968-f5f04b79e2dd:2"
+                      "source_turn": "019f88c3-4750-418b-b24f-768acb199dab:2"
                     },
                     {
                       "field": "kind",
                       "operator": "eq",
                       "value": "film",
-                      "source_turn": "cb617a14-8818-4cf5-b968-f5f04b79e2dd:2"
+                      "source_turn": "019f88c3-4750-418b-b24f-768acb199dab:2"
                     }
                   ]
                 },
@@ -17105,8 +17098,8 @@
                 "issues": [],
                 "clarification_required": false
               },
-              "tokens": 3202,
-              "elapsed_ms": 1443.411
+              "tokens": 3204,
+              "elapsed_ms": 1520.499
             },
             {
               "role": "response_planning",
@@ -17202,7 +17195,7 @@
                 ]
               },
               "tokens": 807,
-              "elapsed_ms": 1162.342
+              "elapsed_ms": 1219.783
             }
           ],
           "raw_extraction": {
@@ -17259,7 +17252,7 @@
           "spoken_constraint_violations": [],
           "recommendation_evidence": [],
           "recommendation_exists": false,
-          "latency_ms": 1491.3,
+          "latency_ms": 1604.0,
           "llm_calls": 1,
           "llm_tokens": 3102,
           "clarification_count": 1,
@@ -17647,7 +17640,7 @@
                 "clarification_required": false
               },
               "tokens": 3102,
-              "elapsed_ms": 1483.03
+              "elapsed_ms": 1597.913
             }
           ],
           "raw_extraction": {
@@ -17697,7 +17690,7 @@
           "spoken_constraint_violations": [],
           "recommendation_evidence": [],
           "recommendation_exists": false,
-          "latency_ms": 1254.15,
+          "latency_ms": 1351.56,
           "llm_calls": 1,
           "llm_tokens": 3110,
           "clarification_count": 1,
@@ -18085,7 +18078,7 @@
                 "clarification_required": false
               },
               "tokens": 3110,
-              "elapsed_ms": 1248.767
+              "elapsed_ms": 1346.1
             }
           ],
           "raw_extraction": {
@@ -18131,7 +18124,7 @@
         "clarification_required": 2,
         "update_fields": {
           "genre": 21,
-          "kind": 15,
+          "kind": 14,
           "level": 8,
           "max_minutes": 1,
           "practical": 5,
@@ -18152,8 +18145,8 @@
     }
   },
   "comparison": {
-    "before_path": "artifacts\\contract-routing-2026-09-27\\dev-o.json",
-    "before_report_sha256": "17a5e18f4933853904ed5cad6f8fc981158fc564b2f00ecdd3c4fefe7732e4f3",
+    "before_path": "artifacts\\submission-final-2026-09-27\\dev.json",
+    "before_report_sha256": "873080970540feee8a768c1b418b45163ee3382d6d26f5d0e9486755702df0f7",
     "changed_full_dialogues": [],
     "changed_dialogue_count": 0
   },
@@ -18201,11 +18194,11 @@
     "--implementation",
     "workflow-v2",
     "--workflow-config",
-    "configs\\workflow-v2.yaml",
-    "--output",
-    "artifacts\\submission-final-2026-09-27\\dev.json",
+    "configs/workflow-v2.yaml",
     "--compare",
-    "artifacts\\contract-routing-2026-09-27\\dev-o.json"
+    "artifacts/submission-final-2026-09-27/dev.json",
+    "--output",
+    "artifacts\\compliance-closure-2026-09-27\\dev.json"
   ],
-  "report_sha256": "873080970540feee8a768c1b418b45163ee3382d6d26f5d0e9486755702df0f7"
+  "report_sha256": "4554ff7cbb9dabe7de1a7afdcfd141d3efc9b5ee54717659243514a234a790cf"
 }

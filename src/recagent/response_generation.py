@@ -1,6 +1,7 @@
 """Domain-neutral response planning over already validated evidence."""
 
-from typing import Protocol
+from copy import copy
+from typing import Literal, Protocol
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -33,6 +34,17 @@ class EvidenceResponseGenerator:
 
     requires_llm = False
 
+    def __init__(self, *, tone: Literal["neutral", "friendly"] = "neutral", length: Literal["normal", "short"] = "normal"):
+        self.tone = tone
+        self.length = length
+
+    def with_style(self, *, tone: str, length: str):
+        """Configure one request without mutating a shared generator or backend."""
+        configured = copy(self)
+        configured.tone = tone
+        configured.length = length
+        return configured
+
     @staticmethod
     def _fallback_plan(options: list[GroundedOption]) -> GroundedResponsePlan:
         return GroundedResponsePlan(
@@ -53,14 +65,17 @@ class EvidenceResponseGenerator:
             valid.append(PlannedOption(item_id=item.item_id, evidence_indexes=indexes))
         return GroundedResponsePlan(items=valid) if valid else EvidenceResponseGenerator._fallback_plan(options)
 
-    @staticmethod
-    def _render(plan: GroundedResponsePlan, options: list[GroundedOption]) -> str:
+    def _render(self, plan: GroundedResponsePlan, options: list[GroundedOption]) -> str:
         by_id = {option.id: option for option in options}
         parts = []
-        for index, selected in enumerate(plan.items):
+        selected_items = plan.items[:2] if self.length == "short" else plan.items
+        for index, selected in enumerate(selected_items):
             option = by_id[selected.item_id]
-            evidence = " ".join(option.claims[i] for i in selected.evidence_indexes)
+            indexes = selected.evidence_indexes[:1] if self.length == "short" else selected.evidence_indexes
+            evidence = " ".join(option.claims[i] for i in indexes)
             lead = "Подходит" if index == 0 else "Также можно рассмотреть"
+            if self.tone == "friendly":
+                lead = "Предлагаю посмотреть" if index == 0 else "Ещё один вариант —"
             parts.append(f"{lead} «{option.title}». {evidence}".strip())
         return "\n".join(parts)
 
@@ -78,6 +93,7 @@ class LLMGroundedResponseGenerator(EvidenceResponseGenerator):
     requires_llm = True
 
     def __init__(self, backend: ResponseBackend):
+        super().__init__()
         self.backend = backend
 
     def generate(
@@ -101,3 +117,9 @@ class LLMGroundedResponseGenerator(EvidenceResponseGenerator):
         )
         plan = self._validated_plan(GroundedResponsePlan.model_validate(result.model_dump()), options)
         return self._render(plan, options), tokens
+
+
+def with_response_style(generator, *, tone: str, length: str):
+    """Use optional styling while preserving the existing generate interface."""
+    configure = getattr(generator, "with_style", None)
+    return configure(tone=tone, length=length) if callable(configure) else generator

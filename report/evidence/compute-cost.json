@@ -1,0 +1,108 @@
+{
+  "kind": "conditional_compute_cost",
+  "actual_cost_rub": null,
+  "assumptions": {
+    "pricing": "Illustrative sensitivity rates, not a vendor quote or actual expense.",
+    "resource": "One dedicated machine billed for the measured wall-clock window.",
+    "formula": "window_cost_rub = assumed_hourly_rub * elapsed_seconds / 3600",
+    "exclusions": "Warm-up before the window, idle time, storage, setup and maintenance are excluded.",
+    "concurrency": "Overlapping request durations are not summed as machine rental time."
+  },
+  "sources": [
+    {
+      "path": "artifacts/compliance-closure-2026-09-27/load-c1.json",
+      "sha256": "1ddbeab132c29a005631a93ebf111778dfee1c9b1931ac475a4928a0d1b7518a"
+    },
+    {
+      "path": "artifacts/compliance-closure-2026-09-27/load-c2.json",
+      "sha256": "ae7c3337250d4eb51dd90e82658f3684127b02405c76cf61b7a67f5a40908e13"
+    },
+    {
+      "path": "artifacts/compliance-closure-2026-09-27/load-c4.json",
+      "sha256": "96a1a5e6d56b740d2eb8b7cf1a2bdb84ca4017e11b1e247b5852ef46420b571d"
+    }
+  ],
+  "scenarios": [
+    {
+      "concurrency": 1,
+      "requests": 50,
+      "http_successes": 50,
+      "elapsed_seconds": 194.6736734000151,
+      "assumed_hourly_rub": 50.0,
+      "window_cost_rub": 2.7038010194446542,
+      "per_request_rub": 0.05407602038889309
+    },
+    {
+      "concurrency": 1,
+      "requests": 50,
+      "http_successes": 50,
+      "elapsed_seconds": 194.6736734000151,
+      "assumed_hourly_rub": 100.0,
+      "window_cost_rub": 5.4076020388893085,
+      "per_request_rub": 0.10815204077778617
+    },
+    {
+      "concurrency": 1,
+      "requests": 50,
+      "http_successes": 50,
+      "elapsed_seconds": 194.6736734000151,
+      "assumed_hourly_rub": 200.0,
+      "window_cost_rub": 10.815204077778617,
+      "per_request_rub": 0.21630408155557235
+    },
+    {
+      "concurrency": 2,
+      "requests": 50,
+      "http_successes": 50,
+      "elapsed_seconds": 167.42814690002706,
+      "assumed_hourly_rub": 50.0,
+      "window_cost_rub": 2.3253909291670425,
+      "per_request_rub": 0.04650781858334085
+    },
+    {
+      "concurrency": 2,
+      "requests": 50,
+      "http_successes": 50,
+      "elapsed_seconds": 167.42814690002706,
+      "assumed_hourly_rub": 100.0,
+      "window_cost_rub": 4.650781858334085,
+      "per_request_rub": 0.0930156371666817
+    },
+    {
+      "concurrency": 2,
+      "requests": 50,
+      "http_successes": 50,
+      "elapsed_seconds": 167.42814690002706,
+      "assumed_hourly_rub": 200.0,
+      "window_cost_rub": 9.30156371666817,
+      "per_request_rub": 0.1860312743333634
+    },
+    {
+      "concurrency": 4,
+      "requests": 50,
+      "http_successes": 50,
+      "elapsed_seconds": 159.11764539999422,
+      "assumed_hourly_rub": 50.0,
+      "window_cost_rub": 2.209967297222142,
+      "per_request_rub": 0.04419934594444284
+    },
+    {
+      "concurrency": 4,
+      "requests": 50,
+      "http_successes": 50,
+      "elapsed_seconds": 159.11764539999422,
+      "assumed_hourly_rub": 100.0,
+      "window_cost_rub": 4.419934594444284,
+      "per_request_rub": 0.08839869188888567
+    },
+    {
+      "concurrency": 4,
+      "requests": 50,
+      "http_successes": 50,
+      "elapsed_seconds": 159.11764539999422,
+      "assumed_hourly_rub": 200.0,
+      "window_cost_rub": 8.839869188888567,
+      "per_request_rub": 0.17679738377777135
+    }
+  ]
+}

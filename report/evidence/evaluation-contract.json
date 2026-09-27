@@ -32,7 +32,7 @@
     },
     "llm_tokens": {
       "available": true,
-      "total": 84855
+      "total": 84869
     }
   },
   "rows": [
@@ -400,5 +400,896 @@
         }
       ]
     }
-  ]
+  ],
+  "comparison": {
+    "before": {
+      "metric_version": "observable-product-v1",
+      "catalog_identity": {
+        "verified": true,
+        "recorded_sha256": "5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258",
+        "scoring_sha256": "5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258"
+      },
+      "lanes": {
+        "observable_delivery": {
+          "dialogues_pass": 12,
+          "dialogues": 12,
+          "turns_pass": 20,
+          "turns": 20
+        },
+        "legacy_recorded": {
+          "available": false,
+          "dialogues_pass": null,
+          "dialogues": 12,
+          "rescored": false
+        },
+        "active_query_diagnostics": {
+          "failed_turns": 0,
+          "affects_observable_verdict": false
+        }
+      },
+      "observed_accounting": {
+        "clarification_turns": 2,
+        "mean_clarifications_per_dialogue": 0.16666666666666666,
+        "llm_calls": {
+          "available": true,
+          "total": 40
+        },
+        "llm_tokens": {
+          "available": true,
+          "total": 84855
+        }
+      },
+      "rows": [
+        {
+          "id": "explicit-course",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 25,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "numeric-correction",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 24,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 24,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "accumulate-exclusions",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "include-exact",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "clear-limit",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "domain-change",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 20,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "navigation",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 4,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "similar",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 20,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "mood",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 25,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "negative-tone-more",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "unknown-level-resolution",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 0,
+                "unsupported": 0,
+                "rate": null
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 23,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "optional-preference",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 0,
+                "unsupported": 0,
+                "rate": null
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "after": {
+      "metric_version": "observable-product-v1",
+      "catalog_identity": {
+        "verified": true,
+        "recorded_sha256": "5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258",
+        "scoring_sha256": "5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258"
+      },
+      "lanes": {
+        "observable_delivery": {
+          "dialogues_pass": 12,
+          "dialogues": 12,
+          "turns_pass": 20,
+          "turns": 20
+        },
+        "legacy_recorded": {
+          "available": false,
+          "dialogues_pass": null,
+          "dialogues": 12,
+          "rescored": false
+        },
+        "active_query_diagnostics": {
+          "failed_turns": 0,
+          "affects_observable_verdict": false
+        }
+      },
+      "observed_accounting": {
+        "clarification_turns": 2,
+        "mean_clarifications_per_dialogue": 0.16666666666666666,
+        "llm_calls": {
+          "available": true,
+          "total": 40
+        },
+        "llm_tokens": {
+          "available": true,
+          "total": 84869
+        }
+      },
+      "rows": [
+        {
+          "id": "explicit-course",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 25,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "numeric-correction",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 24,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 24,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "accumulate-exclusions",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "include-exact",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "clear-limit",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "domain-change",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 20,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "navigation",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 4,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "similar",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 20,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "mood",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 25,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "negative-tone-more",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "unknown-level-resolution",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 0,
+                "unsupported": 0,
+                "rate": null
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 23,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "id": "optional-preference",
+          "pass": true,
+          "legacy_recorded_success": null,
+          "turns": [
+            {
+              "index": 0,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 0,
+                "unsupported": 0,
+                "rate": null
+              }
+            },
+            {
+              "index": 1,
+              "pass": true,
+              "failures": [],
+              "unknown_ids": [],
+              "spoken_violations": {},
+              "active_query_checks_separate": [],
+              "grounding_templates": {
+                "available": true,
+                "claims": 15,
+                "unsupported": 0,
+                "rate": 0.0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "improved": [],
+    "regressed": []
+  },
+  "system_comparison": {
+    "baseline_configuration": {
+      "mode": "ollama",
+      "implementation": "workflow-v2",
+      "timeout_s": 120,
+      "base_url": "http://localhost:11434",
+      "question_policy": "adaptive",
+      "max_questions": 3,
+      "history": "cold_start",
+      "max_calls": 8,
+      "max_tokens": 100000,
+      "workflow_config": {
+        "validation": {
+          "semantic_mode": "code-only",
+          "nli": false
+        },
+        "retrieval": {
+          "provider_k": 100,
+          "lexical_k": 100,
+          "fused_k": 150,
+          "dense": false
+        },
+        "ranking": {
+          "method": "deterministic-rrf",
+          "rrf_k": 60
+        },
+        "reranker": false
+      },
+      "workflow_config_sha256": "5f25a8eecf9259e3ea1a4029dcc1940bc566e61964f7bc20109e18cba2e9e6a8",
+      "ollama_transport": {
+        "options": {
+          "temperature": 0,
+          "seed": 42,
+          "num_predict": 700
+        },
+        "think": false,
+        "stream": false
+      }
+    },
+    "candidate_configuration": {
+      "mode": "ollama",
+      "implementation": "workflow-v2",
+      "timeout_s": 120,
+      "base_url": "http://localhost:11434",
+      "question_policy": "adaptive",
+      "max_questions": 3,
+      "history": "cold_start",
+      "max_calls": 8,
+      "max_tokens": 100000,
+      "workflow_config": {
+        "validation": {
+          "semantic_mode": "code-only",
+          "nli": false
+        },
+        "retrieval": {
+          "provider_k": 100,
+          "lexical_k": 100,
+          "fused_k": 150,
+          "dense": false
+        },
+        "ranking": {
+          "method": "deterministic-rrf",
+          "rrf_k": 60
+        },
+        "reranker": false
+      },
+      "workflow_config_sha256": "5f25a8eecf9259e3ea1a4029dcc1940bc566e61964f7bc20109e18cba2e9e6a8",
+      "ollama_transport": {
+        "options": {
+          "temperature": 0,
+          "seed": 42,
+          "num_predict": 700
+        },
+        "think": false,
+        "stream": false
+      }
+    },
+    "causal_single_variable_claim": false
+  }
 }

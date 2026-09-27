@@ -13,6 +13,7 @@
 provider / каталог → строгая фильтрация и RRF → уточнение или рекомендация с фактами</p>
 <p>Recsflow представлен заменяемым адаптером и проверяемым HTTP mock. Реальный endpoint, credentials и контракт
 не предоставлены; совместимость с закрытым production API не заявляется.</p>
+<p>Научные предпосылки, реперные работы и выбор метрик описаны в <a href="../docs/RESEARCH-BASIS.md">обзоре исследований</a>.</p>
 <h3>Данные и методика</h3><p>DEV — 20 синтетических диалогов с каталогом seed 42;
 CONTRACT — 12 AI-написанных сценариев, 20 ходов и каталог seed 137. Названия, профили и ряд атрибутов
 созданы генератором. MovieLens 100K калибрует отдельные распределения, но не служит каталогом выдачи
@@ -22,7 +23,7 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
 Повторно используемый DEV не является независимой финальной оценкой. Даты в исходных записях обозначают
 происхождение отдельных измерений, а не разные продукты или единую одновременную приёмку.
 Закрытые наборы этот отчёт не читает.</aside></section>
-<section id="quality"><h2>Качество версии для сдачи</h2><p>Проверка от 27.09.2026. Основная модель — qwen3:8b. Успех полного диалога требует подходящей выдачи и выполнения критериев сценария; ответ HTTP 200 сам по себе успехом не считается.</p><div class="scroll"><table><thead><tr><th>Набор</th><th>Успешные диалоги</th><th>Что проверяет</th></tr></thead><tbody><tr><td>DEV</td><td>15/20</td><td>Подбор и уточнение предпочтений в полном диалоге</td></tr><tr><td>CONTRACT</td><td>12/12</td><td>Изменение условий, запреты, продолжение и наблюдаемая выдача</td></tr></tbody></table></div><p>Оба набора небольшие, синтетические и повторно использованы при разработке. Результат описывает эти сценарии, а не вероятность успеха на реальном пользовательском трафике.</p><div class="scroll"><table><thead><tr><th>Инженерная проверка</th><th>Результат</th><th>Что подтверждает</th></tr></thead><tbody><tr><td>Автоматические тесты</td><td>1161 passed; 7 subtests</td><td>Проверенные контракты, состояния и обработку ошибок</td></tr><tr><td>Ruff</td><td>PASS: src scripts tests evals app.py</td><td>Соответствие исходников заданным статическим проверкам</td></tr><tr><td>git diff --check</td><td>PASS</td><td>Отсутствие ошибок пробелов и конфликтных маркеров в diff</td></tr></tbody></table></div><p>Прохождение инженерных тестов не означает, что модель всегда верно понимает свободную речь. Для этого отдельно считаются успех диалога, лишние уточнения и ошибки grounding.</p><p>Область проверки: Отдельная копия выбранных исходников и зависимостей. Внешние корпуса и архивные результаты в неё не включены. Пропущено тестов: 8.</p><a href="#receipt-evaluation-final-20260927">Проверка версии для сдачи: JSON и SHA-256</a></section><section id="roles"><h2>LLM-симулятор и судья</h2><p>Дата выбранного прогона — 23.09.2026; это отдельное сохранённое измерение.</p><p>Симулятор формулирует ответ на реальный уточняющий вопрос из скрытых предпочтений сценария. Отдельная роль проверяет сохранение смысла ответа; судья оценивает видимый диалог и факты. Окончательный успех задаёт независимый детерминированный оракул. Судья даёт дополнительную оценку и не может переопределить его результат.</p><div class="scroll"><table><thead><tr><th>Показатель</th><th>Результат</th></tr></thead><tbody><tr><td>Технически завершённые протоколы</td><td>8/8</td></tr><tr><td>Строго успешные эпизоды</td><td>2/8</td></tr><tr><td>Среднее число уточнений</td><td>1,375</td></tr><tr><td>Неподтверждённые факты поддерживаемых шаблонов</td><td>0/119</td></tr><tr><td>Завершённые оценки судьи</td><td>8</td></tr></tbody></table></div><p>Завершение всех ролей подтверждает работоспособность цепочки, но строгий успех остаётся низким. Это отдельная малая синтетическая когорта; её нельзя складывать с DEV или CONTRACT. Агент и роли используют qwen3:8b, поэтому их ошибки могут быть связаны. Ответы, параметры и модельные identities сохранены для проверки происхождения и replay.</p><a href="#receipt-evaluation-roles">LLM-симулятор, валидатор и судья: JSON и SHA-256</a></section><section id="performance"><h2>Задержка, нагрузка и стоимость</h2><p>Измерено 24.09.2026. После последующих изменений кода нагрузка повторно не проверялась.</p><p>HTTP-нагрузка использует один повторяемый синтетический запрос. Во всех выбранных опытах работал Ollama; HTTP-успех и непустая выдача здесь не означают успех произвольного диалога.</p><div class="scroll"><table><thead><tr><th>Параллельность</th><th>Запросы</th><th>HTTP-успех</th><th>p50, с</th><th>p95, с</th><th>LLM-вызовы</th><th>Токены</th></tr></thead><tbody><tr><td>1</td><td>50</td><td>50/50</td><td>3,94</td><td>3,98</td><td>100</td><td>205 600</td></tr><tr><td>2</td><td>50</td><td>50/50</td><td>6,88</td><td>6,94</td><td>100</td><td>205 925</td></tr><tr><td>4</td><td>50</td><td>50/50</td><td>13,48</td><td>14,36</td><td>100</td><td>206 081</td></tr></tbody></table></div><p>С ростом параллельности увеличивается время ожидания. Эти измерения относятся к одному локальному окружению и не задают production SLA. Покрытие токенов и времени инференса отражено в каждом JSON; агрегаты API не подтверждают полноту сведений об отдельных LLM-вызовах.</p><p><strong>Денежная стоимость неизвестна (null).</strong> Нет принятой цены инфраструктуры, измерения электроэнергии и методики распределения расходов. Токены не являются рублями, а сумма времени инференса не равна оплачиваемому времени работы всей машины. Изолированные CPU/RAM/VRAM процесса API в этих выбранных записях не измерены.</p><p><a href="#receipt-evaluation-load-c1">HTTP-нагрузка: concurrency 1: JSON и SHA-256</a> · <a href="#receipt-evaluation-load-c2">HTTP-нагрузка: concurrency 2: JSON и SHA-256</a> · <a href="#receipt-evaluation-load-c4">HTTP-нагрузка: concurrency 4: JSON и SHA-256</a></p></section><section id="nli"><h2>Эксперимент с NLI</h2><p>Я проверил дополнительную модель, которая должна подтверждать извлечённое условие по цитате пользователя. Последний вариант использовал mDeBERTa, LoRA и прямое выделение представления цитаты и гипотезы. В рабочем агенте NLI выключен.</p><div class="scroll"><table><thead><tr><th>Показатель</th><th>До</th><th>После</th></tr></thead><tbody><tr><td>DEV: неверная цитата подтверждена</td><td>30/2484</td><td>94/2484</td></tr><tr><td>MASSIVE silver: верная цитата подтверждена</td><td>636/985</td><td>191/985</td></tr><tr><td>MASSIVE silver: неверная цитата подтверждена</td><td>695/985</td><td>8/985</td></tr></tbody></table></div><p>Уменьшение ошибок на внешних неверных цитатах сопровождалось потерей верных подтверждений. Условия приёмки не выполнены; кандидат отклонён. Оба набора открытые и уже использовались для анализа. Это результат конкретного обучения, а не доказательство того, что NLI в целом уступает правилам. Для продолжения нужны более широкие данные и независимая проверка разметки.</p><a href="#receipt-nli-final">Последний эксперимент NLI: JSON и SHA-256</a></section>
+<section id="quality"><h2>Качество версии для сдачи</h2><p>Проверка от 27.09.2026. Основная модель — qwen3:8b. Успех полного диалога требует подходящей выдачи и выполнения критериев сценария; ответ HTTP 200 сам по себе успехом не считается.</p><div class="scroll"><table><thead><tr><th>Набор</th><th>Успешные диалоги</th><th>Что проверяет</th></tr></thead><tbody><tr><td>DEV</td><td>15/20</td><td>Подбор и уточнение предпочтений в полном диалоге</td></tr><tr><td>CONTRACT</td><td>12/12</td><td>Изменение условий, запреты, продолжение и наблюдаемая выдача</td></tr></tbody></table></div><p>Оба набора небольшие, синтетические и повторно использованы при разработке. Результат описывает эти сценарии, а не вероятность успеха на реальном пользовательском трафике.</p><div class="scroll"><table><thead><tr><th>Инженерная проверка</th><th>Результат</th><th>Что подтверждает</th></tr></thead><tbody><tr><td>Автоматические тесты</td><td>1170 passed; 7 subtests</td><td>Проверенные контракты, состояния и обработку ошибок</td></tr><tr><td>Ruff</td><td>PASS: src scripts tests evals app.py</td><td>Соответствие исходников заданным статическим проверкам</td></tr><tr><td>git diff --check</td><td>PASS</td><td>Отсутствие ошибок пробелов и конфликтных маркеров в diff</td></tr></tbody></table></div><p>Прохождение инженерных тестов не означает, что модель всегда верно понимает свободную речь. Для этого отдельно считаются успех диалога, лишние уточнения и ошибки grounding.</p><p>Область проверки: Отдельная копия выбранных исходников; ранее установленное окружение по неизменному lockfile, editable package переустановлен на новую копию. Внешние корпуса и архивный replay отсутствуют. Пропущено тестов: 8.</p><a href="#receipt-evaluation-final-20260927">Проверка версии для сдачи: JSON и SHA-256</a></section><section id="roles"><h2>LLM-симулятор и судья</h2><p>Дата выбранного прогона: 27.09.2026.</p><p>Симулятор формулирует ответ на реальный уточняющий вопрос из скрытых предпочтений сценария. Отдельная роль проверяет сохранение смысла ответа; судья оценивает видимый диалог и факты. Окончательный успех задаёт независимый детерминированный оракул. Судья даёт дополнительную оценку и не может переопределить его результат.</p><div class="scroll"><table><thead><tr><th>Показатель</th><th>Результат</th></tr></thead><tbody><tr><td>Технически завершённые протоколы</td><td>8/8</td></tr><tr><td>Строго успешные эпизоды</td><td>2/8</td></tr><tr><td>Среднее число уточнений</td><td>0,750</td></tr><tr><td>Неподтверждённые факты поддерживаемых шаблонов</td><td>0/149</td></tr><tr><td>Завершённые оценки судьи</td><td>8</td></tr></tbody></table></div><p>Завершение ролей и строгий успех — разные показатели. Это отдельная малая синтетическая когорта; её нельзя складывать с DEV или CONTRACT. Агент и роли используют qwen3:8b, поэтому их ошибки могут быть связаны. Ответы, параметры и модельные identities сохранены для проверки происхождения и replay.</p><a href="#receipt-evaluation-roles">LLM-симулятор, валидатор и судья: JSON и SHA-256</a></section><section id="performance"><h2>Задержка, нагрузка и стоимость</h2><p>Даты выбранных прогонов: 2026-09-27.</p><p>HTTP-нагрузка использует один повторяемый синтетический запрос. Во всех выбранных опытах работал Ollama; HTTP-успех и непустая выдача здесь не означают успех произвольного диалога.</p><div class="scroll"><table><thead><tr><th>Параллельность</th><th>Запросы</th><th>HTTP-успех</th><th>p50, с</th><th>p95, с</th><th>LLM-вызовы</th><th>Токены</th></tr></thead><tbody><tr><td>1</td><td>50</td><td>50/50</td><td>3,89</td><td>3,96</td><td>100</td><td>206 250</td></tr><tr><td>2</td><td>50</td><td>50/50</td><td>6,69</td><td>6,77</td><td>100</td><td>206 250</td></tr><tr><td>4</td><td>50</td><td>50/50</td><td>12,67</td><td>12,76</td><td>100</td><td>206 250</td></tr></tbody></table></div><p>С ростом параллельности увеличивается время ожидания. Эти измерения относятся к одному локальному окружению и не задают production SLA. Покрытие токенов и времени инференса отражено в каждом JSON; агрегаты API не подтверждают полноту сведений об отдельных LLM-вызовах.</p><p><strong>Фактическая денежная стоимость неизвестна.</strong> Нет принятой цены инфраструктуры, измерения электроэнергии и методики распределения расходов. Токены не являются рублями, а сумма времени инференса не равна оплачиваемому времени работы всей машины. Снимок ресурсов приведён в исходных записях отдельно; он не измеряет пики нагрузки или полное энергопотребление.</p><p><a href="#receipt-evaluation-load-c1">HTTP-нагрузка: concurrency 1: JSON и SHA-256</a> · <a href="#receipt-evaluation-load-c2">HTTP-нагрузка: concurrency 2: JSON и SHA-256</a> · <a href="#receipt-evaluation-load-c4">HTTP-нагрузка: concurrency 4: JSON и SHA-256</a></p></section><section id="cost"><h2>Расчёт стоимости при заданной ставке</h2><p>Это сценарный расчёт, не цена оборудования и не фактический счёт. Я предполагаю выделение одной машины на всё окно нагрузочного прогона. Стоимость окна = ставка × длительность / 3600; стоимость запроса = стоимость окна / число запросов.</p><div class="scroll"><table><thead><tr><th>Параллельность</th><th>Ставка, ₽/час</th><th>Окно, ₽</th><th>Запрос, ₽</th></tr></thead><tbody><tr><td>1</td><td>50.0</td><td>2,704</td><td>0,0541</td></tr><tr><td>1</td><td>100.0</td><td>5,408</td><td>0,1082</td></tr><tr><td>1</td><td>200.0</td><td>10,815</td><td>0,2163</td></tr><tr><td>2</td><td>50.0</td><td>2,325</td><td>0,0465</td></tr><tr><td>2</td><td>100.0</td><td>4,651</td><td>0,0930</td></tr><tr><td>2</td><td>200.0</td><td>9,302</td><td>0,1860</td></tr><tr><td>4</td><td>50.0</td><td>2,210</td><td>0,0442</td></tr><tr><td>4</td><td>100.0</td><td>4,420</td><td>0,0884</td></tr><tr><td>4</td><td>200.0</td><td>8,840</td><td>0,1768</td></tr></tbody></table></div><p>Ставки в таблице заданы для анализа чувствительности, не взяты из тарифа. Периоды простоя, загрузка модели до измерения, хранение и сопровождение не включены. Время параллельных запросов не суммируется как время аренды одной машины.</p><a href="#receipt-compute-cost">Условная стоимость вычислений: JSON и SHA-256</a></section><section id="nli"><h2>Эксперимент с NLI</h2><p>Я проверил дополнительную модель, которая должна подтверждать извлечённое условие по цитате пользователя. Последний вариант использовал mDeBERTa, LoRA и прямое выделение представления цитаты и гипотезы. В рабочем агенте NLI выключен.</p><div class="scroll"><table><thead><tr><th>Показатель</th><th>До</th><th>После</th></tr></thead><tbody><tr><td>DEV: неверная цитата подтверждена</td><td>30/2484</td><td>94/2484</td></tr><tr><td>MASSIVE silver: верная цитата подтверждена</td><td>636/985</td><td>191/985</td></tr><tr><td>MASSIVE silver: неверная цитата подтверждена</td><td>695/985</td><td>8/985</td></tr></tbody></table></div><p>Уменьшение ошибок на внешних неверных цитатах сопровождалось потерей верных подтверждений. Условия приёмки не выполнены; кандидат отклонён. Оба набора открытые и уже использовались для анализа. Это результат конкретного обучения, а не доказательство того, что NLI в целом уступает правилам. Для продолжения нужны более широкие данные и независимая проверка разметки.</p><a href="#receipt-nli-final">Последний эксперимент NLI: JSON и SHA-256</a></section>
 <section id="next"><h2>Узкие места и план продуктивизации</h2>
 <p>Часть полных DEV-диалогов и эпизодов с LLM-симулятором ещё не проходит строгий критерий успеха.
 Проверки иногда приводят к лишнему уточнению; сложные разговорные формулировки требуют более широкой оценки.
@@ -46,7 +47,7 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
 и качество на реальных пользователях этими измерениями не установлены. Процент готовности не выводится.</p></section>
 <section id="evidence"><h2>Проверяемые источники</h2><p>Сводка выше читает только явно выбранные JSON.
 Каждая запись ниже доступна рядом с HTML; selection.json фиксирует её SHA-256. Наблюдения сохранены
-без повторного inference или пересчёта критериев по ответам агента.</p><details id="receipt-evaluation-final-20260927" class="receipt"><summary>Проверка версии для сдачи</summary><p>Источник: <code>report/evidence/evaluation-final-20260927.json</code><br>SHA-256: <code>16f1357eea037e660781d07bc01ccb48a7c8c634db3fd6a463ad015ee934bb3a</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>kind</td><td>submission_snapshot</td></tr><tr><td>date</td><td>27.09.2026</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+без повторного inference или пересчёта критериев по ответам агента.</p><details id="receipt-evaluation-final-20260927" class="receipt"><summary>Проверка версии для сдачи</summary><p>Источник: <code>report/evidence/evaluation-final-20260927.json</code><br>SHA-256: <code>801bdeb1d8e4416de67b1ede0f25b84dca853fc9050a8ae1798cac1361f267be</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>kind</td><td>submission_snapshot</td></tr><tr><td>date</td><td>27.09.2026</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
   &quot;kind&quot;: &quot;submission_snapshot&quot;,
   &quot;date&quot;: &quot;27.09.2026&quot;,
   &quot;model&quot;: {
@@ -79,40 +80,47 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
       },
       &quot;llm_tokens&quot;: {
         &quot;available&quot;: true,
-        &quot;total&quot;: 84855
+        &quot;total&quot;: 84869
       }
     }
   },
   &quot;engineering&quot;: {
-    &quot;scope&quot;: &quot;Отдельная копия выбранных исходников и зависимостей. Внешние корпуса и архивные результаты в неё не включены.&quot;,
-    &quot;tests_passed&quot;: 1161,
+    &quot;scope&quot;: &quot;Отдельная копия выбранных исходников; ранее установленное окружение по неизменному lockfile, editable package переустановлен на новую копию. Внешние корпуса и архивный replay отсутствуют.&quot;,
+    &quot;tests_passed&quot;: 1170,
     &quot;tests_skipped&quot;: 8,
     &quot;subtests_passed&quot;: 7,
-    &quot;workspace_tests_passed&quot;: 1175,
     &quot;ruff&quot;: &quot;PASS: src scripts tests evals app.py&quot;,
     &quot;diff_check&quot;: &quot;PASS&quot;,
-    &quot;clean_public_tree&quot;: &quot;PASS: install, pip check, pytest, Ruff, OpenAPI, notebook rules/ollama, HTTP smoke, controlled fallback, Docker build/up/health/chat&quot;
+    &quot;clean_public_tree&quot;: &quot;PASS: install, pip check, pytest, Ruff, OpenAPI, notebook rules/ollama, HTTP smoke, controlled fallback, Docker build/up/health/chat&quot;,
+    &quot;response_style&quot;: &quot;PASS: neutral/normal preserved; friendly/short applied to chat and controlled HTTP fallback; only verified claims&quot;
   },
   &quot;limitations&quot;: [
     &quot;Small reused synthetic DEV and CONTRACT; not independent final evaluation.&quot;,
-    &quot;Historical role and load measurements are separately dated.&quot;,
-    &quot;Product NLI disabled.&quot;
+    &quot;Current DEV, CONTRACT, roles and load measured on 27.09.2026; no causal quality or speedup claim for styling.&quot;,
+    &quot;Product NLI disabled.&quot;,
+    &quot;Actual infrastructure cost unknown; scenario hourly rates are illustrative.&quot;
   ],
   &quot;sources&quot;: {
-    &quot;artifacts/submission-final-2026-09-27/dev.json&quot;: &quot;8cbee87429e22c2771a3f12f392efd6d174dcfad871d481281e1f46981638a1d&quot;,
-    &quot;artifacts/submission-final-2026-09-27/contract.json&quot;: &quot;dc35cbaee9d7df4b8e3eb209e54a75fc3e55b8b8c830cea6637d0335108e5ca1&quot;,
-    &quot;artifacts/submission-final-2026-09-27/contract.evaluation.json&quot;: &quot;092ef66017ea3f1279b95fc98869a83ccb027b3adbc91b6c90cba5dd10a64c27&quot;,
-    &quot;artifacts/submission-final-2026-09-27/tests-workspace.xml&quot;: &quot;fe2c043220ea4ea35cf48d5518bde235bd718a530caac3038c9e4f234af66777&quot;,
-    &quot;artifacts/submission-final-2026-09-27/tests-clean.xml&quot;: &quot;ab071746bb6dd4401dc6a39ebb6ed93a6800d5c4cabccf1d89f96a731cbad063&quot;,
-    &quot;artifacts/submission-final-2026-09-27/docker-clean-chat.json&quot;: &quot;4cb0ed0b6afbd46fb49381b80e95949d7683f4bb3f255a64b66fca211a11ec90&quot;,
-    &quot;artifacts/submission-final-2026-09-27/http-clean.log&quot;: &quot;2e96ca9bc0ca93217f448bd7b005aee6848f445c004ae22c2efd683f43014182&quot;,
-    &quot;artifacts/submission-final-2026-09-27/notebook-clean.log&quot;: &quot;10490c72e0ebde42fb3014b4a820b02bc1e7a0af216e00ab8bdb54086bfcf28b&quot;
+    &quot;artifacts/compliance-closure-2026-09-27/protocol.json&quot;: &quot;6f5d84fdcbf884a7b336ddfc30c81dd579a354f052bc05e76d8dc8c360306f2b&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/dev.json&quot;: &quot;879c803f63ab7b46f317d3510748559860064e6b810604b70d6565d3e966fce6&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/contract.json&quot;: &quot;e4f263238c7c50463b27daaf2691e47d006d0943510cc390b93148981edfb547&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/contract.evaluation.json&quot;: &quot;6ada3a4e88e236f21453a5f387c68a243c361edd29a820f739252a07dc477afb&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/roles.json&quot;: &quot;b2e08fd8c2eadc50d915a01859ae9cf937197713d9e2a7a346ed59ef31b0a4a0&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/load-c1.json&quot;: &quot;1ddbeab132c29a005631a93ebf111778dfee1c9b1931ac475a4928a0d1b7518a&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/load-c2.json&quot;: &quot;ae7c3337250d4eb51dd90e82658f3684127b02405c76cf61b7a67f5a40908e13&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/load-c4.json&quot;: &quot;96a1a5e6d56b740d2eb8b7cf1a2bdb84ca4017e11b1e247b5852ef46420b571d&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/tests-clean.xml&quot;: &quot;bd6a8b727fa29447807e137ebd93d68bac60dfa66add25ab24d412a661a39c51&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/checks.json&quot;: &quot;91d93a874b7a3c7dd83b39c66453fb5d6240c1201ea41d82dc5116fee19c69cd&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/styled-http.json&quot;: &quot;f928f6b365ada6e45469c5fd70455fa14de8b2debf7fb4d8cb24d99da3fb0110&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/fallback-process/receipt.json&quot;: &quot;da4e8be7f865e7037d6bb3ad7b688012413ef6bcf34c5a4249b8842cc5556973&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/role-replay-check.json&quot;: &quot;45725258a48bc65e469847e6c054b71fc62275683ddde016d2fc22aa5ad64c41&quot;,
+    &quot;artifacts/compliance-closure-2026-09-27/resource-sample.json&quot;: &quot;56efafbc0b84e6fbf3be67e72698b49ca2071b6d54de83900c6bf18ad13a6faa&quot;
   }
-}</pre></details><p><a href="evidence/evaluation-final-20260927.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-dev" class="receipt"><summary>Ответы агента: DEV</summary><p>Источник: <code>artifacts/submission-final-2026-09-27/dev.json</code><br>SHA-256: <code>8cbee87429e22c2771a3f12f392efd6d174dcfad871d481281e1f46981638a1d</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>schema_version</td><td>1</td></tr><tr><td>label</td><td>after</td></tr><tr><td>complete</td><td>True</td></tr><tr><td>created_at_utc</td><td>2026-09-27T17:45:43.522422+00:00</td></tr><tr><td>summary.full_dialogues</td><td>20</td></tr><tr><td>summary.full_dialog_successes</td><td>15</td></tr><tr><td>summary.failure_counts.clarify!=recommend</td><td>2</td></tr><tr><td>summary.failure_counts.genre=None!=&#x27;python&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.genre=None!=&#x27;комедия&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.genre=None!=&#x27;машинное обучение&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.kind=None!=&#x27;course&#x27;</td><td>3</td></tr><tr><td>summary.failure_counts.kind=None!=&#x27;film&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.level=None!=&#x27;продвинутый&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.missing_recommendation</td><td>2</td></tr><tr><td>summary.failure_counts.recommend!=clarify</td><td>1</td></tr><tr><td>summary.failure_counts.tone=None!=&#x27;лёгкий&#x27;</td><td>2</td></tr><tr><td>summary.failure_counts.unexpected_recommendation</td><td>1</td></tr><tr><td>summary.stages.turns</td><td>25</td></tr><tr><td>summary.stages.raw_extraction.validated_outputs</td><td>29</td></tr><tr><td>summary.stages.raw_extraction.errors</td><td>0</td></tr><tr><td>summary.stages.raw_extraction.issue_count</td><td>2</td></tr><tr><td>summary.stages.raw_extraction.clarification_required</td><td>2</td></tr><tr><td>summary.stages.raw_extraction.update_fields.genre</td><td>21</td></tr><tr><td>summary.stages.raw_extraction.update_fields.kind</td><td>15</td></tr><tr><td>summary.stages.raw_extraction.update_fields.level</td><td>8</td></tr><tr><td>summary.stages.raw_extraction.update_fields.max_minutes</td><td>1</td></tr><tr><td>summary.stages.raw_extraction.update_fields.practical</td><td>5</td></tr><tr><td>summary.stages.raw_extraction.update_fields.seed_title</td><td>4</td></tr><tr><td>summary.stages.raw_extraction.update_fields.tone</td><td>1</td></tr><tr><td>summary.stages.adapter.semantic_pass_turns</td><td>19</td></tr><tr><td>summary.stages.adapter.semantic_mismatch_turns</td><td>6</td></tr><tr><td>summary.stages.policy.eligible_after_adapter</td><td>19</td></tr><tr><td>summary.stages.policy.expected_state_pass</td><td>19</td></tr><tr><td>summary.stages.policy.recommendation_contract_pass</td><td>19</td></tr><tr><td>summary.stages.note</td><td>Raw evidence is descriptive: an omitted update is not automatically an error when the field is inherited or derived from a known title.</td></tr><tr><td>comparison.before_path</td><td>artifacts\contract-routing-2026-09-27\dev-o.json</td></tr><tr><td>comparison.before_report_sha256</td><td>17a5e18f4933853904ed5cad6f8fc981158fc564b2f00ecdd3c4fefe7732e4f3</td></tr><tr><td>comparison.changed_dialogue_count</td><td>0</td></tr><tr><td>report_sha256</td><td>873080970540feee8a768c1b418b45163ee3382d6d26f5d0e9486755702df0f7</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+}</pre></details><p><a href="evidence/evaluation-final-20260927.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-dev" class="receipt"><summary>Ответы агента: DEV</summary><p>Источник: <code>artifacts/compliance-closure-2026-09-27/dev.json</code><br>SHA-256: <code>879c803f63ab7b46f317d3510748559860064e6b810604b70d6565d3e966fce6</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>schema_version</td><td>1</td></tr><tr><td>label</td><td>after</td></tr><tr><td>complete</td><td>True</td></tr><tr><td>created_at_utc</td><td>2026-09-27T19:07:09.332449+00:00</td></tr><tr><td>summary.full_dialogues</td><td>20</td></tr><tr><td>summary.full_dialog_successes</td><td>15</td></tr><tr><td>summary.failure_counts.clarify!=recommend</td><td>2</td></tr><tr><td>summary.failure_counts.genre=None!=&#x27;python&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.genre=None!=&#x27;комедия&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.genre=None!=&#x27;машинное обучение&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.kind=None!=&#x27;course&#x27;</td><td>3</td></tr><tr><td>summary.failure_counts.kind=None!=&#x27;film&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.level=None!=&#x27;продвинутый&#x27;</td><td>1</td></tr><tr><td>summary.failure_counts.missing_recommendation</td><td>2</td></tr><tr><td>summary.failure_counts.recommend!=clarify</td><td>1</td></tr><tr><td>summary.failure_counts.tone=None!=&#x27;лёгкий&#x27;</td><td>2</td></tr><tr><td>summary.failure_counts.unexpected_recommendation</td><td>1</td></tr><tr><td>summary.stages.turns</td><td>25</td></tr><tr><td>summary.stages.raw_extraction.validated_outputs</td><td>29</td></tr><tr><td>summary.stages.raw_extraction.errors</td><td>0</td></tr><tr><td>summary.stages.raw_extraction.issue_count</td><td>2</td></tr><tr><td>summary.stages.raw_extraction.clarification_required</td><td>2</td></tr><tr><td>summary.stages.raw_extraction.update_fields.genre</td><td>21</td></tr><tr><td>summary.stages.raw_extraction.update_fields.kind</td><td>14</td></tr><tr><td>summary.stages.raw_extraction.update_fields.level</td><td>8</td></tr><tr><td>summary.stages.raw_extraction.update_fields.max_minutes</td><td>1</td></tr><tr><td>summary.stages.raw_extraction.update_fields.practical</td><td>5</td></tr><tr><td>summary.stages.raw_extraction.update_fields.seed_title</td><td>4</td></tr><tr><td>summary.stages.raw_extraction.update_fields.tone</td><td>1</td></tr><tr><td>summary.stages.adapter.semantic_pass_turns</td><td>19</td></tr><tr><td>summary.stages.adapter.semantic_mismatch_turns</td><td>6</td></tr><tr><td>summary.stages.policy.eligible_after_adapter</td><td>19</td></tr><tr><td>summary.stages.policy.expected_state_pass</td><td>19</td></tr><tr><td>summary.stages.policy.recommendation_contract_pass</td><td>19</td></tr><tr><td>summary.stages.note</td><td>Raw evidence is descriptive: an omitted update is not automatically an error when the field is inherited or derived from a known title.</td></tr><tr><td>comparison.before_path</td><td>artifacts\submission-final-2026-09-27\dev.json</td></tr><tr><td>comparison.before_report_sha256</td><td>873080970540feee8a768c1b418b45163ee3382d6d26f5d0e9486755702df0f7</td></tr><tr><td>comparison.changed_dialogue_count</td><td>0</td></tr><tr><td>report_sha256</td><td>4554ff7cbb9dabe7de1a7afdcfd141d3efc9b5ee54717659243514a234a790cf</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
   &quot;schema_version&quot;: 1,
   &quot;label&quot;: &quot;after&quot;,
   &quot;complete&quot;: true,
-  &quot;created_at_utc&quot;: &quot;2026-09-27T17:45:43.522422+00:00&quot;,
+  &quot;created_at_utc&quot;: &quot;2026-09-27T19:07:09.332449+00:00&quot;,
   &quot;cohort&quot;: {
     &quot;path&quot;: &quot;C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\data\\product_llm_first_dev.json&quot;,
     &quot;sha256&quot;: &quot;4771b5468062bf3be662f9c67b8818146be40e9ee804ef9bfb9e7a97795c346f&quot;,
@@ -159,7 +167,7 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     &quot;commit&quot;: &quot;5d09189c3945dbc19687d3498e732a9338d5fbe9&quot;,
     &quot;dirty&quot;: true,
     &quot;files_sha256&quot;: {
-      &quot;src/recagent/agent.py&quot;: &quot;e6a114565df960b318ed7ff2de3babe7a0adaf8b3e481cb4f2b915b4ded58e1b&quot;,
+      &quot;src/recagent/agent.py&quot;: &quot;a0d6280a9af78559b007b9d374fe0befce50ebfeb3a6341ca5a2f5cc5ce83351&quot;,
       &quot;src/recagent/contracts.py&quot;: &quot;573be4a6f631ed1ebd8e5c9b904f235d652827f3b9217baaa76993a3603c923b&quot;,
       &quot;src/recagent/config/settings.py&quot;: &quot;12a6376d4903cf3e49c06694e61853311940ef6182b8338c5eb0b2110fd74ce2&quot;,
       &quot;src/recagent/domains/__init__.py&quot;: &quot;728b61363d2e2cb1c9ca719decc2f88ef27453dfb7c2e7ffc7a28635fbcb8e19&quot;,
@@ -174,12 +182,12 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
       &quot;src/recagent/query_compilation.py&quot;: &quot;1958294d4640bedcd5b47ca2b4101a59e403902f8833aab0ff8ba4892e0b501a&quot;,
       &quot;src/recagent/providers.py&quot;: &quot;006610d144daa3a48bc391c7f25d18adfe2661fbdb8bef03d4b779ec4405821a&quot;,
       &quot;src/recagent/request_mapping.py&quot;: &quot;7df2db308fcced5ec55d0391b76f781a66d05b7becb7e800b3382057690df3a7&quot;,
-      &quot;src/recagent/response_generation.py&quot;: &quot;3a3162d870f6df2f1ee40d0c4e0d6c1cedbe4b8cc2af257871ce2568328df7e3&quot;,
+      &quot;src/recagent/response_generation.py&quot;: &quot;e6765c920c3280ab27907191c843912343e1693bc7e3f6a9d2f08318c6397912&quot;,
       &quot;src/recagent/ranking.py&quot;: &quot;f64545614a14f571ccb04126305810abc9654ec5414e07b1155ef914e721f25d&quot;,
       &quot;scripts/evaluate_llm_first_product.py&quot;: &quot;921bfb232ddc8d4fb2f702e3c2132d3dc478df966209b5253a42fe706441960d&quot;,
       &quot;src/recagent/state.py&quot;: &quot;39eb2fc9c94afca294efbaf0892c7c2a32be570c8f6173dd3dbd915e20d3c6a7&quot;,
       &quot;src/recagent/validation.py&quot;: &quot;67e7438467a50da7beb237baecda6884b669c50554c67283df313852ca33b347&quot;,
-      &quot;src/recagent/workflow.py&quot;: &quot;d5dce5594732db3361a742cf68445c938122f75d395a28a4d20e4a64d2393ff5&quot;
+      &quot;src/recagent/workflow.py&quot;: &quot;7c12087e3c075a2284f5ed0ac7cb2af2397c1cccbede906c24565258954593b0&quot;
     }
   },
   &quot;environment&quot;: {
@@ -211,7 +219,7 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
         &quot;clarification_required&quot;: 2,
         &quot;update_fields&quot;: {
           &quot;genre&quot;: 21,
-          &quot;kind&quot;: 15,
+          &quot;kind&quot;: 14,
           &quot;level&quot;: 8,
           &quot;max_minutes&quot;: 1,
           &quot;practical&quot;: 5,
@@ -232,8 +240,8 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     }
   },
   &quot;comparison&quot;: {
-    &quot;before_path&quot;: &quot;artifacts\\contract-routing-2026-09-27\\dev-o.json&quot;,
-    &quot;before_report_sha256&quot;: &quot;17a5e18f4933853904ed5cad6f8fc981158fc564b2f00ecdd3c4fefe7732e4f3&quot;,
+    &quot;before_path&quot;: &quot;artifacts\\submission-final-2026-09-27\\dev.json&quot;,
+    &quot;before_report_sha256&quot;: &quot;873080970540feee8a768c1b418b45163ee3382d6d26f5d0e9486755702df0f7&quot;,
     &quot;changed_dialogue_count&quot;: 0
   },
   &quot;experiment_scope&quot;: {
@@ -249,8 +257,8 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     &quot;The cohort has no theta-based utility claim. Recommendation checks use independently written spoken constraints and catalog membership.&quot;,
     &quot;The frozen cohort is reused as a fixed fixture for this controlled comparison; it is not a new independent model-evaluation split.&quot;
   ],
-  &quot;report_sha256&quot;: &quot;873080970540feee8a768c1b418b45163ee3382d6d26f5d0e9486755702df0f7&quot;
-}</pre></details><p><a href="evidence/evaluation-dev.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-contract" class="receipt"><summary>Ответы агента: CONTRACT</summary><p>Источник: <code>artifacts/submission-final-2026-09-27/contract.evaluation.json</code><br>SHA-256: <code>092ef66017ea3f1279b95fc98869a83ccb027b3adbc91b6c90cba5dd10a64c27</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>metric_version</td><td>observable-product-v1</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;report_sha256&quot;: &quot;4554ff7cbb9dabe7de1a7afdcfd141d3efc9b5ee54717659243514a234a790cf&quot;
+}</pre></details><p><a href="evidence/evaluation-dev.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-contract" class="receipt"><summary>Ответы агента: CONTRACT</summary><p>Источник: <code>artifacts/compliance-closure-2026-09-27/contract.evaluation.json</code><br>SHA-256: <code>6ada3a4e88e236f21453a5f387c68a243c361edd29a820f739252a07dc477afb</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>metric_version</td><td>observable-product-v1</td></tr><tr><td>comparison.before.metric_version</td><td>observable-product-v1</td></tr><tr><td>comparison.before.catalog_identity.verified</td><td>True</td></tr><tr><td>comparison.before.catalog_identity.recorded_sha256</td><td>5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258</td></tr><tr><td>comparison.before.catalog_identity.scoring_sha256</td><td>5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258</td></tr><tr><td>comparison.before.lanes.observable_delivery.dialogues_pass</td><td>12</td></tr><tr><td>comparison.before.lanes.observable_delivery.turns_pass</td><td>20</td></tr><tr><td>comparison.before.lanes.observable_delivery.turns</td><td>20</td></tr><tr><td>comparison.before.lanes.legacy_recorded.available</td><td>False</td></tr><tr><td>comparison.before.lanes.legacy_recorded.dialogues_pass</td><td>не измерено / null</td></tr><tr><td>comparison.before.lanes.legacy_recorded.rescored</td><td>False</td></tr><tr><td>comparison.before.lanes.active_query_diagnostics.failed_turns</td><td>0</td></tr><tr><td>comparison.before.lanes.active_query_diagnostics.affects_observable_verdict</td><td>False</td></tr><tr><td>comparison.before.observed_accounting.clarification_turns</td><td>2</td></tr><tr><td>comparison.before.observed_accounting.mean_clarifications_per_dialogue</td><td>0.16666666666666666</td></tr><tr><td>comparison.before.observed_accounting.llm_calls.available</td><td>True</td></tr><tr><td>comparison.before.observed_accounting.llm_calls.total</td><td>40</td></tr><tr><td>comparison.before.observed_accounting.llm_tokens.available</td><td>True</td></tr><tr><td>comparison.before.observed_accounting.llm_tokens.total</td><td>84855</td></tr><tr><td>comparison.after.metric_version</td><td>observable-product-v1</td></tr><tr><td>comparison.after.catalog_identity.verified</td><td>True</td></tr><tr><td>comparison.after.catalog_identity.recorded_sha256</td><td>5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258</td></tr><tr><td>comparison.after.catalog_identity.scoring_sha256</td><td>5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258</td></tr><tr><td>comparison.after.lanes.observable_delivery.dialogues_pass</td><td>12</td></tr><tr><td>comparison.after.lanes.observable_delivery.turns_pass</td><td>20</td></tr><tr><td>comparison.after.lanes.observable_delivery.turns</td><td>20</td></tr><tr><td>comparison.after.lanes.legacy_recorded.available</td><td>False</td></tr><tr><td>comparison.after.lanes.legacy_recorded.dialogues_pass</td><td>не измерено / null</td></tr><tr><td>comparison.after.lanes.legacy_recorded.rescored</td><td>False</td></tr><tr><td>comparison.after.lanes.active_query_diagnostics.failed_turns</td><td>0</td></tr><tr><td>comparison.after.lanes.active_query_diagnostics.affects_observable_verdict</td><td>False</td></tr><tr><td>comparison.after.observed_accounting.clarification_turns</td><td>2</td></tr><tr><td>comparison.after.observed_accounting.mean_clarifications_per_dialogue</td><td>0.16666666666666666</td></tr><tr><td>comparison.after.observed_accounting.llm_calls.available</td><td>True</td></tr><tr><td>comparison.after.observed_accounting.llm_calls.total</td><td>40</td></tr><tr><td>comparison.after.observed_accounting.llm_tokens.available</td><td>True</td></tr><tr><td>comparison.after.observed_accounting.llm_tokens.total</td><td>84869</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
   &quot;metric_version&quot;: &quot;observable-product-v1&quot;,
   &quot;catalog_identity&quot;: {
     &quot;verified&quot;: true,
@@ -282,10 +290,163 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     },
     &quot;llm_tokens&quot;: {
       &quot;available&quot;: true,
-      &quot;total&quot;: 84855
+      &quot;total&quot;: 84869
     }
+  },
+  &quot;comparison&quot;: {
+    &quot;before&quot;: {
+      &quot;metric_version&quot;: &quot;observable-product-v1&quot;,
+      &quot;catalog_identity&quot;: {
+        &quot;verified&quot;: true,
+        &quot;recorded_sha256&quot;: &quot;5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258&quot;,
+        &quot;scoring_sha256&quot;: &quot;5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258&quot;
+      },
+      &quot;lanes&quot;: {
+        &quot;observable_delivery&quot;: {
+          &quot;dialogues_pass&quot;: 12,
+          &quot;turns_pass&quot;: 20,
+          &quot;turns&quot;: 20
+        },
+        &quot;legacy_recorded&quot;: {
+          &quot;available&quot;: false,
+          &quot;dialogues_pass&quot;: null,
+          &quot;rescored&quot;: false
+        },
+        &quot;active_query_diagnostics&quot;: {
+          &quot;failed_turns&quot;: 0,
+          &quot;affects_observable_verdict&quot;: false
+        }
+      },
+      &quot;observed_accounting&quot;: {
+        &quot;clarification_turns&quot;: 2,
+        &quot;mean_clarifications_per_dialogue&quot;: 0.16666666666666666,
+        &quot;llm_calls&quot;: {
+          &quot;available&quot;: true,
+          &quot;total&quot;: 40
+        },
+        &quot;llm_tokens&quot;: {
+          &quot;available&quot;: true,
+          &quot;total&quot;: 84855
+        }
+      }
+    },
+    &quot;after&quot;: {
+      &quot;metric_version&quot;: &quot;observable-product-v1&quot;,
+      &quot;catalog_identity&quot;: {
+        &quot;verified&quot;: true,
+        &quot;recorded_sha256&quot;: &quot;5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258&quot;,
+        &quot;scoring_sha256&quot;: &quot;5a18edcb9161f188ca465e358702da487395e447bb417fdfb93d5c19e2087258&quot;
+      },
+      &quot;lanes&quot;: {
+        &quot;observable_delivery&quot;: {
+          &quot;dialogues_pass&quot;: 12,
+          &quot;turns_pass&quot;: 20,
+          &quot;turns&quot;: 20
+        },
+        &quot;legacy_recorded&quot;: {
+          &quot;available&quot;: false,
+          &quot;dialogues_pass&quot;: null,
+          &quot;rescored&quot;: false
+        },
+        &quot;active_query_diagnostics&quot;: {
+          &quot;failed_turns&quot;: 0,
+          &quot;affects_observable_verdict&quot;: false
+        }
+      },
+      &quot;observed_accounting&quot;: {
+        &quot;clarification_turns&quot;: 2,
+        &quot;mean_clarifications_per_dialogue&quot;: 0.16666666666666666,
+        &quot;llm_calls&quot;: {
+          &quot;available&quot;: true,
+          &quot;total&quot;: 40
+        },
+        &quot;llm_tokens&quot;: {
+          &quot;available&quot;: true,
+          &quot;total&quot;: 84869
+        }
+      }
+    }
+  },
+  &quot;system_comparison&quot;: {
+    &quot;baseline_configuration&quot;: {
+      &quot;mode&quot;: &quot;ollama&quot;,
+      &quot;implementation&quot;: &quot;workflow-v2&quot;,
+      &quot;timeout_s&quot;: 120,
+      &quot;base_url&quot;: &quot;http://localhost:11434&quot;,
+      &quot;question_policy&quot;: &quot;adaptive&quot;,
+      &quot;max_questions&quot;: 3,
+      &quot;history&quot;: &quot;cold_start&quot;,
+      &quot;max_calls&quot;: 8,
+      &quot;max_tokens&quot;: 100000,
+      &quot;workflow_config&quot;: {
+        &quot;validation&quot;: {
+          &quot;semantic_mode&quot;: &quot;code-only&quot;,
+          &quot;nli&quot;: false
+        },
+        &quot;retrieval&quot;: {
+          &quot;provider_k&quot;: 100,
+          &quot;lexical_k&quot;: 100,
+          &quot;fused_k&quot;: 150,
+          &quot;dense&quot;: false
+        },
+        &quot;ranking&quot;: {
+          &quot;method&quot;: &quot;deterministic-rrf&quot;,
+          &quot;rrf_k&quot;: 60
+        },
+        &quot;reranker&quot;: false
+      },
+      &quot;workflow_config_sha256&quot;: &quot;5f25a8eecf9259e3ea1a4029dcc1940bc566e61964f7bc20109e18cba2e9e6a8&quot;,
+      &quot;ollama_transport&quot;: {
+        &quot;options&quot;: {
+          &quot;temperature&quot;: 0,
+          &quot;seed&quot;: 42,
+          &quot;num_predict&quot;: 700
+        },
+        &quot;think&quot;: false,
+        &quot;stream&quot;: false
+      }
+    },
+    &quot;candidate_configuration&quot;: {
+      &quot;mode&quot;: &quot;ollama&quot;,
+      &quot;implementation&quot;: &quot;workflow-v2&quot;,
+      &quot;timeout_s&quot;: 120,
+      &quot;base_url&quot;: &quot;http://localhost:11434&quot;,
+      &quot;question_policy&quot;: &quot;adaptive&quot;,
+      &quot;max_questions&quot;: 3,
+      &quot;history&quot;: &quot;cold_start&quot;,
+      &quot;max_calls&quot;: 8,
+      &quot;max_tokens&quot;: 100000,
+      &quot;workflow_config&quot;: {
+        &quot;validation&quot;: {
+          &quot;semantic_mode&quot;: &quot;code-only&quot;,
+          &quot;nli&quot;: false
+        },
+        &quot;retrieval&quot;: {
+          &quot;provider_k&quot;: 100,
+          &quot;lexical_k&quot;: 100,
+          &quot;fused_k&quot;: 150,
+          &quot;dense&quot;: false
+        },
+        &quot;ranking&quot;: {
+          &quot;method&quot;: &quot;deterministic-rrf&quot;,
+          &quot;rrf_k&quot;: 60
+        },
+        &quot;reranker&quot;: false
+      },
+      &quot;workflow_config_sha256&quot;: &quot;5f25a8eecf9259e3ea1a4029dcc1940bc566e61964f7bc20109e18cba2e9e6a8&quot;,
+      &quot;ollama_transport&quot;: {
+        &quot;options&quot;: {
+          &quot;temperature&quot;: 0,
+          &quot;seed&quot;: 42,
+          &quot;num_predict&quot;: 700
+        },
+        &quot;think&quot;: false,
+        &quot;stream&quot;: false
+      }
+    },
+    &quot;causal_single_variable_claim&quot;: false
   }
-}</pre></details><p><a href="evidence/evaluation-contract.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-roles" class="receipt"><summary>LLM-симулятор, валидатор и судья</summary><p>Источник: <code>report/evidence/evaluation-roles.json</code><br>SHA-256: <code>9162c633b4fe52e4caa16ac2242c7014e661252c52ffd8d7660f7f3184fa1d88</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>protocol_manifest_path</td><td>artifacts\prototype-product-2026-09-23\roles-final-record.protocol.json</td></tr><tr><td>protocol_manifest_file_sha256</td><td>b2da047f0008bb1118ef1218e2b59181fe7fce4320a14d6a2f80f45835dcb5ad</td></tr><tr><td>status</td><td>complete</td></tr><tr><td>report_sha256_input</td><td>eff89ae9948892f81a7dcb41b52b118e9090ca69b22c03d9d2f27a7a2818d2f2</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+}</pre></details><p><a href="evidence/evaluation-contract.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-roles" class="receipt"><summary>LLM-симулятор, валидатор и судья</summary><p>Источник: <code>report/evidence/evaluation-roles.json</code><br>SHA-256: <code>97b21f517d1192142d36fa1a23a495c29839a258a7253d4ec0799d0615bf3ff4</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>protocol_manifest_path</td><td>artifacts\compliance-closure-2026-09-27\roles.protocol.json</td></tr><tr><td>protocol_manifest_file_sha256</td><td>b2da047f0008bb1118ef1218e2b59181fe7fce4320a14d6a2f80f45835dcb5ad</td></tr><tr><td>status</td><td>complete</td></tr><tr><td>report_sha256_input</td><td>c2e7d4cf645729ae963c4689189ade972d6638fffb58d8b690bf63f34c13165a</td></tr><tr><td>measurement_date</td><td>27.09.2026</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
   &quot;protocol&quot;: {
     &quot;protocol_version&quot;: &quot;llm-clarification-v0.7&quot;,
     &quot;scope&quot;: &quot;public_v2_dev_recommend_episode_with_bounded_clarifications&quot;,
@@ -688,19 +849,19 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     },
     &quot;protocol_sha256&quot;: &quot;c730996205cc3ae669fd31bfd727920bd74bab7ca336ba7d086e31eae86a2d97&quot;
   },
-  &quot;protocol_manifest_path&quot;: &quot;artifacts\\prototype-product-2026-09-23\\roles-final-record.protocol.json&quot;,
+  &quot;protocol_manifest_path&quot;: &quot;artifacts\\compliance-closure-2026-09-27\\roles.protocol.json&quot;,
   &quot;protocol_manifest_file_sha256&quot;: &quot;b2da047f0008bb1118ef1218e2b59181fe7fce4320a14d6a2f80f45835dcb5ad&quot;,
   &quot;result&quot;: {
     &quot;protocol_version&quot;: &quot;llm-clarification-v0.7&quot;,
     &quot;max_clarifications&quot;: 3,
     &quot;metrics&quot;: {
       &quot;success_rate&quot;: 0.25,
-      &quot;mean_clarifications&quot;: 1.375,
-      &quot;text_claims&quot;: 119,
+      &quot;mean_clarifications&quot;: 0.75,
+      &quot;text_claims&quot;: 149,
       &quot;unsupported_text_claims&quot;: 0,
       &quot;unsupported_text_claim_rate&quot;: 0.0,
-      &quot;agent_latency_p50_ms&quot;: 1938.89869999839,
-      &quot;agent_latency_p95_ms&quot;: 3840.480999991996,
+      &quot;agent_latency_p50_ms&quot;: 2234.7683000261895,
+      &quot;agent_latency_p95_ms&quot;: 4168.222400010563,
       &quot;judge_grounded_rate&quot;: 1.0,
       &quot;judge_completed_cases&quot;: 8,
       &quot;claim_metric_scope&quot;: &quot;Independent conservative catalog/history audit of supported explanation templates; advisory judge is separate.&quot;
@@ -712,7 +873,7 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     &quot;core_success_count&quot;: 2,
     &quot;protocol_complete_count&quot;: 8,
     &quot;failure_count&quot;: 6,
-    &quot;replay_sha256&quot;: &quot;66285ab08826bc6b5e4248eca9b7cda77b53a4234c3e833434161a03e8fb3fdf&quot;,
+    &quot;replay_sha256&quot;: &quot;504f4c08e38f527f50d8e33b7d20384f7d30fd2b89899b7677cbd08d632d6de6&quot;,
     &quot;latency_note&quot;: &quot;observed_latency_ms измеряется локально и намеренно исключён из replay_sha256&quot;
   },
   &quot;status&quot;: &quot;complete&quot;,
@@ -748,7 +909,7 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
         &quot;role&quot;: &quot;simulator&quot;,
         &quot;model&quot;: &quot;qwen3:8b&quot;,
         &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;,
-        &quot;timeout_s&quot;: 90.0,
+        &quot;timeout_s&quot;: 45.0,
         &quot;seed&quot;: 42,
         &quot;temperature&quot;: 0.0,
         &quot;num_predict&quot;: 700,
@@ -759,7 +920,7 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
         &quot;role&quot;: &quot;semantic_validator&quot;,
         &quot;model&quot;: &quot;qwen3:8b&quot;,
         &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;,
-        &quot;timeout_s&quot;: 90.0,
+        &quot;timeout_s&quot;: 45.0,
         &quot;seed&quot;: 42,
         &quot;temperature&quot;: 0.0,
         &quot;num_predict&quot;: 700,
@@ -770,7 +931,7 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
         &quot;role&quot;: &quot;judge&quot;,
         &quot;model&quot;: &quot;qwen3:8b&quot;,
         &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;,
-        &quot;timeout_s&quot;: 90.0,
+        &quot;timeout_s&quot;: 45.0,
         &quot;seed&quot;: 42,
         &quot;temperature&quot;: 0.0,
         &quot;num_predict&quot;: 700,
@@ -781,7 +942,7 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
         &quot;role&quot;: &quot;agent&quot;,
         &quot;model&quot;: &quot;qwen3:8b&quot;,
         &quot;base_url&quot;: &quot;http://127.0.0.1:11434&quot;,
-        &quot;timeout_s&quot;: 90.0,
+        &quot;timeout_s&quot;: 45.0,
         &quot;seed&quot;: 42,
         &quot;temperature&quot;: 0.0,
         &quot;num_predict&quot;: 700,
@@ -893,82 +1054,86 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
         &quot;pyproject.toml&quot;: &quot;d45e09ba2b00e46429249e68b9be164560fa6166072bbaf6c24b33eddb3c88f2&quot;,
         &quot;requirements.txt&quot;: &quot;a9ea9263f4bf13bee34c308d5c004cba0683fe68f190a4806b0a001de9036a7c&quot;,
         &quot;requirements-lock.txt&quot;: &quot;0a439c7a16303932d7077c4ebc4b0931d8412df69a76481aa5996927f2c7a88d&quot;,
-        &quot;requirements-hf.txt&quot;: &quot;18754e546e93c325124b21c018d273931457a5727745205bcd41f984489460c9&quot;
+        &quot;requirements-hf.txt&quot;: &quot;02340e548cf7cd81bbcc4c5c6ca785a90d1790cb195330e8d2e6d4653247158c&quot;
       },
       &quot;git&quot;: {
         &quot;available&quot;: true,
         &quot;commit&quot;: &quot;5d09189c3945dbc19687d3498e732a9338d5fbe9&quot;,
         &quot;branch&quot;: &quot;codex/experiment-compound-questions&quot;,
         &quot;dirty&quot;: true,
-        &quot;porcelain_sha256&quot;: &quot;35a047aee82d027805fd72f2938041a8a7793541502e529e5e1d60f1e18515cd&quot;
+        &quot;porcelain_sha256&quot;: &quot;cfda1cb12f41d0805fd5c6b36165903b6c80fd02e13de74f8147624ba4f909f9&quot;
       }
     },
     &quot;source_file_sha256&quot;: {
-      &quot;evals/__init__.py&quot;: &quot;9fdb76665d70b85203dc2c93f23b82e10ba849f8213e6f41d10cdaffad7bb286&quot;,
-      &quot;evals/adversarial_ru.py&quot;: &quot;e215c18a6ae2984832a4bfe4b8ee7a240976fd990fc0104b58fca9e480c68817&quot;,
+      &quot;evals/__init__.py&quot;: &quot;a2023449080bd3755aff5812e323e1b02daa5c2a396a8aff08e231e8d43998a5&quot;,
+      &quot;evals/adversarial_ru.py&quot;: &quot;e95415f466ae25f9ca9df3444616c6317e189edeea1dc2fec4f305e3b9d682d3&quot;,
       &quot;evals/dataset_v2.py&quot;: &quot;47f38bcb27377a0a27d2e2f0776a2f4a6c348d4dee3147aee466a0183711c9fd&quot;,
       &quot;evals/explanations.py&quot;: &quot;8c35acc8049e295afe37cc9a1f839067b199abb67e11048521740c83791479a1&quot;,
-      &quot;evals/llm_protocol.py&quot;: &quot;f9135540a2e2a14999076b34aa733ae5adfc4fd7c906f63df0f2036d867e498e&quot;,
-      &quot;evals/llm_replay.py&quot;: &quot;c6212c78007aa5335fc343b805ef503cea6e0835d9d28b15ff50aa8eb571dca2&quot;,
-      &quot;evals/metrics.py&quot;: &quot;14a3b5c044569599f087e698b50573edfb8193e5b07a8a96aad8771a34246a9e&quot;,
+      &quot;evals/llm_protocol.py&quot;: &quot;653b74c6a73464c5842f8d7164fca6621ea45522adb0fbe3721030ded2fd50a3&quot;,
+      &quot;evals/llm_replay.py&quot;: &quot;449113a6b3c6aef7a931e2d4e2570614569eaa7bd059121a630866a27b112521&quot;,
+      &quot;evals/metrics.py&quot;: &quot;d6bd0bdcdffd836d201f2a73af8ca7cfd98a080a6e0f64158c941c2a39157c85&quot;,
       &quot;evals/observable_product.py&quot;: &quot;eb9f90b6650a858db79eeebdbcb88cdb35e5563b19e767bb867ecaa522b6171c&quot;,
-      &quot;evals/oracle.py&quot;: &quot;9c3303fb4819c297bd89b39bc312f2d7aeb77cbff845e8d7b3812f6c85372ee7&quot;,
+      &quot;evals/oracle.py&quot;: &quot;807d6417f81d7eda292d85bf909a192f75b44c6b616bfedb02f36e2f3b06594c&quot;,
       &quot;evals/redial_annotation.py&quot;: &quot;04fcb6b3dd7c9169b97a0273b2ae819172bf510064d616d1267e4057614ff548&quot;,
-      &quot;evals/scenarios.py&quot;: &quot;158b77e992ce59fa694543981ee4484d84b88cfce1db7ba62bab27932df423f7&quot;,
+      &quot;evals/scenarios.py&quot;: &quot;5434caac43543ccfa51be188026b735594e5b26e89ae05dae82d8c537c28e271&quot;,
       &quot;evals/simulator.py&quot;: &quot;8b40c36099b4b3ccf15b6e0e1c91684729c5a515aad4bf83590a588f99e39ff1&quot;,
       &quot;pyproject.toml&quot;: &quot;d45e09ba2b00e46429249e68b9be164560fa6166072bbaf6c24b33eddb3c88f2&quot;,
-      &quot;requirements-hf.txt&quot;: &quot;18754e546e93c325124b21c018d273931457a5727745205bcd41f984489460c9&quot;,
+      &quot;requirements-hf.txt&quot;: &quot;02340e548cf7cd81bbcc4c5c6ca785a90d1790cb195330e8d2e6d4653247158c&quot;,
       &quot;requirements-lock.txt&quot;: &quot;0a439c7a16303932d7077c4ebc4b0931d8412df69a76481aa5996927f2c7a88d&quot;,
       &quot;requirements.txt&quot;: &quot;a9ea9263f4bf13bee34c308d5c004cba0683fe68f190a4806b0a001de9036a7c&quot;,
-      &quot;scripts/evaluate_llm_protocol.py&quot;: &quot;eae7479013647fcebef7c06b47d43758b76a3a8c072195c4341fa179072d6aee&quot;,
-      &quot;src/recagent/__init__.py&quot;: &quot;298e8ee79d1d48a9d3756d46d06f9de9fcca9b5d9fd02b6cb3988e150c095b3d&quot;,
-      &quot;src/recagent/agent.py&quot;: &quot;12842e81417d68cc82381be913b169e7de86cf42b269e69bc81e0a0889c48be6&quot;,
-      &quot;src/recagent/api/__init__.py&quot;: &quot;15dc2f7115d5a9e8615fd6918a694a878187d4c9201bd69500cd17392b5d0763&quot;,
-      &quot;src/recagent/api/app.py&quot;: &quot;f470c51d970530f33addd65d484265a0925b4d5498b1673ebd4867b1a44dafd8&quot;,
-      &quot;src/recagent/api/errors.py&quot;: &quot;a5da8e7048fbba53419beb22bc64741cf768084b46f7591a57a45c987ed204dc&quot;,
-      &quot;src/recagent/api/health.py&quot;: &quot;7fedd8e04368f329eb506b0e01fc866541ca973ad742adc941a9dfee9187e120&quot;,
-      &quot;src/recagent/api/middleware.py&quot;: &quot;e054c0e0ed95f9057f58f698ae3591e9b24c3f3319aedd16917f3d14c77bb8b3&quot;,
+      &quot;scripts/evaluate_llm_protocol.py&quot;: &quot;b6b7856ef57701b4f3e2e83a75680256973dee99bd5116ddc6015e3676f737e5&quot;,
+      &quot;src/recagent/__init__.py&quot;: &quot;9a42e6cbf31a77e27b112de66cf1dd5fbca3ab3e0070be1870d872fea5e2b81a&quot;,
+      &quot;src/recagent/agent.py&quot;: &quot;a0d6280a9af78559b007b9d374fe0befce50ebfeb3a6341ca5a2f5cc5ce83351&quot;,
+      &quot;src/recagent/api/__init__.py&quot;: &quot;48bd944f889c3f40ab9feb8723d855ae14318d1f46c2ac635d56ddc778641a47&quot;,
+      &quot;src/recagent/api/app.py&quot;: &quot;3f2febe97e790ab21a6225eb9070a3dad28c2e20a38f075b94a82894f624eaf2&quot;,
+      &quot;src/recagent/api/errors.py&quot;: &quot;52c4e22569f6f9c8a1708356cdb720b9d1afc27e39791cf4bcd2ae69939a2712&quot;,
+      &quot;src/recagent/api/health.py&quot;: &quot;7113fc48695f61b790147a625b7c7d3702592e66bbc08d4950b6ade91b1149e8&quot;,
+      &quot;src/recagent/api/middleware.py&quot;: &quot;4c33bd07ac70c1b2318850812013f037e4990144cf6ff28c6198ffb731b0d8cd&quot;,
       &quot;src/recagent/catalog/__init__.py&quot;: &quot;8c961f7843ed74f38696c6efd7149250aae5dde16a4853e534849d221fc3737b&quot;,
       &quot;src/recagent/catalog/calibration.py&quot;: &quot;9d1980b260d24194118f9741ff462e9e5d7480aacffaf7d5e680efd00ed68b27&quot;,
       &quot;src/recagent/catalog/generator.py&quot;: &quot;67ec895d813f9aadde9ff98baf1aa5419fb26e01a059956237197faef8ef2709&quot;,
       &quot;src/recagent/catalog/users.py&quot;: &quot;ee3fb319a96ffb67414d36eb4e8f3f9affc0c56964a4ba9aff90733e3d386472&quot;,
       &quot;src/recagent/catalog/words.py&quot;: &quot;b94e664d5231b0846b65141dff3faf97d0983d42faf1c78272b07797aaa47db8&quot;,
       &quot;src/recagent/config/__init__.py&quot;: &quot;bb9254bbf848fe4f9c8c856ae0676ab3d785c3e4d511a8fa8e3da6913a8d0619&quot;,
-      &quot;src/recagent/config/settings.py&quot;: &quot;3143261f48f06c3cbc811b0daefa588e6b032035c73ee369c37835fc1d72394e&quot;,
+      &quot;src/recagent/config/settings.py&quot;: &quot;12a6376d4903cf3e49c06694e61853311940ef6182b8338c5eb0b2110fd74ce2&quot;,
+      &quot;src/recagent/context_nli.py&quot;: &quot;d3517ad41c0f4b8bf3b1590ef610ae420e1ff8faad00df80aacd5149490a890c&quot;,
       &quot;src/recagent/contracts.py&quot;: &quot;573be4a6f631ed1ebd8e5c9b904f235d652827f3b9217baaa76993a3603c923b&quot;,
       &quot;src/recagent/domains/__init__.py&quot;: &quot;728b61363d2e2cb1c9ca719decc2f88ef27453dfb7c2e7ffc7a28635fbcb8e19&quot;,
       &quot;src/recagent/domains/base.py&quot;: &quot;319e4dc72903bcd35aac9f7385664b4c646b1aa54379f42904aa3f54be20cd3b&quot;,
-      &quot;src/recagent/domains/demo.py&quot;: &quot;310faebb68763f9c4c027635aa98ed0c825014925911b788815af37e63e30f96&quot;,
-      &quot;src/recagent/factory.py&quot;: &quot;161806ae599357b534071a3330dc9d97fe82ecf033449d4e95e060804fd75753&quot;,
-      &quot;src/recagent/filtering.py&quot;: &quot;0fe5e6f9662ad295df1ff0ce4ec4be7564c5206bc0d10aa70d958cd89901c8b6&quot;,
-      &quot;src/recagent/generic_workflow.py&quot;: &quot;f37e9feadf9801e331a0d5a2c729b364d66945566eb66701ce44d1944898d4c1&quot;,
-      &quot;src/recagent/grounding.py&quot;: &quot;366e3719f7d9cec1f3d911258d9577fa0a562a7887310cf53aa6568b6b2d48aa&quot;,
-      &quot;src/recagent/interpretation.py&quot;: &quot;328ced9293e085298ae2c2a86af82a3ae61df7f277508c9ae36f788f77adceae&quot;,
-      &quot;src/recagent/mock_platform.py&quot;: &quot;ae0d9625f6ce12606e5f6ba138aa0d8b14d3e21c5847bc888be134e1b9d08a75&quot;,
-      &quot;src/recagent/models.py&quot;: &quot;26e5559ac4ac973576f8e28de120700e5c620b005a2adee573ffaaf1b53bd064&quot;,
-      &quot;src/recagent/observability/__init__.py&quot;: &quot;a75f9c3102c8d03f244e7f66add788711d3cb15919adc9ce1d3c31f8bf187491&quot;,
-      &quot;src/recagent/observability/logging.py&quot;: &quot;193d96ddba038fa120a35ec1582fc2ab0f47386ef08bc45d7f64f263631546d7&quot;,
-      &quot;src/recagent/onboarding.py&quot;: &quot;c28b4fa24726f5b5964f74aabfe8c8e7242bb48392e5369d9d9388297edc2f30&quot;,
-      &quot;src/recagent/parsing.py&quot;: &quot;850fdea4a4b202a25280cfa074e96d94381c7ce3fe0ec334a35ba7e0bba2a540&quot;,
-      &quot;src/recagent/pending_preview.py&quot;: &quot;821600ce00f43a0917498a22cc5b4608ca87939a6a38059219cd6696e0bca078&quot;,
-      &quot;src/recagent/planner.py&quot;: &quot;36f7600948f7aa52ee681adc2e8c8b713bd6b3fe8b4a184e3d40ece51d901706&quot;,
+      &quot;src/recagent/domains/demo.py&quot;: &quot;44db291deba9ce29d85d2e7b67c938b910dccf4506cdb843e7a1cb0774b9372a&quot;,
+      &quot;src/recagent/factory.py&quot;: &quot;f98bb2b41001886c8c7ccafdff3cef32fc0889f50abc173c6774967780209da7&quot;,
+      &quot;src/recagent/filtering.py&quot;: &quot;b99a77f0eef9f9427f011ce39e438a0ba05b32a6b010e533887771c5c6fdbd3c&quot;,
+      &quot;src/recagent/generic_workflow.py&quot;: &quot;475e7310afe086b1b5618e5dea24d6ddc740152266ac3d5342cb36c72a875d98&quot;,
+      &quot;src/recagent/grounding.py&quot;: &quot;ef48b1a11ef1ace00dca39e6ec1129ce61bcc3c76c5e130f4feb02f4c8e9a972&quot;,
+      &quot;src/recagent/interpretation.py&quot;: &quot;9d2349a8f9ce3f360e9891d68c85e7aaa6e28f5ff0f4db8410603a8dd7c8ed81&quot;,
+      &quot;src/recagent/mock_platform.py&quot;: &quot;12789320aedce97f180ae70cc414d1842d44f4bfa5352e6df5729142b8356630&quot;,
+      &quot;src/recagent/models.py&quot;: &quot;27a21ae38da2f7836370edd0bf8b6e51bd4b628419507ecb30b22b0db48d2b00&quot;,
+      &quot;src/recagent/nli_resolver.py&quot;: &quot;f582eb6d711d0e03a3765fc20df24945b95f7ab73f2acb7cf97427f02a3f5e07&quot;,
+      &quot;src/recagent/observability/__init__.py&quot;: &quot;955820f9b1b5189f823f361855d6218d38b3b9e32e3592ae8f406feb22a2660c&quot;,
+      &quot;src/recagent/observability/catalog_gaps.py&quot;: &quot;6560ab69f9d1bbfbe833121d50668174a1840c3e26b2404c849817b4914c1bc0&quot;,
+      &quot;src/recagent/observability/logging.py&quot;: &quot;18d9153ab41c6c47d605e80ba98f1f8e8a82c7f247794c71c8abb0e0bfe06917&quot;,
+      &quot;src/recagent/onboarding.py&quot;: &quot;e10920821256a8477be465346bdc7f737342cddc38bda9f0eb370c9ecd86394f&quot;,
+      &quot;src/recagent/parsing.py&quot;: &quot;4a1880af0491277b3c48033e5d84fc6de08494b4b86f44e26be1131a7907d4ee&quot;,
+      &quot;src/recagent/pending_preview.py&quot;: &quot;4e9d0cea7a6939730439c47982fa642031151f7da62255b30045ca95670bfe6e&quot;,
+      &quot;src/recagent/planner.py&quot;: &quot;eb25518b92dc89cdadf5bba2bfc7558ba7c2d6e2fe3ffff05c4fd9aef2be36db&quot;,
       &quot;src/recagent/platform_contract.py&quot;: &quot;f98e6f1ab4c7a34f7c0913ca7fe860f303930dd2f7de554aa223d33b1585d047&quot;,
-      &quot;src/recagent/preferences.py&quot;: &quot;df9591dee6b19d59698cf368c00409c5b373a292fe9d37b2c582c34340648422&quot;,
+      &quot;src/recagent/preferences.py&quot;: &quot;1b53a3fb8a1f81311905ed1afa4bc3bdefd220765436cc34ec057b3866a23321&quot;,
       &quot;src/recagent/providers.py&quot;: &quot;006610d144daa3a48bc391c7f25d18adfe2661fbdb8bef03d4b779ec4405821a&quot;,
       &quot;src/recagent/query_compilation.py&quot;: &quot;1958294d4640bedcd5b47ca2b4101a59e403902f8833aab0ff8ba4892e0b501a&quot;,
-      &quot;src/recagent/questions.py&quot;: &quot;6da3a36eed9eec8a70769a87d55a4b9bebd0a62e6725f4a50dfdb1e4a17585a2&quot;,
-      &quot;src/recagent/ranking.py&quot;: &quot;b7611bb129c47c5ec91254eea5d2b3e3f51a668df75225c219e31350f9228355&quot;,
+      &quot;src/recagent/questions.py&quot;: &quot;e53f821c1ef655ff581bbaf6ebf49e0ef96672fe3c9afe0050b02c5d0e9c80ed&quot;,
+      &quot;src/recagent/ranking.py&quot;: &quot;f64545614a14f571ccb04126305810abc9654ec5414e07b1155ef914e721f25d&quot;,
       &quot;src/recagent/recsflow.py&quot;: &quot;16498a139d71c24f5f5c9da24a197838876bf2b9793be61fee94662219b8f669&quot;,
-      &quot;src/recagent/request_mapping.py&quot;: &quot;5830db335555096d93e6593afe51aed7f218aeadf1815144387d6978f8fc54ae&quot;,
-      &quot;src/recagent/resilience/__init__.py&quot;: &quot;7bc1aee0eb6c2e5fbf1da721c96c57368a504d5cb14332ea142098366042c35a&quot;,
-      &quot;src/recagent/resilience/degradation.py&quot;: &quot;c5f8f24cd956517faa93198b178e69b576e120033db656a75daa79749b00ecc6&quot;,
-      &quot;src/recagent/resolution.py&quot;: &quot;26cef8b2a2046e5a8b0b3254cfb404f3b6e5be0f4257840a8766ffa6363ef115&quot;,
-      &quot;src/recagent/response_generation.py&quot;: &quot;b34a776444a6222bfd362d354e1c2a8b837aa76680bccf9b98af85a68d153419&quot;,
-      &quot;src/recagent/retrieval.py&quot;: &quot;10ccd7a4d25472ed3b61701c1427f955763a025f0e811936f62528aed832063b&quot;,
-      &quot;src/recagent/semantic.py&quot;: &quot;340ef7e5e5acf62f735fe2fbd45adee2033ec1f708e0367115c5091214734faf&quot;,
-      &quot;src/recagent/state.py&quot;: &quot;d3784f88065336f78873c41131c6addb1310af9063ff66435e33552ef11129f1&quot;,
-      &quot;src/recagent/validation.py&quot;: &quot;fda9c951db44e7df08c6cc74166437f36bfa213c7cbd71909f32d945a902eef0&quot;,
-      &quot;src/recagent/workflow.py&quot;: &quot;de8ba2de5bc28055811df5b6151be247f751daea433c3c05dfa65c5879cd6601&quot;,
+      &quot;src/recagent/request_mapping.py&quot;: &quot;7df2db308fcced5ec55d0391b76f781a66d05b7becb7e800b3382057690df3a7&quot;,
+      &quot;src/recagent/resilience/__init__.py&quot;: &quot;85a8e1ab0d0951dde0465fbb001986d4882d1d307d9d861e6259abd3921b1208&quot;,
+      &quot;src/recagent/resilience/degradation.py&quot;: &quot;2a18213a66cd7932d65dfcb46eadbdcc0aae6ebf77abc8fe37a938f022fab4b7&quot;,
+      &quot;src/recagent/resolution.py&quot;: &quot;571ef4ad176019701e3fd10b082de84e686732620b5fdfceccf4e7a8ca20d58d&quot;,
+      &quot;src/recagent/response_generation.py&quot;: &quot;e6765c920c3280ab27907191c843912343e1693bc7e3f6a9d2f08318c6397912&quot;,
+      &quot;src/recagent/retrieval.py&quot;: &quot;91ea772f5d8242d92a1b4453a7f4f37697d696df3944aca18ad9d2dd854781ff&quot;,
+      &quot;src/recagent/semantic.py&quot;: &quot;fb7a97679d7665252dc4e26f0e9da77e594c4962e03019f15de88f283c21f872&quot;,
+      &quot;src/recagent/semantic_policy.py&quot;: &quot;08e918db2c13151c94053ee11b1271009071eba9548637016731c650ad6c1f4d&quot;,
+      &quot;src/recagent/state.py&quot;: &quot;39eb2fc9c94afca294efbaf0892c7c2a32be570c8f6173dd3dbd915e20d3c6a7&quot;,
+      &quot;src/recagent/validation.py&quot;: &quot;67e7438467a50da7beb237baecda6884b669c50554c67283df313852ca33b347&quot;,
+      &quot;src/recagent/workflow.py&quot;: &quot;7c12087e3c075a2284f5ed0ac7cb2af2397c1cccbede906c24565258954593b0&quot;,
       &quot;configs\\workflow-v2.yaml&quot;: &quot;d026305c81a6b4ecdb1123eee1b0ad1aa7665ca8ecbde9981d80ecfb16979e07&quot;
     }
   },
@@ -1043,83 +1208,79 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     }
   },
   &quot;cache_entry_sha256&quot;: {
-    &quot;agent/entries/074ff088829ef5449a43a5983d0a2bef92c9d5667471b474e79695f3a896b221.json&quot;: &quot;93991d78f6f5f3a2b27b055c1c252ad823719983daa0486663f91c0af696d83b&quot;,
-    &quot;agent/entries/09c381e8426c6eba0135904b47e401af1dbaac4eec7467fcfa61cb33723c75c0.json&quot;: &quot;ceadf8c329e1ddefdb8182d421035ddb49d4868238977121f6d692d5355bc013&quot;,
-    &quot;agent/entries/132807e1d82e19206cf8b201b7aded44155834d1873eb96cc52454c84b492fd5.json&quot;: &quot;72502c00cf8f4a93dc6e99984ec5af0cc38dcdfb07dc6654ca4b5393798f2de8&quot;,
-    &quot;agent/entries/15cc01842e44563236168c2c03078e4c8be1590c7b8e4b137d40da101e88f15f.json&quot;: &quot;01812c5616c698117e3f2400444315991550a67821bd0c2abcb615b02717c052&quot;,
-    &quot;agent/entries/539bcf6286fea31dc67e3859925a36445a6fdbffecd2dfb13121f72e36f9ce2b.json&quot;: &quot;3a8207e178a4d7e9534d90457a792c5e5115a3307b2067134dd928c599f0da88&quot;,
-    &quot;agent/entries/5efd58da02dad6e58990c6efbe72f4b4956ab48294334b9b205c5e78963cc4ac.json&quot;: &quot;354ed2a5d138a0dcbc70abe6ccbd90eb31a68cd8f483703fce18d8e867f1c927&quot;,
-    &quot;agent/entries/624cc46917356cabcd13194b373a852b423e4578594c82f60f745951d83cdd4b.json&quot;: &quot;f46cc575003ef4143cae1b3addd6ce3e11707f34843f008a1f541110a29175ed&quot;,
-    &quot;agent/entries/8c409e699f5f44329ce11f759bf7e12c21d01f730ea5e77484cf7af610084c94.json&quot;: &quot;1eabb126baa05b6963959100e89344f35da5accff2d3779c80a02762632c43e0&quot;,
-    &quot;agent/entries/9196ca82bdb23db8f5cb6b43f204d5bdcc684298ea12c08d5ae4072bf1ac4071.json&quot;: &quot;dad79767bcca86398ec4276c8343828463e8d0409ed69df3484129a2bcf26b7c&quot;,
-    &quot;agent/entries/968622668598d16af0e3a0681c2acbce3947fb933d069beedb122ffb6f6ac11a.json&quot;: &quot;d6ecd7bd15e36274df73a12463e70efd30f913e133e3610749a38efb846dcbb2&quot;,
-    &quot;agent/entries/a40959444728897d34e7984220a2331fcbee2969ca8b7bb035f2e057dcfff105.json&quot;: &quot;e39192a509e20fe2c84826a44fb907d03f1c4d5156c89477756bbe80cbdf3e28&quot;,
-    &quot;agent/entries/ab37e04803952ef070317f27a4512046eea0a5ecc557645a5d68d85125dc06be.json&quot;: &quot;02cea9ec3ecfd2251a892fbfd169e1b8e8b7a54c7c662a3e5264cac7984ac3d3&quot;,
-    &quot;agent/entries/b6918a07327d4c1f36892d340444a395b415a2f55d8b5be5eafbe9ea49bc00cc.json&quot;: &quot;5b347913d7866c39b4c2467e9b100be9fb3b3166cb571891923d3c3bb944c80c&quot;,
-    &quot;agent/entries/c5cbc4e3e18c4f8337dd6d8671b0d610d2a4dd55d1739baf56afa159c49e5d1d.json&quot;: &quot;0e2b339088a6000c54227ffebeed1de41810c3eafd5b49d1a81df97de8d8342e&quot;,
-    &quot;agent/entries/cee1398cebde08d7a09a694306fdff2696fbae541e56a3fea1ac9f898942af9f.json&quot;: &quot;942c374a885ad0267aa510a713e185fae8530b7513af7d11e1fb5573b258d61c&quot;,
-    &quot;agent/entries/d4a1d42356471add04dc655a5a2fbebb78b4bca935827bac03b0ca8ac300c0f5.json&quot;: &quot;a5ac46bf20fa0c384aaf5b47235c717dea835f3aecd1f855b7784644674a2074&quot;,
-    &quot;agent/entries/dd91f0e2673dddc0cefd55e3e9ae9c58c7c63331c19536c1bd3941f9b195d850.json&quot;: &quot;acc7c89abfef35000171c63f4cd9dc6e69251ea77ecfa02010cbf84fab5c3c3f&quot;,
-    &quot;agent/entries/e00e2b950f15e6a855598719673fbf309f9dbc4b93547dd9e94163e08ffed6fe.json&quot;: &quot;5ff1bcd66a2a7426bd2b8dcb250d276fa60d9c4066f3e8556921d3053aba42ea&quot;,
-    &quot;agent/entries/e71892c010921da1240f567c826a34bd0e069d04c63341be21203ffc511082e7.json&quot;: &quot;18b0a5c5b0860a851ebb6e216c53c949ec31f9dc6cf4c5cb4f6937484e238d80&quot;,
-    &quot;agent/entries/ebda89cd2d3e116072f9a9195f479a868d63b403b8201d03c2db269a52b5b8ff.json&quot;: &quot;d8ff6fdc76a35054b2c1ac9bdbe189fdfcd4c7ba95db982e1ce07ea3932aae11&quot;,
-    &quot;agent/entries/eea7e7ddcf3022fda89b069648707acc5ac2088e52be57221cc169cc398f82a2.json&quot;: &quot;16ef85ce66fbaa323cada6d09e45a14a92e8afbcc2ff9ec9e38822aff6b44238&quot;,
-    &quot;agent/entries/ff22bc387847cc6635a340aec5d6ef1ddb634677789dbbcf4d17af68f54b699f.json&quot;: &quot;c2350f3b9654638c41800e8b22d2193cd125cd349f7802b0f30ef1c5842f2871&quot;,
-    &quot;judge/entries/06d66fae866ff7969341ae907a4f48e808afccc5ac637f45d3ebdf96df2fbf0e.json&quot;: &quot;f802d5ed9c05ab926987984e564aceb23ed477ac61b7b8ecff9f8f3045b6cb27&quot;,
-    &quot;judge/entries/7a825a0f19842acce6ed7b64ef3649c22e11d4e033dca6527ea4a9a5c20fb41e.json&quot;: &quot;933bc379c1920269aa4f5877b0fe2a33b9cfd0cb54619c8d562eb6a8d10bc453&quot;,
-    &quot;judge/entries/9feb7c1e93c9b04462c264d598ecb632867329f495f345ec8e805fc0861be3b4.json&quot;: &quot;d9d7020039f9ad5b82d6aade4641ad9084869aa83c08e97d697f67776649fad6&quot;,
-    &quot;judge/entries/a5cba51083d4e95c9dbe84b3da6f4bd905cbacf66e8b74514ece5346dd806d8b.json&quot;: &quot;63c6e359d386d27a807de576ca2744f005a824dbd83b2fb212628257948869cf&quot;,
-    &quot;judge/entries/ae560b3a5c8a52e0e918940a286533a55beecec3871b7d4e73a990de372d1465.json&quot;: &quot;c066e1bfc798541476d3e86514f19dbf327cb36ab258dc694ed995ae8739e3a5&quot;,
-    &quot;judge/entries/b5b0e5102822fecae48beeb6571e861516ff2e5b2be9abce4899779b8b397bfb.json&quot;: &quot;74a7db7f05e579f620e79185ff0a965b37321aae442543363b0cb5992c3a4c31&quot;,
-    &quot;judge/entries/d96eea3e6c0783a63eaf27d601d4ce1004edbebc6389d96617f80ed30322a6ea.json&quot;: &quot;74d0e639d14b6deb2eaf05b4ddd57296f357b0c5f2f91c444238cbf451d36087&quot;,
-    &quot;judge/entries/f3fcd0d717297249181de70d1f61ae484bb392900459b7a5d4b546bf8d3fc9da.json&quot;: &quot;88a00c58e945696698829fe7b81795c107b890f24ef3b286fbdc3dcff66fe3b1&quot;,
-    &quot;semantic_validator/entries/041280aa759a8d9407b220cd5fb327e4e7eba81ca136a92f87d6c067e8096d3b.json&quot;: &quot;1929d6dcbf2f06218229235670b1636d0ea8dbc6fd44e820a51124ccdca02c0d&quot;,
-    &quot;semantic_validator/entries/1fffdb6abc151d4219cb056118d2381016b8300b1d6ee86550bcc04e51ab2a94.json&quot;: &quot;57ea019d3fd8bcba2171503b0a643c1852334e65d4787fbce8f5e51e48da32ad&quot;,
-    &quot;semantic_validator/entries/7fdb3455417442745dc5284dbace537fe97a9a12bb81ca5e7851409f55aa69c3.json&quot;: &quot;fdfbc99a694f71f1dd63486477dd216f7de5daa348727dfc655e6a782cacc3c5&quot;,
-    &quot;semantic_validator/entries/9260131270389080fb7866540b678b9b04a5dca2539d3183ae7d3c47de8341d6.json&quot;: &quot;941dcf9ebb7ca08e2aa4a00adb50bdc6a3355ee19f92309d3bd9419a6fcf6f12&quot;,
-    &quot;semantic_validator/entries/c7501c1045ced563eb9824224b22a0b715901d2cd0ed069ca1eebbc0104e98c0.json&quot;: &quot;ee5a845cf00b2c08d44c0fd0cbb2d6da33de647786a5f1443f6ee62534c5a143&quot;,
-    &quot;semantic_validator/entries/eaae8efdeaa995f0a77224f37050554de98551c71ca93a549d22a1529cb11689.json&quot;: &quot;863f6850763b967f9ebb29f35ed643630beaf5f086c9028f63b1682227134fd8&quot;,
-    &quot;simulator/entries/0a93f0a7702df1d41ec23fb80958349ab29cf874a973d38d5fd44f48f55d1f7c.json&quot;: &quot;d9f3f5f348a71799837d47e683a9c230ca8d149b8a1afc4f556fe714be7ec8a0&quot;,
-    &quot;simulator/entries/2212f879a468c58657564fa464fb7bae8bfa0df01f48a9d76712fecab783d564.json&quot;: &quot;39f10f4c38d16f4d76bba361ed9f351c43c26897f3d7640d52d85558aedf4119&quot;,
-    &quot;simulator/entries/249fc79ba9233e4091c5d3f1c822e99a830464407139a7109a4116cf4a648590.json&quot;: &quot;b608c24ce00df42f74c7e60788547255afb1206a6d54ff6d9e8a9078ed16a2a2&quot;,
-    &quot;simulator/entries/5e3605a67ecfb7555218b2cb817700dbde8c7781458c31ceb5ff55060f81396b.json&quot;: &quot;5d29e415963ee5c6a4756866718e2b1869a6e062d3bae1023e0eb843c2dede31&quot;,
-    &quot;simulator/entries/7e3821f5d0a9acfcdab21a09626d13089795f148e72a08a26fcc5d280ae45391.json&quot;: &quot;eca29b30d23a3ce359f26e7bdcfd747987b62ea07bdf8fe8627ac5e0753d3e55&quot;,
-    &quot;simulator/entries/a4da30d5dc5f79cde5ecc07e89224470c1b6f099940baa08653d80766631905f.json&quot;: &quot;de02e17e95151c67eacf33de775d8942f5c306244659f8d95751b543584d3ccf&quot;,
-    &quot;simulator/entries/aff198a8877f3a9d77e8784cca23454a73aea464632bbfc02d9b170d8a2434ee.json&quot;: &quot;798ddcbccbe4a60f13c22e0fd585ff5a32a0505c033bac79572bf2089c889ba5&quot;,
-    &quot;simulator/entries/b67c2f65e24ef8ba599ca36e688f3aeade3c2b9d3f83c7e32a2d5a91c792c754.json&quot;: &quot;5c3fa4db46147c4ab708a64f605abee5dbb767ea4226c9166b51064177fc3ae6&quot;,
-    &quot;simulator/entries/be45a2822c2047cf2ced1cc66e1ababada9919b5789b0b779d88c0a5104e70d3.json&quot;: &quot;38b7a3aea4bd9b54a3393ad0c042371456b10cb8b9cd7b8a987f5509ae2b5c7e&quot;
+    &quot;agent/entries/0c8281230220f8842ca3b6e17e38534a223e563a586b775e235b2bb7028497f1.json&quot;: &quot;f0aea9aba68d6f412daa5b3b7a4a672cdd7150350092ab7241e49378e171637e&quot;,
+    &quot;agent/entries/13887ae8470fcf91894275938057010b4aabe8f52570200800778457b3fff53c.json&quot;: &quot;f3a0e7ba8b57e706a53c4953c8d9bf120e8af538681045a3a2612b2be7519695&quot;,
+    &quot;agent/entries/1ef900c54f4818e84636c39b20ed70aa63a7b8fee04d61ecbcb17225fa75efb8.json&quot;: &quot;0708ac89c6fc295f67884579082703caae999eb05c42fa1a93f580091e84f974&quot;,
+    &quot;agent/entries/2d586b141cd0c55aec8de984f190bf69908f5536bbfefbfa607ce70531f515ff.json&quot;: &quot;b9ce7b3b685bfc9f6c1ecd26c8a0a343aa4432faf37fc4b40caa70834ed75b0b&quot;,
+    &quot;agent/entries/31333bd4c1d01d36faf0dca17c074c48fcc0ea07c3c2c35e4bc7a92fdc4621c6.json&quot;: &quot;b5a270616fe2f6a3b8b12ada42198850a4c953435d1747c4fa3790dbd97dc09d&quot;,
+    &quot;agent/entries/511c491ffc24a6769a525db4e4bbe9665cdfbc0a76e599436ba2104ee99ce5a3.json&quot;: &quot;539b13b672f15a07c3a22755b331083c0092f98aefef53d98d18673219800b66&quot;,
+    &quot;agent/entries/539bcf6286fea31dc67e3859925a36445a6fdbffecd2dfb13121f72e36f9ce2b.json&quot;: &quot;878b589cc94b55d80cd9c32fca15ccc42e827fae16614f6e975ad96d3377a494&quot;,
+    &quot;agent/entries/53f6f3f7a2118d757a0c2568622c1d83c4ebaf46c43d191dd82b2368ccabf5db.json&quot;: &quot;0b752451711aa25d4c5b1a345d392f10b7bd02cd990a466874986feb652dbe54&quot;,
+    &quot;agent/entries/615c81cb5901e0ca66faca954df5cda84e0950078e65966e7742f4fe13e872d9.json&quot;: &quot;e2228b886fa5b0d3dcc837d1ab2f3796d81a40595186f1e999af4a8d6dfbb982&quot;,
+    &quot;agent/entries/737282561adc4e181a3ec3d1e5dad498edc652cd0ceb89c753876e54ef683236.json&quot;: &quot;99e631109e4a54f9797c97834d5dc5b5fd4fd27d6b0a663fb7e1f27fa1a9a76b&quot;,
+    &quot;agent/entries/85f8b58df39e770d814c1431b47029ee28e5a17feb66365ee93af2a79cea301e.json&quot;: &quot;8592a21ef1688d5e25bd3f21a230735c57a7c61dc1c9d9e38bb7a6fb92fa8dfc&quot;,
+    &quot;agent/entries/9196ca82bdb23db8f5cb6b43f204d5bdcc684298ea12c08d5ae4072bf1ac4071.json&quot;: &quot;0884ab06495aac6a255e0384870ef45fc89827a15f0bb26a8083417872c276fc&quot;,
+    &quot;agent/entries/b6bae4c8fd9a72a8f38ccb3965b9f8363b58fe96a04ba247611e14fe4f41003f.json&quot;: &quot;9c3ccd6d778cd8d539341ea93ccd818579daaedcb61e6725c953b4e7c197a8fd&quot;,
+    &quot;agent/entries/cde83a483775a518905ea9640833f21ab9599c7bf7e36203cc558ce50384c66b.json&quot;: &quot;3d43a79784580cb2d7172d16508f61632a6d474fdd7e5cd8337536b5aaa7cf79&quot;,
+    &quot;agent/entries/cfb5b846df2f0f0f3afb27a78c17bed2cc3c8a086082666a0f2efd03acbe899e.json&quot;: &quot;2b3edef5098d591daaa3f12ff9185e4c6174b92d141affcbfaee707be02c08fe&quot;,
+    &quot;agent/entries/de826e7e9f198da7b4c581cdb9770c22f0571db4cee38b6bfc7980d06eb30780.json&quot;: &quot;a092f3a29ae0a4855309b36729bb640d1501b4ddb1ce987b8d5cc17b6d2189bd&quot;,
+    &quot;agent/entries/e71892c010921da1240f567c826a34bd0e069d04c63341be21203ffc511082e7.json&quot;: &quot;85e134379502b7a894b1377933feacc1cff82457c34277fedf4fbc9acaeae885&quot;,
+    &quot;agent/entries/ee21874db872edfbb4ea91327d2b8dffbd44a8908b1b64bdd40d801deb068ac7.json&quot;: &quot;af4457ad35311b047a4a3dcf95d45c4e581fa70daaae2ee313da45ea2519fe41&quot;,
+    &quot;judge/entries/06d66fae866ff7969341ae907a4f48e808afccc5ac637f45d3ebdf96df2fbf0e.json&quot;: &quot;db40fee0cd4e25da397fdd747aec6b9476334ef2ed89413195588924f517123e&quot;,
+    &quot;judge/entries/08e5e6de29ca53e046273a271b00a0cc8d3d8c1059b991a95bc0def80242c3ce.json&quot;: &quot;596107369f6bc689f0de7061340dfac857f3f1478fcf4bdcbac570e81e955149&quot;,
+    &quot;judge/entries/4f27b8958a3dbe43d25d5d67bd6fe0fde78c714569c2eee702884dc76d610b5d.json&quot;: &quot;c52260503ee0d8f1e216b0da81107561865403a22889ec21a0bac15e08c79e66&quot;,
+    &quot;judge/entries/72dede9f8f1685d47666a9a7a8eaf95fe7496d928fa0085339ca647b65709f30.json&quot;: &quot;856ee64eb5b2a70bd78dddf5e2eb04e17a949429db2cc348dfa4dc38d1bc3602&quot;,
+    &quot;judge/entries/759537b488dbf76aad7368e347e8294104f9b9c521ae08b72f7e4025b9c509c3.json&quot;: &quot;01ffd508b708915c853159de4eba4c115324a658fe6265c2bf017a55d8de6ccd&quot;,
+    &quot;judge/entries/7fe875b5a0852245c17021700ca7914810c9258212b5d10f9df08f2fb5c824b5.json&quot;: &quot;256358d7f872aae223ce2a54bb3b4e9ba616ee8749522ef9f6edc530826fcee7&quot;,
+    &quot;judge/entries/98776803ad0ca22168c4bd4f4634ab6045e1b7611f5cfb9ed7adcd0ef58aa04f.json&quot;: &quot;2c4513f20bb3c17263b344777a29249b177ca6ea4139544ac43ca30db43e3264&quot;,
+    &quot;judge/entries/ae560b3a5c8a52e0e918940a286533a55beecec3871b7d4e73a990de372d1465.json&quot;: &quot;f76d9b22f2268d3a3687d0cb8c4e86bf8887aaa4be1852446cb5312c24750082&quot;,
+    &quot;semantic_validator/entries/054e6405f099597d5dea5c5e5d5c120d185337854d14e6c80f387234cee5b79e.json&quot;: &quot;5aad71a90bacaa349c1a660eb3175064ee2c37f9bf08e841cb1881fddee0f0c7&quot;,
+    &quot;semantic_validator/entries/0a57a9b518547385178ae81aa70cc5fc65eb25b1c3304aca86b5a637fa0fdbe1.json&quot;: &quot;c05214c9ad51e11676fd070ace5639c993cabae9798d101876e9023602e2ed6a&quot;,
+    &quot;semantic_validator/entries/45718b5ec59566108992066475a5bb3d4cbd8df09dd7f99277e3d817662390af.json&quot;: &quot;bb49c2634e7341b2d07303e4f31ce29a6f92340963c61a8eeabd349acd0b6b88&quot;,
+    &quot;semantic_validator/entries/c58172265a33349feab91cf1a6832fb4b46bc3d45740b1aaf57a778bae82a12e.json&quot;: &quot;a16f397a0643b547035663769f1c56d015f30305e293e0b649de8fce680be0a9&quot;,
+    &quot;simulator/entries/40935f5a9b865a3362b30873b53182db9b142aa175cbc24e558ca0370307ab8b.json&quot;: &quot;5c20a3b0f6fc7a8c0f86310b593bbb7440b65df6eb0c6c3d4f82b41169787f01&quot;,
+    &quot;simulator/entries/470cb6399fb799df5bc91396b9068fa6acbcb9b77fc2b92695c533aa7d972593.json&quot;: &quot;3a355ad2aaaf02c6fc929fde86e3baef9599882ed1af5030ef62eacc8a5d07c3&quot;,
+    &quot;simulator/entries/8c4fe95bc837ee4a9138ba992d5d3e568562f82574cdcd04d6635e31dc570797.json&quot;: &quot;ae009037dfee70badeb5851a9660caa6e6012e03bec854559ce94ccc10711c61&quot;,
+    &quot;simulator/entries/aa1cfe8be07aecc09df20665dfae4ec115a72b1e17b292368be6d2d2bb4e875c.json&quot;: &quot;d370ac499a8e99ccbdbae3f8d03054221589aed1a9a867faf6b641e86f7d5e1e&quot;,
+    &quot;simulator/entries/d3713f617e9bccda7b042093a18f3176f30301e98a04da433367bef94c83f9ca.json&quot;: &quot;4e40cf5db369fbf3353f58dca8ef1a392b2c6c256b603093e9688bce58760fe2&quot;
   },
-  &quot;report_sha256_input&quot;: &quot;eff89ae9948892f81a7dcb41b52b118e9090ca69b22c03d9d2f27a7a2818d2f2&quot;,
+  &quot;report_sha256_input&quot;: &quot;c2e7d4cf645729ae963c4689189ade972d6638fffb58d8b690bf63f34c13165a&quot;,
   &quot;limitations&quot;: [
     &quot;Только синтетический публичный v2 dev; это не blind holdout и не оценка трафика.&quot;,
     &quot;Когорта recommend-episode прежняя; число фактических уточнений ограничено заранее. Это не проверка всех сценариев и смены предпочтений.&quot;,
     &quot;Детерминированная стратифицированная когорта — protocol smoke, она не статистически репрезентативна.&quot;,
     &quot;Judge advisory и не может изменить детерминированный verdict oracle.&quot;
-  ]
-}</pre></details><p><a href="evidence/evaluation-roles.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-load-c1" class="receipt"><summary>HTTP-нагрузка: concurrency 1</summary><p>Источник: <code>report/evidence/evaluation-load-c1.json</code><br>SHA-256: <code>d6f6cc804f446b7ea741d292c6076f9fb27d191e11b0a577272111956b1b05e6</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>timestamp_utc</td><td>2026-09-24T10:00:06.604835+00:00</td></tr><tr><td>target</td><td>http://127.0.0.1:8000</td></tr><tr><td>requests</td><td>50</td></tr><tr><td>concurrency</td><td>1</td></tr><tr><td>elapsed_seconds</td><td>197.23137409999617</td></tr><tr><td>requests_per_second</td><td>0.25350936294065485</td></tr><tr><td>successes</td><td>50</td></tr><tr><td>errors</td><td>0</td></tr><tr><td>http_successes</td><td>50</td></tr><tr><td>http_errors</td><td>0</td></tr><tr><td>recommendation_successes</td><td>50</td></tr><tr><td>p50_ms</td><td>3944.6014999994077</td></tr><tr><td>p95_ms</td><td>3975.63539998373</td></tr><tr><td>max_ms</td><td>3986.152500001481</td></tr><tr><td>agent_llm_calls</td><td>100</td></tr><tr><td>requests_with_llm_usage</td><td>50</td></tr><tr><td>agent_tokens</td><td>205600</td></tr><tr><td>observed_agent_tokens</td><td>205600</td></tr><tr><td>observed_inference_seconds</td><td>172.3240006</td></tr><tr><td>inference_seconds</td><td>172.3240006</td></tr><tr><td>monetary_cost</td><td>не измерено / null</td></tr><tr><td>observed_monetary_cost</td><td>не измерено / null</td></tr><tr><td>usage_coverage.requests_with_reported_llm_calls</td><td>50</td></tr><tr><td>usage_coverage.requests_with_llm_attempts</td><td>50</td></tr><tr><td>usage_coverage.requests_with_zero_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_unknown_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_inference_seconds</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_inference_seconds</td><td>0</td></tr><tr><td>usage_coverage.request_inference_complete</td><td>True</td></tr><tr><td>usage_coverage.requests_with_observed_tokens</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_tokens</td><td>0</td></tr><tr><td>usage_coverage.request_tokens_complete</td><td>True</td></tr><tr><td>cost_assumptions.gpu_hour_cost_rub</td><td>не измерено / null</td></tr><tr><td>cost_assumptions.basis</td><td>Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.</td></tr><tr><td>fallback_requests</td><td>0</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
-  &quot;timestamp_utc&quot;: &quot;2026-09-24T10:00:06.604835+00:00&quot;,
-  &quot;target&quot;: &quot;http://127.0.0.1:8000&quot;,
+  ],
+  &quot;measurement_date&quot;: &quot;27.09.2026&quot;,
+  &quot;measurement_provenance&quot;: {
+    &quot;raw_receipt_sha256&quot;: &quot;b2e08fd8c2eadc50d915a01859ae9cf937197713d9e2a7a346ed59ef31b0a4a0&quot;,
+    &quot;started_at_utc&quot;: &quot;2026-09-27T19:04:55.504118+00:00&quot;,
+    &quot;addition&quot;: &quot;Date and raw receipt hash added for presentation; metrics and role outputs unchanged&quot;
+  }
+}</pre></details><p><a href="evidence/evaluation-roles.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-load-c1" class="receipt"><summary>HTTP-нагрузка: concurrency 1</summary><p>Источник: <code>report/evidence/evaluation-load-c1.json</code><br>SHA-256: <code>1ddbeab132c29a005631a93ebf111778dfee1c9b1931ac475a4928a0d1b7518a</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>timestamp_utc</td><td>2026-09-27T18:59:15.036898+00:00</td></tr><tr><td>target</td><td>http://127.0.0.1:20000</td></tr><tr><td>requests</td><td>50</td></tr><tr><td>concurrency</td><td>1</td></tr><tr><td>elapsed_seconds</td><td>194.6736734000151</td></tr><tr><td>requests_per_second</td><td>0.25684007049715496</td></tr><tr><td>successes</td><td>50</td></tr><tr><td>errors</td><td>0</td></tr><tr><td>http_successes</td><td>50</td></tr><tr><td>http_errors</td><td>0</td></tr><tr><td>recommendation_successes</td><td>50</td></tr><tr><td>p50_ms</td><td>3889.131499978248</td></tr><tr><td>p95_ms</td><td>3955.6021000025794</td></tr><tr><td>max_ms</td><td>3974.0310999914072</td></tr><tr><td>agent_llm_calls</td><td>100</td></tr><tr><td>requests_with_llm_usage</td><td>50</td></tr><tr><td>agent_tokens</td><td>206250</td></tr><tr><td>observed_agent_tokens</td><td>206250</td></tr><tr><td>observed_inference_seconds</td><td>170.3025062</td></tr><tr><td>inference_seconds</td><td>170.3025062</td></tr><tr><td>monetary_cost</td><td>не измерено / null</td></tr><tr><td>observed_monetary_cost</td><td>не измерено / null</td></tr><tr><td>usage_coverage.requests_with_reported_llm_calls</td><td>50</td></tr><tr><td>usage_coverage.requests_with_llm_attempts</td><td>50</td></tr><tr><td>usage_coverage.requests_with_zero_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_unknown_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_inference_seconds</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_inference_seconds</td><td>0</td></tr><tr><td>usage_coverage.request_inference_complete</td><td>True</td></tr><tr><td>usage_coverage.requests_with_observed_tokens</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_tokens</td><td>0</td></tr><tr><td>usage_coverage.request_tokens_complete</td><td>True</td></tr><tr><td>cost_assumptions.gpu_hour_cost_rub</td><td>не измерено / null</td></tr><tr><td>cost_assumptions.basis</td><td>Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.</td></tr><tr><td>fallback_requests</td><td>0</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;timestamp_utc&quot;: &quot;2026-09-27T18:59:15.036898+00:00&quot;,
+  &quot;target&quot;: &quot;http://127.0.0.1:20000&quot;,
   &quot;requests&quot;: 50,
   &quot;concurrency&quot;: 1,
-  &quot;elapsed_seconds&quot;: 197.23137409999617,
-  &quot;requests_per_second&quot;: 0.25350936294065485,
+  &quot;elapsed_seconds&quot;: 194.6736734000151,
+  &quot;requests_per_second&quot;: 0.25684007049715496,
   &quot;successes&quot;: 50,
   &quot;errors&quot;: 0,
   &quot;http_successes&quot;: 50,
   &quot;http_errors&quot;: 0,
   &quot;recommendation_successes&quot;: 50,
-  &quot;p50_ms&quot;: 3944.6014999994077,
-  &quot;p95_ms&quot;: 3975.63539998373,
-  &quot;max_ms&quot;: 3986.152500001481,
+  &quot;p50_ms&quot;: 3889.131499978248,
+  &quot;p95_ms&quot;: 3955.6021000025794,
+  &quot;max_ms&quot;: 3974.0310999914072,
   &quot;agent_llm_calls&quot;: 100,
   &quot;requests_with_llm_usage&quot;: 50,
-  &quot;agent_tokens&quot;: 205600,
-  &quot;observed_agent_tokens&quot;: 205600,
+  &quot;agent_tokens&quot;: 206250,
+  &quot;observed_agent_tokens&quot;: 206250,
   &quot;mode_counts&quot;: {
     &quot;ollama&quot;: 50
   },
-  &quot;observed_inference_seconds&quot;: 172.3240006,
-  &quot;inference_seconds&quot;: 172.3240006,
+  &quot;observed_inference_seconds&quot;: 170.3025062,
+  &quot;inference_seconds&quot;: 170.3025062,
   &quot;monetary_cost&quot;: null,
   &quot;observed_monetary_cost&quot;: null,
   &quot;usage_coverage&quot;: {
@@ -1149,30 +1310,30 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     &quot;basis&quot;: &quot;Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.&quot;
   },
   &quot;fallback_requests&quot;: 0
-}</pre></details><p><a href="evidence/evaluation-load-c1.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-load-c2" class="receipt"><summary>HTTP-нагрузка: concurrency 2</summary><p>Источник: <code>report/evidence/evaluation-load-c2.json</code><br>SHA-256: <code>ce3fa36a721e25ff11ed1de7ba5142366c55cc7a7c5669aedf228b27a7f23a66</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>timestamp_utc</td><td>2026-09-24T10:03:30.850416+00:00</td></tr><tr><td>target</td><td>http://127.0.0.1:8000</td></tr><tr><td>requests</td><td>50</td></tr><tr><td>concurrency</td><td>2</td></tr><tr><td>elapsed_seconds</td><td>172.32949249999365</td></tr><tr><td>requests_per_second</td><td>0.29014186297799166</td></tr><tr><td>successes</td><td>50</td></tr><tr><td>errors</td><td>0</td></tr><tr><td>http_successes</td><td>50</td></tr><tr><td>http_errors</td><td>0</td></tr><tr><td>recommendation_successes</td><td>50</td></tr><tr><td>p50_ms</td><td>6878.302700002678</td></tr><tr><td>p95_ms</td><td>6940.130600007251</td></tr><tr><td>max_ms</td><td>7127.978099975735</td></tr><tr><td>agent_llm_calls</td><td>100</td></tr><tr><td>requests_with_llm_usage</td><td>50</td></tr><tr><td>agent_tokens</td><td>205925</td></tr><tr><td>observed_agent_tokens</td><td>205925</td></tr><tr><td>observed_inference_seconds</td><td>158.3244407</td></tr><tr><td>inference_seconds</td><td>158.3244407</td></tr><tr><td>monetary_cost</td><td>не измерено / null</td></tr><tr><td>observed_monetary_cost</td><td>не измерено / null</td></tr><tr><td>usage_coverage.requests_with_reported_llm_calls</td><td>50</td></tr><tr><td>usage_coverage.requests_with_llm_attempts</td><td>50</td></tr><tr><td>usage_coverage.requests_with_zero_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_unknown_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_inference_seconds</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_inference_seconds</td><td>0</td></tr><tr><td>usage_coverage.request_inference_complete</td><td>True</td></tr><tr><td>usage_coverage.requests_with_observed_tokens</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_tokens</td><td>0</td></tr><tr><td>usage_coverage.request_tokens_complete</td><td>True</td></tr><tr><td>cost_assumptions.gpu_hour_cost_rub</td><td>не измерено / null</td></tr><tr><td>cost_assumptions.basis</td><td>Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.</td></tr><tr><td>fallback_requests</td><td>0</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
-  &quot;timestamp_utc&quot;: &quot;2026-09-24T10:03:30.850416+00:00&quot;,
-  &quot;target&quot;: &quot;http://127.0.0.1:8000&quot;,
+}</pre></details><p><a href="evidence/evaluation-load-c1.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-load-c2" class="receipt"><summary>HTTP-нагрузка: concurrency 2</summary><p>Источник: <code>report/evidence/evaluation-load-c2.json</code><br>SHA-256: <code>ae7c3337250d4eb51dd90e82658f3684127b02405c76cf61b7a67f5a40908e13</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>timestamp_utc</td><td>2026-09-27T19:02:03.984155+00:00</td></tr><tr><td>target</td><td>http://127.0.0.1:20000</td></tr><tr><td>requests</td><td>50</td></tr><tr><td>concurrency</td><td>2</td></tr><tr><td>elapsed_seconds</td><td>167.42814690002706</td></tr><tr><td>requests_per_second</td><td>0.2986355695010796</td></tr><tr><td>successes</td><td>50</td></tr><tr><td>errors</td><td>0</td></tr><tr><td>http_successes</td><td>50</td></tr><tr><td>http_errors</td><td>0</td></tr><tr><td>recommendation_successes</td><td>50</td></tr><tr><td>p50_ms</td><td>6689.422100025695</td></tr><tr><td>p95_ms</td><td>6766.097099985927</td></tr><tr><td>max_ms</td><td>6848.922799981665</td></tr><tr><td>agent_llm_calls</td><td>100</td></tr><tr><td>requests_with_llm_usage</td><td>50</td></tr><tr><td>agent_tokens</td><td>206250</td></tr><tr><td>observed_agent_tokens</td><td>206250</td></tr><tr><td>observed_inference_seconds</td><td>153.5160981</td></tr><tr><td>inference_seconds</td><td>153.5160981</td></tr><tr><td>monetary_cost</td><td>не измерено / null</td></tr><tr><td>observed_monetary_cost</td><td>не измерено / null</td></tr><tr><td>usage_coverage.requests_with_reported_llm_calls</td><td>50</td></tr><tr><td>usage_coverage.requests_with_llm_attempts</td><td>50</td></tr><tr><td>usage_coverage.requests_with_zero_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_unknown_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_inference_seconds</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_inference_seconds</td><td>0</td></tr><tr><td>usage_coverage.request_inference_complete</td><td>True</td></tr><tr><td>usage_coverage.requests_with_observed_tokens</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_tokens</td><td>0</td></tr><tr><td>usage_coverage.request_tokens_complete</td><td>True</td></tr><tr><td>cost_assumptions.gpu_hour_cost_rub</td><td>не измерено / null</td></tr><tr><td>cost_assumptions.basis</td><td>Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.</td></tr><tr><td>fallback_requests</td><td>0</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;timestamp_utc&quot;: &quot;2026-09-27T19:02:03.984155+00:00&quot;,
+  &quot;target&quot;: &quot;http://127.0.0.1:20000&quot;,
   &quot;requests&quot;: 50,
   &quot;concurrency&quot;: 2,
-  &quot;elapsed_seconds&quot;: 172.32949249999365,
-  &quot;requests_per_second&quot;: 0.29014186297799166,
+  &quot;elapsed_seconds&quot;: 167.42814690002706,
+  &quot;requests_per_second&quot;: 0.2986355695010796,
   &quot;successes&quot;: 50,
   &quot;errors&quot;: 0,
   &quot;http_successes&quot;: 50,
   &quot;http_errors&quot;: 0,
   &quot;recommendation_successes&quot;: 50,
-  &quot;p50_ms&quot;: 6878.302700002678,
-  &quot;p95_ms&quot;: 6940.130600007251,
-  &quot;max_ms&quot;: 7127.978099975735,
+  &quot;p50_ms&quot;: 6689.422100025695,
+  &quot;p95_ms&quot;: 6766.097099985927,
+  &quot;max_ms&quot;: 6848.922799981665,
   &quot;agent_llm_calls&quot;: 100,
   &quot;requests_with_llm_usage&quot;: 50,
-  &quot;agent_tokens&quot;: 205925,
-  &quot;observed_agent_tokens&quot;: 205925,
+  &quot;agent_tokens&quot;: 206250,
+  &quot;observed_agent_tokens&quot;: 206250,
   &quot;mode_counts&quot;: {
     &quot;ollama&quot;: 50
   },
-  &quot;observed_inference_seconds&quot;: 158.3244407,
-  &quot;inference_seconds&quot;: 158.3244407,
+  &quot;observed_inference_seconds&quot;: 153.5160981,
+  &quot;inference_seconds&quot;: 153.5160981,
   &quot;monetary_cost&quot;: null,
   &quot;observed_monetary_cost&quot;: null,
   &quot;usage_coverage&quot;: {
@@ -1202,30 +1363,30 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     &quot;basis&quot;: &quot;Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.&quot;
   },
   &quot;fallback_requests&quot;: 0
-}</pre></details><p><a href="evidence/evaluation-load-c2.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-load-c4" class="receipt"><summary>HTTP-нагрузка: concurrency 4</summary><p>Источник: <code>report/evidence/evaluation-load-c4.json</code><br>SHA-256: <code>c816b7edda23a79abba2a6707608240a3c5d63dd38e9be2c91d60e19519af995</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>timestamp_utc</td><td>2026-09-24T10:06:46.127293+00:00</td></tr><tr><td>target</td><td>http://127.0.0.1:8000</td></tr><tr><td>requests</td><td>50</td></tr><tr><td>concurrency</td><td>4</td></tr><tr><td>elapsed_seconds</td><td>170.928313899989</td></tr><tr><td>requests_per_second</td><td>0.29252029028529025</td></tr><tr><td>successes</td><td>50</td></tr><tr><td>errors</td><td>0</td></tr><tr><td>http_successes</td><td>50</td></tr><tr><td>http_errors</td><td>0</td></tr><tr><td>recommendation_successes</td><td>50</td></tr><tr><td>p50_ms</td><td>13475.255800003652</td></tr><tr><td>p95_ms</td><td>14361.929500009865</td></tr><tr><td>max_ms</td><td>14534.46859997348</td></tr><tr><td>agent_llm_calls</td><td>100</td></tr><tr><td>requests_with_llm_usage</td><td>50</td></tr><tr><td>agent_tokens</td><td>206081</td></tr><tr><td>observed_agent_tokens</td><td>206081</td></tr><tr><td>observed_inference_seconds</td><td>157.0282678</td></tr><tr><td>inference_seconds</td><td>157.0282678</td></tr><tr><td>monetary_cost</td><td>не измерено / null</td></tr><tr><td>observed_monetary_cost</td><td>не измерено / null</td></tr><tr><td>usage_coverage.requests_with_reported_llm_calls</td><td>50</td></tr><tr><td>usage_coverage.requests_with_llm_attempts</td><td>50</td></tr><tr><td>usage_coverage.requests_with_zero_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_unknown_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_inference_seconds</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_inference_seconds</td><td>0</td></tr><tr><td>usage_coverage.request_inference_complete</td><td>True</td></tr><tr><td>usage_coverage.requests_with_observed_tokens</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_tokens</td><td>0</td></tr><tr><td>usage_coverage.request_tokens_complete</td><td>True</td></tr><tr><td>cost_assumptions.gpu_hour_cost_rub</td><td>не измерено / null</td></tr><tr><td>cost_assumptions.basis</td><td>Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.</td></tr><tr><td>fallback_requests</td><td>0</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
-  &quot;timestamp_utc&quot;: &quot;2026-09-24T10:06:46.127293+00:00&quot;,
-  &quot;target&quot;: &quot;http://127.0.0.1:8000&quot;,
+}</pre></details><p><a href="evidence/evaluation-load-c2.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-load-c4" class="receipt"><summary>HTTP-нагрузка: concurrency 4</summary><p>Источник: <code>report/evidence/evaluation-load-c4.json</code><br>SHA-256: <code>96a1a5e6d56b740d2eb8b7cf1a2bdb84ca4017e11b1e247b5852ef46420b571d</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>timestamp_utc</td><td>2026-09-27T19:04:44.181909+00:00</td></tr><tr><td>target</td><td>http://127.0.0.1:20000</td></tr><tr><td>requests</td><td>50</td></tr><tr><td>concurrency</td><td>4</td></tr><tr><td>elapsed_seconds</td><td>159.11764539999422</td></tr><tr><td>requests_per_second</td><td>0.3142329053092047</td></tr><tr><td>successes</td><td>50</td></tr><tr><td>errors</td><td>0</td></tr><tr><td>http_successes</td><td>50</td></tr><tr><td>http_errors</td><td>0</td></tr><tr><td>recommendation_successes</td><td>50</td></tr><tr><td>p50_ms</td><td>12667.508899990935</td></tr><tr><td>p95_ms</td><td>12762.231000000611</td></tr><tr><td>max_ms</td><td>12831.886100000702</td></tr><tr><td>agent_llm_calls</td><td>100</td></tr><tr><td>requests_with_llm_usage</td><td>50</td></tr><tr><td>agent_tokens</td><td>206250</td></tr><tr><td>observed_agent_tokens</td><td>206250</td></tr><tr><td>observed_inference_seconds</td><td>144.8839414</td></tr><tr><td>inference_seconds</td><td>144.8839414</td></tr><tr><td>monetary_cost</td><td>не измерено / null</td></tr><tr><td>observed_monetary_cost</td><td>не измерено / null</td></tr><tr><td>usage_coverage.requests_with_reported_llm_calls</td><td>50</td></tr><tr><td>usage_coverage.requests_with_llm_attempts</td><td>50</td></tr><tr><td>usage_coverage.requests_with_zero_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_unknown_llm_calls</td><td>0</td></tr><tr><td>usage_coverage.requests_with_inference_seconds</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_inference_seconds</td><td>0</td></tr><tr><td>usage_coverage.request_inference_complete</td><td>True</td></tr><tr><td>usage_coverage.requests_with_observed_tokens</td><td>50</td></tr><tr><td>usage_coverage.requests_missing_tokens</td><td>0</td></tr><tr><td>usage_coverage.request_tokens_complete</td><td>True</td></tr><tr><td>cost_assumptions.gpu_hour_cost_rub</td><td>не измерено / null</td></tr><tr><td>cost_assumptions.basis</td><td>Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.</td></tr><tr><td>fallback_requests</td><td>0</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;timestamp_utc&quot;: &quot;2026-09-27T19:04:44.181909+00:00&quot;,
+  &quot;target&quot;: &quot;http://127.0.0.1:20000&quot;,
   &quot;requests&quot;: 50,
   &quot;concurrency&quot;: 4,
-  &quot;elapsed_seconds&quot;: 170.928313899989,
-  &quot;requests_per_second&quot;: 0.29252029028529025,
+  &quot;elapsed_seconds&quot;: 159.11764539999422,
+  &quot;requests_per_second&quot;: 0.3142329053092047,
   &quot;successes&quot;: 50,
   &quot;errors&quot;: 0,
   &quot;http_successes&quot;: 50,
   &quot;http_errors&quot;: 0,
   &quot;recommendation_successes&quot;: 50,
-  &quot;p50_ms&quot;: 13475.255800003652,
-  &quot;p95_ms&quot;: 14361.929500009865,
-  &quot;max_ms&quot;: 14534.46859997348,
+  &quot;p50_ms&quot;: 12667.508899990935,
+  &quot;p95_ms&quot;: 12762.231000000611,
+  &quot;max_ms&quot;: 12831.886100000702,
   &quot;agent_llm_calls&quot;: 100,
   &quot;requests_with_llm_usage&quot;: 50,
-  &quot;agent_tokens&quot;: 206081,
-  &quot;observed_agent_tokens&quot;: 206081,
+  &quot;agent_tokens&quot;: 206250,
+  &quot;observed_agent_tokens&quot;: 206250,
   &quot;mode_counts&quot;: {
     &quot;ollama&quot;: 50
   },
-  &quot;observed_inference_seconds&quot;: 157.0282678,
-  &quot;inference_seconds&quot;: 157.0282678,
+  &quot;observed_inference_seconds&quot;: 144.8839414,
+  &quot;inference_seconds&quot;: 144.8839414,
   &quot;monetary_cost&quot;: null,
   &quot;observed_monetary_cost&quot;: null,
   &quot;usage_coverage&quot;: {
@@ -1255,16 +1416,17 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     &quot;basis&quot;: &quot;Иллюстративная ставка за час вычислений; не фактический счёт за электричество. Время инференса берётся из aggregate usage API; полнота отдельных LLM-вызовов неизвестна.&quot;
   },
   &quot;fallback_requests&quot;: 0
-}</pre></details><p><a href="evidence/evaluation-load-c4.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-fallback" class="receipt"><summary>HTTP-проверка отказа LLM в отдельном процессе</summary><p>Источник: <code>artifacts/submission-final-2026-09-27/fallback-process/receipt.json</code><br>SHA-256: <code>dd04ce2d372d9ecde5eeeee4da0978d780143295b99d148c391f0a58ab4b3675</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>status</td><td>PASS</td></tr><tr><td>started_at_utc</td><td>2026-09-27T18:02:18.091823+00:00</td></tr><tr><td>cwd</td><td>C:\Users\roev_\Documents\ChatGPT\МТС\dist\git-docs-20260927-review</td></tr><tr><td>python</td><td>3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]</td></tr><tr><td>scenario</td><td>WorkflowAgent(mode=ollama), BrokenLLM.structured raises TimeoutError; deterministic grounded renderer</td></tr><tr><td>real_ollama_calls</td><td>0</td></tr><tr><td>port</td><td>31642</td></tr><tr><td>checks.http_200</td><td>True</td></tr><tr><td>checks.readiness_200</td><td>True</td></tr><tr><td>checks.recommendations_present</td><td>True</td></tr><tr><td>checks.all_explicit_constraints_satisfied</td><td>True</td></tr><tr><td>checks.catalog_evidence_matches_attributes</td><td>True</td></tr><tr><td>checks.rules_fallback_mode</td><td>True</td></tr><tr><td>checks.no_llm_degradation</td><td>True</td></tr><tr><td>checks.telemetry_fallback_mode</td><td>True</td></tr><tr><td>checks.telemetry_failure_reason</td><td>True</td></tr><tr><td>checks.telemetry_request_id</td><td>True</td></tr><tr><td>checks.telemetry_success</td><td>True</td></tr><tr><td>script_sha256</td><td>15f0462d8c4b80817f316fffc4330502ff1abd81f63474611cc6d5ac6ea5eff6</td></tr><tr><td>child_pid</td><td>20044</td></tr><tr><td>http_status</td><td>200</td></tr><tr><td>child_returncode_after_cleanup</td><td>1</td></tr><tr><td>child_stopped</td><td>True</td></tr><tr><td>finished_at_utc</td><td>2026-09-27T18:02:19.776641+00:00</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+}</pre></details><p><a href="evidence/evaluation-load-c4.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-evaluation-fallback" class="receipt"><summary>HTTP-проверка отказа LLM в отдельном процессе</summary><p>Источник: <code>report/evidence/evaluation-fallback.json</code><br>SHA-256: <code>da4e8be7f865e7037d6bb3ad7b688012413ef6bcf34c5a4249b8842cc5556973</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>status</td><td>PASS</td></tr><tr><td>started_at_utc</td><td>2026-09-27T19:01:38.841067+00:00</td></tr><tr><td>cwd</td><td>C:\Users\roev_\Documents\ChatGPT\МТС\dist\compliance-source-20260927</td></tr><tr><td>python</td><td>3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]</td></tr><tr><td>scenario</td><td>WorkflowAgent(mode=ollama), BrokenLLM.structured raises TimeoutError; deterministic grounded renderer</td></tr><tr><td>real_ollama_calls</td><td>0</td></tr><tr><td>port</td><td>1311</td></tr><tr><td>checks.http_200</td><td>True</td></tr><tr><td>checks.friendly_short_message</td><td>True</td></tr><tr><td>checks.readiness_200</td><td>True</td></tr><tr><td>checks.recommendations_present</td><td>True</td></tr><tr><td>checks.all_explicit_constraints_satisfied</td><td>True</td></tr><tr><td>checks.catalog_evidence_matches_attributes</td><td>True</td></tr><tr><td>checks.rules_fallback_mode</td><td>True</td></tr><tr><td>checks.no_llm_degradation</td><td>True</td></tr><tr><td>checks.telemetry_fallback_mode</td><td>True</td></tr><tr><td>checks.telemetry_failure_reason</td><td>True</td></tr><tr><td>checks.telemetry_request_id</td><td>True</td></tr><tr><td>checks.telemetry_success</td><td>True</td></tr><tr><td>script_sha256</td><td>36870a33e28ed6f9a0440963bbcc440ea44145be376dd992378bb9ae2b5a22e9</td></tr><tr><td>child_pid</td><td>13444</td></tr><tr><td>http_status</td><td>200</td></tr><tr><td>child_returncode_after_cleanup</td><td>1</td></tr><tr><td>child_stopped</td><td>True</td></tr><tr><td>finished_at_utc</td><td>2026-09-27T19:01:40.569776+00:00</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
   &quot;status&quot;: &quot;PASS&quot;,
-  &quot;started_at_utc&quot;: &quot;2026-09-27T18:02:18.091823+00:00&quot;,
-  &quot;cwd&quot;: &quot;C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\dist\\git-docs-20260927-review&quot;,
+  &quot;started_at_utc&quot;: &quot;2026-09-27T19:01:38.841067+00:00&quot;,
+  &quot;cwd&quot;: &quot;C:\\Users\\roev_\\Documents\\ChatGPT\\МТС\\dist\\compliance-source-20260927&quot;,
   &quot;python&quot;: &quot;3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]&quot;,
   &quot;scenario&quot;: &quot;WorkflowAgent(mode=ollama), BrokenLLM.structured raises TimeoutError; deterministic grounded renderer&quot;,
   &quot;real_ollama_calls&quot;: 0,
-  &quot;port&quot;: 31642,
+  &quot;port&quot;: 1311,
   &quot;checks&quot;: {
     &quot;http_200&quot;: true,
+    &quot;friendly_short_message&quot;: true,
     &quot;readiness_200&quot;: true,
     &quot;recommendations_present&quot;: true,
     &quot;all_explicit_constraints_satisfied&quot;: true,
@@ -1276,8 +1438,8 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     &quot;telemetry_request_id&quot;: true,
     &quot;telemetry_success&quot;: true
   },
-  &quot;script_sha256&quot;: &quot;15f0462d8c4b80817f316fffc4330502ff1abd81f63474611cc6d5ac6ea5eff6&quot;,
-  &quot;child_pid&quot;: 20044,
+  &quot;script_sha256&quot;: &quot;36870a33e28ed6f9a0440963bbcc440ea44145be376dd992378bb9ae2b5a22e9&quot;,
+  &quot;child_pid&quot;: 13444,
   &quot;health&quot;: {
     &quot;status_code&quot;: 200,
     &quot;body&quot;: {
@@ -1298,9 +1460,9 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
   &quot;response&quot;: {
     &quot;request_id&quot;: &quot;submission-controlled-failure&quot;,
     &quot;provider&quot;: &quot;demo-memory&quot;,
-    &quot;session_id&quot;: &quot;f7829b91-2e86-42fd-b4df-03f28fcd6bcd&quot;,
+    &quot;session_id&quot;: &quot;76829fb9-2cbf-4f2b-b3e4-a5366cfde01a&quot;,
     &quot;state&quot;: &quot;recommend&quot;,
-    &quot;message&quot;: &quot;Подходит «Сериализатор в веб-сервисе». Жанр: python. Тон: лёгкий.\nТакже можно рассмотреть «Модуль без побочных эффектов». Жанр: python. Тон: нейтральный.\nТакже можно рассмотреть «Зимняя обёртка». Жанр: python. Тон: нейтральный.&quot;,
+    &quot;message&quot;: &quot;Предлагаю посмотреть «Сериализатор в веб-сервисе». Жанр: python.\nЕщё один вариант — «Модуль без побочных эффектов». Жанр: python.&quot;,
     &quot;query&quot;: {
       &quot;intent&quot;: &quot;discovery&quot;,
       &quot;kind&quot;: &quot;course&quot;,
@@ -1313,7 +1475,7 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
       &quot;seed_title&quot;: null
     },
     &quot;mode&quot;: &quot;rules_fallback&quot;,
-    &quot;latency_ms&quot;: 50.07,
+    &quot;latency_ms&quot;: 64.78,
     &quot;llm_calls&quot;: 1,
     &quot;llm_calls_total&quot;: 1,
     &quot;llm_tokens&quot;: 0,
@@ -1322,9 +1484,9 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
     &quot;question_gain&quot;: null,
     &quot;degradation&quot;: &quot;NO_LLM&quot;,
     &quot;timings_ms&quot;: {
-      &quot;parse&quot;: 3.464,
-      &quot;retrieve&quot;: 42.885,
-      &quot;rank_explain&quot;: 0.234
+      &quot;parse&quot;: 3.525,
+      &quot;retrieve&quot;: 53.781,
+      &quot;rank_explain&quot;: 0.426
     },
     &quot;llm_tokens_total&quot;: 0,
     &quot;llm_usage&quot;: {},
@@ -1361,19 +1523,19 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
       &quot;tokens&quot;: 0,
       &quot;fallback_reason&quot;: &quot;llm_failure:TimeoutError&quot;,
       &quot;retry_rejection_reason&quot;: null,
-      &quot;latency_ms&quot;: 50.07
+      &quot;latency_ms&quot;: 64.78
     },
     &quot;pending_preview&quot;: null
   },
   &quot;child_returncode_after_cleanup&quot;: 1,
   &quot;child_stopped&quot;: true,
-  &quot;finished_at_utc&quot;: &quot;2026-09-27T18:02:19.776641+00:00&quot;,
+  &quot;finished_at_utc&quot;: &quot;2026-09-27T19:01:40.569776+00:00&quot;,
   &quot;files_sha256&quot;: {
-    &quot;smoke.py&quot;: &quot;15f0462d8c4b80817f316fffc4330502ff1abd81f63474611cc6d5ac6ea5eff6&quot;,
-    &quot;server.stdout.log&quot;: &quot;550d541266e62937863612c6075ba5daebd040751419445fe1db91d1d41e1015&quot;,
-    &quot;server.stderr.log&quot;: &quot;ccc61e5d065fbdc5d85ad4a7361eeeba8f736ec41d7bba71f19e19f7aa802d61&quot;
+    &quot;smoke.py&quot;: &quot;36870a33e28ed6f9a0440963bbcc440ea44145be376dd992378bb9ae2b5a22e9&quot;,
+    &quot;server.stdout.log&quot;: &quot;bf68bdb6fc114ce3c4c6f2dd07dfc3c59c0a946b7b58ffc565cf3f610f5655e4&quot;,
+    &quot;server.stderr.log&quot;: &quot;b8d184c166f9c60d48779e5b64595e8c55534aeb531a6078e1fa5d84e51447be&quot;
   }
-}</pre></details><p><a href="evidence/evaluation-fallback.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-nli-final" class="receipt"><summary>Последний эксперимент NLI</summary><p>Источник: <code>artifacts/context-nli-final-2026-09-27/acceptance.json</code><br>SHA-256: <code>370f27bfb7ecf98cdf42288c0547c77bacfb9ba9d4587ca01875efaf5058eb79</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>decision</td><td>REJECT_FOR_PRODUCT_STOP_EXPERIMENTS</td></tr><tr><td>default_changed</td><td>False</td></tr><tr><td>product_dev_contract_run</td><td>False</td></tr><tr><td>data_status</td><td>Open synthetic V4 dev and previously inspected MASSIVE silver; exploratory, not independent.</td></tr><tr><td>new_false_support_rows</td><td>357</td></tr><tr><td>all_component_gates_passed</td><td>False</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+}</pre></details><p><a href="evidence/evaluation-fallback.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-nli-final" class="receipt"><summary>Последний эксперимент NLI</summary><p>Источник: <code>report/evidence/nli-final.json</code><br>SHA-256: <code>370f27bfb7ecf98cdf42288c0547c77bacfb9ba9d4587ca01875efaf5058eb79</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>decision</td><td>REJECT_FOR_PRODUCT_STOP_EXPERIMENTS</td></tr><tr><td>default_changed</td><td>False</td></tr><tr><td>product_dev_contract_run</td><td>False</td></tr><tr><td>data_status</td><td>Open synthetic V4 dev and previously inspected MASSIVE silver; exploratory, not independent.</td></tr><tr><td>new_false_support_rows</td><td>357</td></tr><tr><td>all_component_gates_passed</td><td>False</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
   &quot;decision&quot;: &quot;REJECT_FOR_PRODUCT_STOP_EXPERIMENTS&quot;,
   &quot;default_changed&quot;: false,
   &quot;product_dev_contract_run&quot;: false,
@@ -1491,7 +1653,41 @@ CONTRACT — 12 AI-написанных сценариев, 20 ходов и к�
   &quot;method&quot;: &quot;Монтаж кадров реального интерфейса с явными паузами для чтения; без озвучки и подмены ответов.&quot;,
   &quot;max_gap_seconds&quot;: 12.0,
   &quot;bytes&quot;: 2116684
-}</pre></details><p><a href="evidence/current-video.json">Полная запись измерения (JSON)</a></p><p><a href="demo.mp4">Открыть запись реального интерфейса</a></p></details></section>
+}</pre></details><p><a href="evidence/current-video.json">Полная запись измерения (JSON)</a></p><p><a href="demo.mp4">Открыть запись реального интерфейса</a></p></details><details id="receipt-compute-cost" class="receipt"><summary>Условная стоимость вычислений</summary><p>Источник: <code>report/evidence/compute-cost.json</code><br>SHA-256: <code>38146aee181763b7cb714c67a59722cc35890b027a6830520d1d5f4d07131b20</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>kind</td><td>conditional_compute_cost</td></tr><tr><td>actual_cost_rub</td><td>не измерено / null</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;kind&quot;: &quot;conditional_compute_cost&quot;,
+  &quot;actual_cost_rub&quot;: null,
+  &quot;assumptions&quot;: {
+    &quot;pricing&quot;: &quot;Illustrative sensitivity rates, not a vendor quote or actual expense.&quot;,
+    &quot;resource&quot;: &quot;One dedicated machine billed for the measured wall-clock window.&quot;,
+    &quot;formula&quot;: &quot;window_cost_rub = assumed_hourly_rub * elapsed_seconds / 3600&quot;,
+    &quot;exclusions&quot;: &quot;Warm-up before the window, idle time, storage, setup and maintenance are excluded.&quot;,
+    &quot;concurrency&quot;: &quot;Overlapping request durations are not summed as machine rental time.&quot;
+  }
+}</pre></details><p><a href="evidence/compute-cost.json">Полная запись измерения (JSON)</a></p></details><details id="receipt-resource-sample" class="receipt"><summary>Снимок ресурсов во время нагрузки</summary><p>Источник: <code>report/evidence/resource-sample.json</code><br>SHA-256: <code>56efafbc0b84e6fbf3be67e72698b49ca2071b6d54de83900c6bf18ad13a6faa</code></p><div class="scroll"><table><thead><tr><th>Показатель из receipt</th><th>Значение</th></tr></thead><tbody><tr><td>timestamp</td><td>2026-09-27T18:57:04.526909+00:00</td></tr><tr><td>scope</td><td>Single host GPU and container snapshots during c1; not isolated Ollama process usage or peak measurements; host CPU/RAM sampled later during c4; CPU-only pytest and notebook checks also ran on the host during the load campaign; no other model inference was started by this task</td></tr><tr><td>host_sample_at_utc</td><td>2026-09-27T19:03:14.397050+00:00</td></tr></tbody></table></div><details><summary>Контекст, ограничения и происхождение</summary><pre>{
+  &quot;timestamp&quot;: &quot;2026-09-27T18:57:04.526909+00:00&quot;,
+  &quot;scope&quot;: &quot;Single host GPU and container snapshots during c1; not isolated Ollama process usage or peak measurements; host CPU/RAM sampled later during c4; CPU-only pytest and notebook checks also ran on the host during the load campaign; no other model inference was started by this task&quot;,
+  &quot;gpu&quot;: {
+    &quot;returncode&quot;: 0,
+    &quot;stdout&quot;: &quot;name, driver_version, memory.total [MiB], memory.used [MiB], utilization.gpu [%], power.draw [W]\nNVIDIA GeForce RTX 5070 Ti, 591.86, 16303 MiB, 8331 MiB, 89 %, 240.39 W\n&quot;,
+    &quot;stderr&quot;: &quot;&quot;
+  },
+  &quot;containers&quot;: {
+    &quot;returncode&quot;: 0,
+    &quot;stdout&quot;: &quot;{\&quot;BlockIO\&quot;:\&quot;0B / 0B\&quot;,\&quot;CPUPerc\&quot;:\&quot;2.40%\&quot;,\&quot;Container\&quot;:\&quot;recagent-compliance-fix-api-1\&quot;,\&quot;ID\&quot;:\&quot;3da9d0c7a0bb\&quot;,\&quot;MemPerc\&quot;:\&quot;0.12%\&quot;,\&quot;MemUsage\&quot;:\&quot;79.91MiB / 62.66GiB\&quot;,\&quot;Name\&quot;:\&quot;recagent-compliance-fix-api-1\&quot;,\&quot;NetIO\&quot;:\&quot;266kB / 578kB\&quot;,\&quot;PIDs\&quot;:\&quot;3\&quot;}\n{\&quot;BlockIO\&quot;:\&quot;0B / 0B\&quot;,\&quot;CPUPerc\&quot;:\&quot;0.80%\&quot;,\&quot;Container\&quot;:\&quot;recagent-compliance-fix-platform-1\&quot;,\&quot;ID\&quot;:\&quot;cd957c11465a\&quot;,\&quot;MemPerc\&quot;:\&quot;0.07%\&quot;,\&quot;MemUsage\&quot;:\&quot;46.86MiB / 62.66GiB\&quot;,\&quot;Name\&quot;:\&quot;recagent-compliance-fix-platform-1\&quot;,\&quot;NetIO\&quot;:\&quot;33.7kB / 195kB\&quot;,\&quot;PIDs\&quot;:\&quot;2\&quot;}\n{\&quot;BlockIO\&quot;:\&quot;0B / 0B\&quot;,\&quot;CPUPerc\&quot;:\&quot;0.38%\&quot;,\&quot;Container\&quot;:\&quot;recagent-compliance-fix-demo-1\&quot;,\&quot;ID\&quot;:\&quot;b87efbc0dcc3\&quot;,\&quot;MemPerc\&quot;:\&quot;0.07%\&quot;,\&quot;MemUsage\&quot;:\&quot;45.14MiB / 62.66GiB\&quot;,\&quot;Name\&quot;:\&quot;recagent-compliance-fix-demo-1\&quot;,\&quot;NetIO\&quot;:\&quot;3.19kB / 2.03kB\&quot;,\&quot;PIDs\&quot;:\&quot;4\&quot;}\n&quot;,
+    &quot;stderr&quot;: &quot;&quot;
+  },
+  &quot;host_sample_at_utc&quot;: &quot;2026-09-27T19:03:14.397050+00:00&quot;,
+  &quot;host_cpu&quot;: {
+    &quot;Name&quot;: &quot;12th Gen Intel(R) Core(TM) i7-12700K&quot;,
+    &quot;NumberOfCores&quot;: 12,
+    &quot;NumberOfLogicalProcessors&quot;: 20,
+    &quot;LoadPercentage&quot;: 43
+  },
+  &quot;host_memory_kib&quot;: {
+    &quot;TotalVisibleMemorySize&quot;: 133939116,
+    &quot;FreePhysicalMemory&quot;: 99354620
+  }
+}</pre></details><p><a href="evidence/resource-sample.json">Полная запись измерения (JSON)</a></p></details></section>
 <section><h2>Воспроизведение</h2><pre>python -m pip install -r requirements-lock.txt
 python -m pip install --no-deps -e .
 ollama pull qwen3:8b
@@ -1504,5 +1700,5 @@ python -m scripts.prepare_git_snapshot --output dist/git-candidate-YYYYMMDD</pre
 Встроенные JSON содержат измеренные значения и параметры; выбор источников — selection.json.
 Синтетический каталог воспроизводится генератором seed 42. Зависимости Jupyter нужны только для интерактивного
 редактирования notebook; последовательный запуск его Python-ячеек выполняет scripts.run_demo_notebook.</p></section>
-<footer>Отчёт собран 2026-09-27T18:03:52.004337+00:00 из сохранённых измерений. Это время генерации документа,
+<footer>Отчёт собран 2026-09-27T19:09:43.934853+00:00 из сохранённых измерений. Это время генерации документа,
 не дата повторной проверки агента.</footer></body></html>

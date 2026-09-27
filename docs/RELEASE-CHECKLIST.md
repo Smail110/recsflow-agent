@@ -10,6 +10,7 @@
 - `README.md` — задача, возможности, запуск, результаты и карта проекта.
 - `docs/PROJECT-BRIEF.md` — требования задания.
 - `docs/SUBMISSION-STATUS.md` — выполненные пункты и ограничения.
+- `docs/RESEARCH-BASIS.md` — обзор исследований и основания выбранных решений.
 - `docs/ARCHITECTURE.md` — компоненты и поток запроса.
 - `docs/EVALUATION.md` — метрики, даты, данные и границы выводов.
 - `docs/DATA-PROVENANCE.md` — происхождение данных.
